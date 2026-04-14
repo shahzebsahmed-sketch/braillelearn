@@ -447,8 +447,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div class="brand">Braille<b>Learn</b></div>
     <div class="land-nav-r">
       <button class="nbtn teacher" onclick="showPg('pg-teacher-login')">👩‍🏫 Teacher login</button>
-      <button class="nbtn" onclick="goApp('dashboard')">Student login</button>
-      <button class="nbtn fill" onclick="goApp('dashboard')">Start free →</button>
+      <button class="nbtn fill" onclick="goApp('dashboard')">Start learning →</button>
     </div>
   </nav>
   <div class="hero-wrap">
@@ -1163,17 +1162,34 @@ function switchTransTab(tab){
 let tapDots=[];
 let tapWord=[];
 
+// dot click sound using Web Audio API
+function playDotSound(on){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value=on?520:300;
+    osc.type='sine';
+    gain.gain.setValueAtTime(0.18,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime+0.12);
+  }catch(e){}
+}
+
 function tapDot(n){
   const idx=tapDots.indexOf(n);
-  if(idx>-1){tapDots.splice(idx,1);}else{tapDots.push(n);}
+  const adding=idx===-1;
+  if(adding){tapDots.push(n);}else{tapDots.splice(idx,1);}
   tapDots.sort((a,b)=>a-b);
-  // update UI
+  playDotSound(adding);
   [1,2,3,4,5,6].forEach(d=>{
     const el=document.getElementById('td'+d);
     if(el)el.className='tap-dot'+(tapDots.includes(d)?' on':'');
   });
   document.getElementById('tap-active-dots').textContent=tapDots.length?tapDots.join(', '):'none';
-  // find matching letter
   const match=Object.entries(BR).find(([k,v])=>v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d)));
   document.getElementById('tap-preview').textContent=match?match[0].toUpperCase()+'  '+match[1].sym:'?';
 }
@@ -1267,44 +1283,57 @@ async function readPhoto(){
   try{
     const response=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':'',
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-opus-4-6',
         max_tokens:1000,
         messages:[{
           role:'user',
           content:[
             {type:'image',source:{type:'base64',media_type:photoMime,data:photoBase64}},
-            {type:'text',text:`You are a Braille reading expert. Look at this image carefully. 
+            {type:'text',text:`You are a Braille reading expert helping a parent understand what their blind child has written.
 
-If it contains Braille (raised dots on paper), read it and tell me:
-1. What the Braille text says in English
-2. A brief explanation of what dots you can see
+Look at this image carefully and:
+1. If you can see Braille (raised dots), read it and tell me what it says in English
+2. Show the translation clearly
+3. Explain what you saw briefly
 
-If it does not contain Braille, say so clearly.
+If the image is not clear enough or doesn't contain Braille, say so kindly and give tips for a better photo.
 
-Be helpful and friendly — this is a parent trying to read what their blind child has written.
-
-Format your response clearly with the English translation first in large text, then the explanation.`}
+Be warm and encouraging — this is a parent trying to connect with their child's learning.`}
           ]
         }]
       })
     });
     const data=await response.json();
     if(data.error){
-      document.getElementById('photo-result-area').innerHTML=`<div style="color:var(--r);font-size:14px">Error: ${data.error.message||'Something went wrong. Please try again.'}</div>`;
+      document.getElementById('photo-result-area').innerHTML=`
+        <div style="background:rgba(240,90,106,.08);border:1px solid rgba(240,90,106,.2);border-radius:12px;padding:20px">
+          <div style="font-size:14px;font-weight:700;color:var(--r);margin-bottom:8px">⚠️ AI not connected</div>
+          <div style="font-size:13px;color:var(--t2);line-height:1.7">${data.error.message||'Could not connect to AI. Please try again.'}<br><br>
+          <b>Note:</b> The photo AI feature requires an API key to be configured. Please contact the app developer to set this up.</div>
+        </div>`;
       btn.disabled=false;return;
     }
-    const text=data.content.map(c=>c.text||'').join('');
+    const text=data.content.map(c=>c.text||'').join('').replace(/\n/g,'<br>');
     document.getElementById('photo-result-area').innerHTML=`
       <div class="photo-result-box">
         <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--g);margin-bottom:12px">✓ AI Translation</div>
-        <div class="photo-result-text">${text.replace(/\n/g,'<br>')}</div>
+        <div class="photo-result-text">${text}</div>
         <div class="photo-result-note">Powered by Claude AI · Results may vary based on image quality</div>
       </div>`;
-    spk(text.replace(/<[^>]+>/g,'').substring(0,200));
+    spk(data.content.map(c=>c.text||'').join('').substring(0,300));
   }catch(err){
-    document.getElementById('photo-result-area').innerHTML=`<div style="color:var(--r);font-size:14px">Could not connect to AI. Please check your internet connection and try again.</div>`;
+    document.getElementById('photo-result-area').innerHTML=`
+      <div style="background:rgba(240,90,106,.08);border:1px solid rgba(240,90,106,.2);border-radius:12px;padding:20px">
+        <div style="font-size:14px;font-weight:700;color:var(--r);margin-bottom:8px">⚠️ Could not connect</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.7">Could not reach the AI. Please check your internet connection and try again.</div>
+      </div>`;
   }
   btn.disabled=false;
 }
