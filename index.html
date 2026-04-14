@@ -324,6 +324,14 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .qsr-bf{height:100%;border-radius:99px}
 .qsr-p{font-size:13px;font-weight:700;width:36px;text-align:right}
 
+/* numbered dots in translator */
+.cell-num{border-color:rgba(123,110,246,.25)}
+.dot-num{position:relative;display:flex;align-items:center;justify-content:center}
+.dn{font-size:9px;font-weight:800;color:rgba(255,255,255,.35);position:absolute;pointer-events:none;font-family:var(--ff);line-height:1}
+.dot-num.active .dn{color:rgba(255,255,255,.9)}
+.cell-num .dot{width:32px;height:32px}
+.cell-num .dot-num .dn{font-size:11px}
+
 /* responsive */
 @media(max-width:900px){
   .hero-wrap{grid-template-columns:1fr;gap:40px}
@@ -645,10 +653,17 @@ let S=ld(),LS={l:null,i:0},QS={q:[],i:0,sc:0,sel:null},muted=false;
 function lv(x){return Math.floor(x/200)+1}
 function lp(x){return((x%200)/200)*100}
 
-function mkCell(dots,sz=''){
+function mkCell(dots,sz='',numbered=false){
   const lay=[[1,4],[2,5],[3,6]];
-  let h=`<div class="braille-cell${sz?' cell-'+sz:''}">`;
-  lay.forEach(r=>r.forEach(d=>{h+=`<div class="dot${dots&&dots.includes(d)?' active':''}"></div>`}));
+  let h=`<div class="braille-cell${sz?' cell-'+sz:''}${numbered?' cell-num':''}">`;
+  lay.forEach(r=>r.forEach(d=>{
+    const active=dots&&dots.includes(d);
+    if(numbered){
+      h+=`<div class="dot${active?' active':''} dot-num"><span class="dn">${d}</span></div>`;
+    } else {
+      h+=`<div class="dot${active?' active':''}"></div>`;
+    }
+  }));
   return h+'</div>';
 }
 
@@ -807,6 +822,7 @@ function selAlph(k){
   spkLetter(k,d.dots);
 }
 
+let transSpkTimer=null;
 function setTrans(v){document.getElementById('tp-ta').value=v;doTrans();}
 function clrTrans(){document.getElementById('tp-ta').value='';doTrans();}
 function doTrans(){
@@ -815,15 +831,25 @@ function doTrans(){
   if(!inp){document.getElementById('sym-out').textContent='—';document.getElementById('cells-out').innerHTML='';document.getElementById('det-list').innerHTML='';return;}
   let sy='',ce='',de='';
   inp.toLowerCase().split('').forEach(c=>{
-    if(c===' '){sy+=' ';ce+='<div style="width:16px"></div>';return;}
+    if(c===' '){sy+=' ';ce+='<div style="width:20px"></div>';return;}
     const d=BR[c];if(!d){sy+=c;return;}
     sy+=d.sym;
-    ce+=`<div class="ci">${mkCell(d.dots,'sm')}<div class="ci-l">${c.toUpperCase()}</div></div>`;
+    ce+=`<div class="ci">${mkCell(d.dots,'',true)}<div class="ci-l">${c.toUpperCase()}</div></div>`;
     de+=`<div class="det-item"><span class="di-l">${c.toUpperCase()}</span><span class="di-s">${d.sym}</span><div class="di-dots">${d.dots.map(n=>`<div class="di-d">${n}</div>`).join('')}</div><span class="di-h">${d.hint}</span></div>`;
   });
   document.getElementById('sym-out').textContent=sy||'—';
   document.getElementById('cells-out').innerHTML=ce;
   document.getElementById('det-list').innerHTML=de;
+  // speak the last typed letter after a short pause
+  if(!muted&&inp.length>0){
+    clearTimeout(transSpkTimer);
+    transSpkTimer=setTimeout(()=>{
+      const last=inp[inp.length-1].toLowerCase();
+      if(last===' '){spk('space');return;}
+      const d=BR[last];
+      if(d)spkLetter(last,d.dots);
+    },400);
+  }
 }
 
 function rProg(){
