@@ -627,8 +627,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <!-- Tab switcher -->
       <div style="display:flex;gap:6px;margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content">
         <button class="tr-tab on" id="trtab-text" onclick="switchTransTab('text')">✏️ Text → Braille</button>
-        <button class="tr-tab" id="trtab-dots" onclick="switchTransTab('dots')">⠿ Dot tapper</button>
-        <button class="tr-tab" id="trtab-photo" onclick="switchTransTab('photo')">📷 Photo → English</button>
+        <button class="tr-tab" id="trtab-dots" onclick="switchTransTab('dots')">⠿ Braille → Text</button>
       </div>
 
       <!-- TAB 1: Text to Braille -->
@@ -656,63 +655,64 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
         </div>
       </div>
 
-      <!-- TAB 2: Dot tapper (Braille → English) -->
+      <!-- TAB 2: Dot tapper (Braille → Text) -->
       <div id="tr-dots" style="display:none">
-        <div style="display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start">
-          <div class="tp" style="display:flex;flex-direction:column;align-items:center;gap:20px">
-            <div class="tp-lbl" style="align-self:flex-start">Tap the raised dots</div>
-            <p style="font-size:13px;color:var(--t2);align-self:flex-start;margin-top:-12px;line-height:1.6">Click each dot that is raised in the Braille cell, then press Add Letter.</p>
-            <!-- Interactive dot cell -->
-            <div class="tapper-cell" id="tapper-cell">
-              <div class="tap-dot" id="td1" onclick="tapDot(1)"><span>1</span></div>
-              <div class="tap-dot" id="td4" onclick="tapDot(4)"><span>4</span></div>
-              <div class="tap-dot" id="td2" onclick="tapDot(2)"><span>2</span></div>
-              <div class="tap-dot" id="td5" onclick="tapDot(5)"><span>5</span></div>
-              <div class="tap-dot" id="td3" onclick="tapDot(3)"><span>3</span></div>
-              <div class="tap-dot" id="td6" onclick="tapDot(6)"><span>6</span></div>
-            </div>
-            <div style="font-size:13px;color:var(--t3)">Active dots: <span id="tap-active-dots" style="color:var(--p);font-weight:700">none</span></div>
-            <div style="font-size:22px;color:var(--p);font-weight:800;min-height:32px" id="tap-preview">?</div>
-            <div style="display:flex;gap:8px;width:100%">
-              <button class="btn btn-p" style="flex:1" onclick="tapAddLetter()">Add Letter →</button>
-              <button class="btn btn-o btn-sm" onclick="tapClearDots()">Clear dots</button>
-            </div>
-          </div>
-          <div class="tp">
-            <div class="tp-lbl">Decoded text</div>
-            <div id="tap-result" style="font-size:36px;font-weight:800;color:var(--t1);letter-spacing:2px;min-height:56px;margin-bottom:20px;word-break:break-all">—</div>
-            <div id="tap-cells" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px"></div>
-            <div style="display:flex;gap:8px">
-              <button class="btn btn-o btn-sm" onclick="tapAddSpace()">Add space</button>
-              <button class="btn btn-r btn-sm" onclick="tapDeleteLast()">Delete last</button>
-              <button class="btn btn-r btn-sm" onclick="tapClearAll()">Clear all</button>
-            </div>
-          </div>
-        </div>
-      </div>
+        <div style="display:grid;grid-template-columns:360px 1fr;gap:24px;align-items:start">
 
-      <!-- TAB 3: Photo to English -->
-      <div id="tr-photo" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
-          <div class="tp">
-            <div class="tp-lbl">Upload a photo of Braille</div>
-            <p style="font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6">Take a clear photo of your son's Braille writing or any Braille text. The AI will read and translate it for you.</p>
-            <div class="photo-drop" id="photo-drop" onclick="document.getElementById('photo-file').click()">
-              <div id="photo-preview-wrap">
-                <div style="font-size:48px;margin-bottom:12px">📷</div>
-                <div style="font-size:15px;font-weight:600;margin-bottom:6px">Click to upload a photo</div>
-                <div style="font-size:13px;color:var(--t3)">JPG, PNG or HEIC · Max 10MB</div>
-              </div>
-              <img id="photo-preview" style="display:none;width:100%;border-radius:10px;max-height:260px;object-fit:contain">
+          <!-- Left: tapper -->
+          <div class="tp" style="display:flex;flex-direction:column;align-items:center;gap:16px">
+            <div style="align-self:flex-start">
+              <div class="tp-lbl">Tap the raised dots</div>
+              <p style="font-size:13px;color:var(--t2);margin-top:4px;line-height:1.6">Look at your son's Braille cell. Tap each dot that is raised, then press <b style="color:var(--t1)">Add Letter</b>.</p>
             </div>
-            <input type="file" id="photo-file" accept="image/*" style="display:none" onchange="handlePhoto(event)">
-            <button class="btn btn-p" style="width:100%;margin-top:14px" id="photo-read-btn" onclick="readPhoto()" disabled>🔍 Read Braille with AI</button>
-            <button class="btn btn-o btn-sm" style="width:100%;margin-top:8px" id="photo-clear-btn" onclick="clearPhoto()" style="display:none">Clear photo</button>
+
+            <!-- Dot reference labels -->
+            <div style="display:flex;gap:8px;font-size:12px;color:var(--t3);font-weight:600;align-self:flex-start">
+              <span style="width:52px;text-align:center">Left</span>
+              <span style="width:52px;text-align:center">Right</span>
+            </div>
+
+            <!-- Tapper cell with row labels -->
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="display:flex;flex-direction:column;gap:12px;font-size:11px;color:var(--t3);font-weight:700;text-align:right">
+                <span style="height:52px;display:flex;align-items:center">Top</span>
+                <span style="height:52px;display:flex;align-items:center">Mid</span>
+                <span style="height:52px;display:flex;align-items:center">Bot</span>
+              </div>
+              <div class="tapper-cell" id="tapper-cell">
+                <div class="tap-dot" id="td1" onclick="tapDot(1)"><span>1</span></div>
+                <div class="tap-dot" id="td4" onclick="tapDot(4)"><span>4</span></div>
+                <div class="tap-dot" id="td2" onclick="tapDot(2)"><span>2</span></div>
+                <div class="tap-dot" id="td5" onclick="tapDot(5)"><span>5</span></div>
+                <div class="tap-dot" id="td3" onclick="tapDot(3)"><span>3</span></div>
+                <div class="tap-dot" id="td6" onclick="tapDot(6)"><span>6</span></div>
+              </div>
+            </div>
+
+            <!-- Match preview -->
+            <div style="width:100%;background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:16px;text-align:center">
+              <div style="font-size:12px;color:var(--t3);margin-bottom:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase">This letter is</div>
+              <div id="tap-match-letter" style="font-size:64px;font-weight:900;color:var(--p);line-height:1;letter-spacing:-2px">?</div>
+              <div id="tap-match-sym" style="font-size:28px;color:var(--t2);margin-top:4px;font-family:var(--fm)">—</div>
+              <div id="tap-match-dots" style="font-size:12px;color:var(--t3);margin-top:6px">Tap dots above to identify</div>
+            </div>
+
+            <div style="display:flex;gap:8px;width:100%">
+              <button class="btn btn-p" style="flex:1;font-size:14px" onclick="tapAddLetter()">Add Letter →</button>
+              <button class="btn btn-o btn-sm" onclick="tapClearDots()">Reset</button>
+            </div>
           </div>
+
+          <!-- Right: result -->
           <div class="tp">
-            <div class="tp-lbl">AI translation result</div>
-            <div id="photo-result-area">
-              <div style="font-size:13px;color:var(--t3);line-height:1.7">Upload a photo and click "Read Braille with AI" to get started.<br><br>Tips for best results:<br>• Good lighting, no shadows<br>• Hold camera straight above the paper<br>• Make sure the dots are clear and visible</div>
+            <div class="tp-lbl">Decoded word</div>
+            <div id="tap-result" style="font-size:48px;font-weight:900;color:var(--t1);letter-spacing:3px;min-height:64px;margin-bottom:20px;word-break:break-all;line-height:1.2">—</div>
+            <div style="font-size:12px;color:var(--t3);margin-bottom:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase">Braille cells entered</div>
+            <div id="tap-cells" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px;min-height:40px"></div>
+            <div style="border-top:1px solid var(--border);padding-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-o btn-sm" onclick="tapAddSpace()">⎵ Add space</button>
+              <button class="btn btn-r btn-sm" onclick="tapDeleteLast()">← Delete last</button>
+              <button class="btn btn-r btn-sm" onclick="tapClearAll()">Clear all</button>
             </div>
           </div>
         </div>
@@ -1150,7 +1150,7 @@ function selAlph(k){
 // TRANSLATOR TABS
 // ═══════════════════════════════════════
 function switchTransTab(tab){
-  ['text','dots','photo'].forEach(t=>{
+  ['text','dots'].forEach(t=>{
     document.getElementById('tr-'+t).style.display=t===tab?'block':'none';
     document.getElementById('trtab-'+t).className='tr-tab'+(t===tab?' on':'');
   });
@@ -1189,16 +1189,22 @@ function tapDot(n){
     const el=document.getElementById('td'+d);
     if(el)el.className='tap-dot'+(tapDots.includes(d)?' on':'');
   });
-  document.getElementById('tap-active-dots').textContent=tapDots.length?tapDots.join(', '):'none';
-  const match=Object.entries(BR).find(([k,v])=>v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d)));
-  document.getElementById('tap-preview').textContent=match?match[0].toUpperCase()+'  '+match[1].sym:'?';
+  document.getElementById('tap-active-dots')&&(document.getElementById('tap-active-dots').textContent=tapDots.length?tapDots.join(', '):'none');
+  // find matching letter and show it clearly
+  const match=tapDots.length?Object.entries(BR).find(([k,v])=>v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d))):null;
+  document.getElementById('tap-match-letter').textContent=match?match[0].toUpperCase():'?';
+  document.getElementById('tap-match-sym').textContent=match?match[1].sym:'—';
+  document.getElementById('tap-match-dots').textContent=tapDots.length?'Dots: '+tapDots.join(', '):'Tap dots above to identify';
+  document.getElementById('tap-match-letter').style.color=match?'var(--p)':'var(--t3)';
 }
 
 function tapClearDots(){
   tapDots=[];
   [1,2,3,4,5,6].forEach(d=>{const el=document.getElementById('td'+d);if(el)el.className='tap-dot';});
-  document.getElementById('tap-active-dots').textContent='none';
-  document.getElementById('tap-preview').textContent='?';
+  document.getElementById('tap-match-letter').textContent='?';
+  document.getElementById('tap-match-letter').style.color='var(--t3)';
+  document.getElementById('tap-match-sym').textContent='—';
+  document.getElementById('tap-match-dots').textContent='Tap dots above to identify';
 }
 
 function tapAddLetter(){
