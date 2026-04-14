@@ -399,6 +399,29 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .modal-p{font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6}
 .modal-btns{display:flex;gap:10px;margin-top:18px}
 
+/* ── TRANSLATOR TABS ── */
+.tr-tab{background:none;border:none;color:var(--t3);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--ff);transition:all .2s;white-space:nowrap}
+.tr-tab:hover{color:var(--t1)}
+.tr-tab.on{background:var(--p);color:#fff}
+
+/* ── DOT TAPPER ── */
+.tapper-cell{display:grid;grid-template-columns:1fr 1fr;gap:14px;background:var(--card);border:2px solid var(--border2);border-radius:18px;padding:20px 18px;width:fit-content}
+.tap-dot{width:52px;height:52px;border-radius:50%;background:var(--card2);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;user-select:none}
+.tap-dot span{font-size:14px;font-weight:800;color:var(--t3);pointer-events:none;transition:color .2s}
+.tap-dot:hover{background:rgba(123,110,246,.15);border-color:var(--p)}
+.tap-dot.on{background:var(--p);border-color:var(--p);box-shadow:0 0 14px rgba(123,110,246,.5)}
+.tap-dot.on span{color:#fff}
+
+/* ── PHOTO UPLOAD ── */
+.photo-drop{background:var(--card);border:2px dashed var(--border2);border-radius:14px;padding:36px 24px;text-align:center;cursor:pointer;transition:all .2s;min-height:180px;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.photo-drop:hover{border-color:var(--p);background:rgba(123,110,246,.05)}
+.photo-result-box{background:var(--card);border:1px solid rgba(62,201,154,.25);border-radius:14px;padding:20px}
+.photo-result-text{font-size:20px;font-weight:700;color:var(--t1);line-height:1.6;margin-bottom:16px}
+.photo-result-note{font-size:13px;color:var(--t2);line-height:1.6}
+.ai-loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 20px;color:var(--t2);font-size:14px}
+.ai-spinner{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--p);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 /* responsive */
 @media(max-width:900px){
   .hero-wrap{grid-template-columns:1fr;gap:40px}
@@ -419,7 +442,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 <body>
 
 <!-- ═══ LANDING ═══ -->
-<div class="pg on" id="pg-land">
+<div class="pg on" id="pg-land" style="display:block">
   <nav class="land-nav">
     <div class="brand">Braille<b>Learn</b></div>
     <div class="land-nav-r">
@@ -600,26 +623,99 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 
     <!-- TRANSLATOR -->
     <div class="view" id="view-translator">
-      <div class="vh"><div class="vhl">Real-time translation</div><div class="vht">Text to Braille translator</div></div>
-      <div class="trans-wrap">
-        <div class="tp">
-          <div class="tp-lbl">Your text</div>
-          <textarea class="tp-ta" id="tp-ta" placeholder="Type anything here…" maxlength="60" oninput="doTrans()"></textarea>
-          <div class="tp-foot"><span class="tp-cnt"><span id="tp-cnt">0</span>/60</span><button class="tp-clr" onclick="clrTrans()">Clear</button></div>
-          <div class="chips">
-            <span class="chip" onclick="setTrans('Hello')">Hello</span>
-            <span class="chip" onclick="setTrans('Braille')">Braille</span>
-            <span class="chip" onclick="setTrans('I love you')">I love you</span>
-            <span class="chip" onclick="setTrans('ABC')">ABC</span>
-            <span class="chip" onclick="setTrans('12345')">12345</span>
-            <span class="chip" onclick="setTrans('Good morning')">Good morning</span>
+      <div class="vh"><div class="vhl">Translation tools</div><div class="vht">Braille translator</div></div>
+
+      <!-- Tab switcher -->
+      <div style="display:flex;gap:6px;margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content">
+        <button class="tr-tab on" id="trtab-text" onclick="switchTransTab('text')">✏️ Text → Braille</button>
+        <button class="tr-tab" id="trtab-dots" onclick="switchTransTab('dots')">⠿ Dot tapper</button>
+        <button class="tr-tab" id="trtab-photo" onclick="switchTransTab('photo')">📷 Photo → English</button>
+      </div>
+
+      <!-- TAB 1: Text to Braille -->
+      <div id="tr-text">
+        <div class="trans-wrap">
+          <div class="tp">
+            <div class="tp-lbl">Your text</div>
+            <textarea class="tp-ta" id="tp-ta" placeholder="Type anything here…" maxlength="60" oninput="doTrans()"></textarea>
+            <div class="tp-foot"><span class="tp-cnt"><span id="tp-cnt">0</span>/60</span><button class="tp-clr" onclick="clrTrans()">Clear</button></div>
+            <div class="chips">
+              <span class="chip" onclick="setTrans('Hello')">Hello</span>
+              <span class="chip" onclick="setTrans('Braille')">Braille</span>
+              <span class="chip" onclick="setTrans('I love you')">I love you</span>
+              <span class="chip" onclick="setTrans('ABC')">ABC</span>
+              <span class="chip" onclick="setTrans('12345')">12345</span>
+              <span class="chip" onclick="setTrans('Good morning')">Good morning</span>
+            </div>
+          </div>
+          <div class="tp">
+            <div class="tp-lbl">Braille output</div>
+            <div class="sym-out" id="sym-out">—</div>
+            <div class="cells-scroll" id="cells-out"></div>
+            <div id="det-list"></div>
           </div>
         </div>
-        <div class="tp">
-          <div class="tp-lbl">Braille output</div>
-          <div class="sym-out" id="sym-out">—</div>
-          <div class="cells-scroll" id="cells-out"></div>
-          <div id="det-list"></div>
+      </div>
+
+      <!-- TAB 2: Dot tapper (Braille → English) -->
+      <div id="tr-dots" style="display:none">
+        <div style="display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start">
+          <div class="tp" style="display:flex;flex-direction:column;align-items:center;gap:20px">
+            <div class="tp-lbl" style="align-self:flex-start">Tap the raised dots</div>
+            <p style="font-size:13px;color:var(--t2);align-self:flex-start;margin-top:-12px;line-height:1.6">Click each dot that is raised in the Braille cell, then press Add Letter.</p>
+            <!-- Interactive dot cell -->
+            <div class="tapper-cell" id="tapper-cell">
+              <div class="tap-dot" id="td1" onclick="tapDot(1)"><span>1</span></div>
+              <div class="tap-dot" id="td4" onclick="tapDot(4)"><span>4</span></div>
+              <div class="tap-dot" id="td2" onclick="tapDot(2)"><span>2</span></div>
+              <div class="tap-dot" id="td5" onclick="tapDot(5)"><span>5</span></div>
+              <div class="tap-dot" id="td3" onclick="tapDot(3)"><span>3</span></div>
+              <div class="tap-dot" id="td6" onclick="tapDot(6)"><span>6</span></div>
+            </div>
+            <div style="font-size:13px;color:var(--t3)">Active dots: <span id="tap-active-dots" style="color:var(--p);font-weight:700">none</span></div>
+            <div style="font-size:22px;color:var(--p);font-weight:800;min-height:32px" id="tap-preview">?</div>
+            <div style="display:flex;gap:8px;width:100%">
+              <button class="btn btn-p" style="flex:1" onclick="tapAddLetter()">Add Letter →</button>
+              <button class="btn btn-o btn-sm" onclick="tapClearDots()">Clear dots</button>
+            </div>
+          </div>
+          <div class="tp">
+            <div class="tp-lbl">Decoded text</div>
+            <div id="tap-result" style="font-size:36px;font-weight:800;color:var(--t1);letter-spacing:2px;min-height:56px;margin-bottom:20px;word-break:break-all">—</div>
+            <div id="tap-cells" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px"></div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-o btn-sm" onclick="tapAddSpace()">Add space</button>
+              <button class="btn btn-r btn-sm" onclick="tapDeleteLast()">Delete last</button>
+              <button class="btn btn-r btn-sm" onclick="tapClearAll()">Clear all</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Photo to English -->
+      <div id="tr-photo" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+          <div class="tp">
+            <div class="tp-lbl">Upload a photo of Braille</div>
+            <p style="font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6">Take a clear photo of your son's Braille writing or any Braille text. The AI will read and translate it for you.</p>
+            <div class="photo-drop" id="photo-drop" onclick="document.getElementById('photo-file').click()">
+              <div id="photo-preview-wrap">
+                <div style="font-size:48px;margin-bottom:12px">📷</div>
+                <div style="font-size:15px;font-weight:600;margin-bottom:6px">Click to upload a photo</div>
+                <div style="font-size:13px;color:var(--t3)">JPG, PNG or HEIC · Max 10MB</div>
+              </div>
+              <img id="photo-preview" style="display:none;width:100%;border-radius:10px;max-height:260px;object-fit:contain">
+            </div>
+            <input type="file" id="photo-file" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+            <button class="btn btn-p" style="width:100%;margin-top:14px" id="photo-read-btn" onclick="readPhoto()" disabled>🔍 Read Braille with AI</button>
+            <button class="btn btn-o btn-sm" style="width:100%;margin-top:8px" id="photo-clear-btn" onclick="clearPhoto()" style="display:none">Clear photo</button>
+          </div>
+          <div class="tp">
+            <div class="tp-lbl">AI translation result</div>
+            <div id="photo-result-area">
+              <div style="font-size:13px;color:var(--t3);line-height:1.7">Upload a photo and click "Read Braille with AI" to get started.<br><br>Tips for best results:<br>• Good lighting, no shadows<br>• Hold camera straight above the paper<br>• Make sure the dots are clear and visible</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -656,7 +752,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 </div>
 
 <!-- ═══ TEACHER LOGIN ═══ -->
-<div class="pg" id="pg-teacher-login">
+<div class="pg" id="pg-teacher-login" style="display:none">
   <div style="max-width:480px;margin:0 auto;padding:40px 20px;width:100%">
     <div class="tl-card">
       <div class="tl-icon">👩‍🏫</div>
@@ -682,7 +778,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 </div>
 
 <!-- ═══ TEACHER DASHBOARD ═══ -->
-<div class="pg" id="pg-teacher">
+<div class="pg" id="pg-teacher" style="display:none">
   <nav class="t-nav">
     <div class="t-nav-brand">Braille<b>Learn</b></div>
     <div class="t-badge">TEACHER</div>
@@ -858,14 +954,30 @@ function mkCell(dots,sz='',numbered=false){
 // NAVIGATION
 // ═══════════════════════════════════════
 function showPg(id){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
+  // hide all pages
+  document.querySelectorAll('.pg').forEach(p=>{
+    p.classList.remove('on');
+    p.style.display='none';
+  });
+  // show the target page
+  const target=document.getElementById(id);
+  if(id==='pg-app'){
+    target.style.display='flex';
+  } else {
+    target.style.display='block';
+  }
+  target.classList.add('on');
   window.scrollTo(0,0);
 }
 
 function goApp(v){
-  document.getElementById('pg-land').classList.remove('on');
-  document.getElementById('pg-app').classList.add('on');
+  document.querySelectorAll('.pg').forEach(p=>{
+    p.classList.remove('on');
+    p.style.display='none';
+  });
+  const app=document.getElementById('pg-app');
+  app.style.display='flex';
+  app.classList.add('on');
   showView(v);
 }
 
@@ -1036,7 +1148,167 @@ function selAlph(k){
 }
 
 // ═══════════════════════════════════════
-// TRANSLATOR
+// TRANSLATOR TABS
+// ═══════════════════════════════════════
+function switchTransTab(tab){
+  ['text','dots','photo'].forEach(t=>{
+    document.getElementById('tr-'+t).style.display=t===tab?'block':'none';
+    document.getElementById('trtab-'+t).className='tr-tab'+(t===tab?' on':'');
+  });
+}
+
+// ═══════════════════════════════════════
+// DOT TAPPER
+// ═══════════════════════════════════════
+let tapDots=[];
+let tapWord=[];
+
+function tapDot(n){
+  const idx=tapDots.indexOf(n);
+  if(idx>-1){tapDots.splice(idx,1);}else{tapDots.push(n);}
+  tapDots.sort((a,b)=>a-b);
+  // update UI
+  [1,2,3,4,5,6].forEach(d=>{
+    const el=document.getElementById('td'+d);
+    if(el)el.className='tap-dot'+(tapDots.includes(d)?' on':'');
+  });
+  document.getElementById('tap-active-dots').textContent=tapDots.length?tapDots.join(', '):'none';
+  // find matching letter
+  const match=Object.entries(BR).find(([k,v])=>v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d)));
+  document.getElementById('tap-preview').textContent=match?match[0].toUpperCase()+'  '+match[1].sym:'?';
+}
+
+function tapClearDots(){
+  tapDots=[];
+  [1,2,3,4,5,6].forEach(d=>{const el=document.getElementById('td'+d);if(el)el.className='tap-dot';});
+  document.getElementById('tap-active-dots').textContent='none';
+  document.getElementById('tap-preview').textContent='?';
+}
+
+function tapAddLetter(){
+  if(!tapDots.length)return;
+  const match=Object.entries(BR).find(([k,v])=>v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d)));
+  if(!match){alert('No Braille letter matches these dots. Try again.');return;}
+  tapWord.push({char:match[0],dots:[...tapDots],sym:match[1].sym});
+  renderTapResult();
+  tapClearDots();
+  spk('Letter '+match[0].toUpperCase());
+}
+
+function tapAddSpace(){
+  tapWord.push({char:' ',dots:[],sym:' '});
+  renderTapResult();
+}
+
+function tapDeleteLast(){
+  if(tapWord.length)tapWord.pop();
+  renderTapResult();
+}
+
+function tapClearAll(){
+  tapWord=[];
+  renderTapResult();
+  tapClearDots();
+}
+
+function renderTapResult(){
+  const text=tapWord.map(w=>w.char).join('');
+  document.getElementById('tap-result').textContent=text.trim()||'—';
+  document.getElementById('tap-cells').innerHTML=tapWord.filter(w=>w.char!==' ').map(w=>`
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      ${mkCell(w.dots,'sm')}
+      <div style="font-size:12px;font-weight:800;color:var(--p)">${w.char.toUpperCase()}</div>
+    </div>`).join('');
+  if(text.trim())spk(text.trim());
+}
+
+// ═══════════════════════════════════════
+// PHOTO → ENGLISH (AI)
+// ═══════════════════════════════════════
+let photoBase64=null;
+let photoMime=null;
+
+function handlePhoto(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  photoMime=file.type||'image/jpeg';
+  const reader=new FileReader();
+  reader.onload=function(e){
+    photoBase64=e.target.result.split(',')[1];
+    const prev=document.getElementById('photo-preview');
+    const wrap=document.getElementById('photo-preview-wrap');
+    prev.src=e.target.result;
+    prev.style.display='block';
+    wrap.style.display='none';
+    document.getElementById('photo-read-btn').disabled=false;
+    document.getElementById('photo-result-area').innerHTML='<div style="font-size:13px;color:var(--t2)">Photo loaded! Click "Read Braille with AI" to translate.</div>';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPhoto(){
+  photoBase64=null;photoMime=null;
+  document.getElementById('photo-file').value='';
+  document.getElementById('photo-preview').style.display='none';
+  document.getElementById('photo-preview-wrap').style.display='flex';
+  document.getElementById('photo-read-btn').disabled=true;
+  document.getElementById('photo-result-area').innerHTML='<div style="font-size:13px;color:var(--t3);line-height:1.7">Upload a photo and click "Read Braille with AI" to get started.</div>';
+}
+
+async function readPhoto(){
+  if(!photoBase64){alert('Please upload a photo first.');return;}
+  const btn=document.getElementById('photo-read-btn');
+  btn.disabled=true;
+  document.getElementById('photo-result-area').innerHTML=`
+    <div class="ai-loading">
+      <div class="ai-spinner"></div>
+      <div>AI is reading the Braille…<br><span style="font-size:12px;color:var(--t3)">This may take a few seconds</span></div>
+    </div>`;
+  try{
+    const response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{
+          role:'user',
+          content:[
+            {type:'image',source:{type:'base64',media_type:photoMime,data:photoBase64}},
+            {type:'text',text:`You are a Braille reading expert. Look at this image carefully. 
+
+If it contains Braille (raised dots on paper), read it and tell me:
+1. What the Braille text says in English
+2. A brief explanation of what dots you can see
+
+If it does not contain Braille, say so clearly.
+
+Be helpful and friendly — this is a parent trying to read what their blind child has written.
+
+Format your response clearly with the English translation first in large text, then the explanation.`}
+          ]
+        }]
+      })
+    });
+    const data=await response.json();
+    if(data.error){
+      document.getElementById('photo-result-area').innerHTML=`<div style="color:var(--r);font-size:14px">Error: ${data.error.message||'Something went wrong. Please try again.'}</div>`;
+      btn.disabled=false;return;
+    }
+    const text=data.content.map(c=>c.text||'').join('');
+    document.getElementById('photo-result-area').innerHTML=`
+      <div class="photo-result-box">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--g);margin-bottom:12px">✓ AI Translation</div>
+        <div class="photo-result-text">${text.replace(/\n/g,'<br>')}</div>
+        <div class="photo-result-note">Powered by Claude AI · Results may vary based on image quality</div>
+      </div>`;
+    spk(text.replace(/<[^>]+>/g,'').substring(0,200));
+  }catch(err){
+    document.getElementById('photo-result-area').innerHTML=`<div style="color:var(--r);font-size:14px">Could not connect to AI. Please check your internet connection and try again.</div>`;
+  }
+  btn.disabled=false;
+}
+
 // ═══════════════════════════════════════
 let transTimer=null;
 function setTrans(v){document.getElementById('tp-ta').value=v;doTrans();}
@@ -1176,7 +1448,13 @@ function teacherLogout(){
 }
 
 function openTeacher(){
-  showPg('pg-teacher');
+  document.querySelectorAll('.pg').forEach(p=>{
+    p.classList.remove('on');
+    p.style.display='none';
+  });
+  const tp=document.getElementById('pg-teacher');
+  tp.style.display='block';
+  tp.classList.add('on');
   document.getElementById('tv-overview').style.display='block';
   document.getElementById('tv-student').style.display='none';
   document.getElementById('t-class-lbl').textContent=TC.className;
@@ -1184,6 +1462,7 @@ function openTeacher(){
   document.getElementById('set-class-name').textContent=TC.className;
   rStudents();
   rOverviewStats();
+  window.scrollTo(0,0);
 }
 
 function rOverviewStats(){
