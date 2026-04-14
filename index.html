@@ -8,12 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0b14;
-  --surface:#111320;
-  --card:#161829;
-  --card2:#1c1f35;
-  --border:rgba(255,255,255,0.06);
-  --border2:rgba(255,255,255,0.11);
+  --bg:#0a0b14;--surface:#111320;--card:#161829;--card2:#1c1f35;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
   --p:#7b6ef6;--p2:#a89df8;--p3:#5a4ecc;
   --g:#3ec99a;--y:#f5c842;--o:#f7923a;--r:#f05a6a;--pk:#e8569d;
   --t1:#f0f2ff;--t2:#9498bb;--t3:#474a6a;
@@ -22,164 +18,153 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px}
 body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh;line-height:1.5}
-
-/* scrollbar */
 ::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
-/* pages */
 .pg{display:none}
 .pg.on{display:block}
 
-/* ════ LANDING ════ */
-#pg-land{background:var(--bg)}
+/* ── SHARED BUTTONS ── */
+.btn{padding:12px 28px;border-radius:10px;font-size:15px;font-weight:700;font-family:var(--ff);cursor:pointer;transition:all .2s;border:none}
+.btn-p{background:var(--p);color:#fff}
+.btn-p:hover{background:var(--p3);transform:translateY(-1px)}
+.btn-o{background:var(--card);color:var(--t2);border:1px solid var(--border2)}
+.btn-o:hover{background:var(--card2);color:var(--t1)}
+.btn-g{background:var(--g);color:#fff}
+.btn-g:hover{background:#2fa880}
+.btn-r{background:rgba(240,90,106,.12);color:var(--r);border:1px solid rgba(240,90,106,.22)}
+.btn-r:hover{background:rgba(240,90,106,.22)}
+.btn-sm{padding:7px 16px;font-size:13px;border-radius:8px}
 
-.land-nav{max-width:1000px;margin:0 auto;padding:24px 40px;display:flex;align-items:center;justify-content:space-between}
-.brand{font-size:20px;font-weight:800;letter-spacing:-0.5px}
+/* ── INPUT ── */
+.inp{background:var(--card);border:1px solid var(--border2);color:var(--t1);padding:12px 16px;border-radius:10px;font-size:15px;font-family:var(--ff);width:100%;outline:none;transition:border-color .2s;margin-bottom:10px}
+.inp:focus{border-color:var(--p)}
+.inp::placeholder{color:var(--t3)}
+.inp-lbl{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--t3);margin-bottom:6px;display:block}
+
+/* ── LANDING ── */
+.land-nav{max-width:1000px;margin:0 auto;padding:22px 40px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-size:20px;font-weight:800;letter-spacing:-.5px}
 .brand b{color:var(--p)}
 .land-nav-r{display:flex;gap:8px}
-.gbtn{background:none;border:1px solid var(--border2);color:var(--t2);padding:9px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;font-family:var(--ff);transition:all .2s}
-.gbtn:hover{background:var(--card);color:var(--t1)}
-.gbtn.fill{background:var(--p);color:#fff;border-color:var(--p)}
-.gbtn.fill:hover{background:var(--p3);transform:translateY(-1px)}
+.nbtn{background:none;border:1px solid var(--border2);color:var(--t2);padding:9px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--ff);transition:all .2s}
+.nbtn:hover{background:var(--card);color:var(--t1)}
+.nbtn.fill{background:var(--p);color:#fff;border-color:var(--p)}
+.nbtn.fill:hover{background:var(--p3)}
+.nbtn.teacher{background:rgba(62,201,154,.1);color:var(--g);border-color:rgba(62,201,154,.25)}
+.nbtn.teacher:hover{background:rgba(62,201,154,.2)}
 
-.hero-wrap{max-width:1000px;margin:0 auto;padding:72px 40px 80px;display:grid;grid-template-columns:1fr 420px;gap:64px;align-items:center}
-.hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--p2);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
-.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--p);animation:blink 2s infinite}
+.hero-wrap{max-width:1000px;margin:0 auto;padding:80px 40px;display:grid;grid-template-columns:1fr 400px;gap:60px;align-items:center}
+.h-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--p2);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px}
+.h-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--p);animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.hero-h{font-size:clamp(38px,4.5vw,58px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:18px}
-.hero-h span{color:var(--p)}
-.hero-p{font-size:17px;color:var(--t2);line-height:1.7;font-weight:400;margin-bottom:36px;max-width:440px}
-.hero-btns{display:flex;gap:12px}
-.hbtn{padding:14px 32px;border-radius:10px;font-size:15px;font-weight:700;font-family:var(--ff);cursor:pointer;transition:all .25s}
-.hbtn.p{background:var(--p);color:#fff;border:none}
-.hbtn.p:hover{background:var(--p3);transform:translateY(-2px);box-shadow:0 12px 36px rgba(123,110,246,.3)}
-.hbtn.o{background:none;color:var(--t1);border:1px solid var(--border2)}
-.hbtn.o:hover{background:var(--card);border-color:var(--p)}
+.h-title{font-size:clamp(36px,4.5vw,58px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:18px}
+.h-title span{color:var(--p)}
+.h-desc{font-size:17px;color:var(--t2);line-height:1.7;margin-bottom:36px;max-width:440px}
+.h-btns{display:flex;gap:12px;flex-wrap:wrap}
 
-/* animated hero card */
-.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:44px 36px;text-align:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color .3s}
-.hero-card:hover{border-color:rgba(123,110,246,.3)}
-.hero-card::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(123,110,246,.12) 0%,transparent 70%);pointer-events:none}
-.hc-letter{font-size:100px;font-weight:900;letter-spacing:-4px;line-height:1;color:var(--p);margin-bottom:8px;transition:all .3s;font-family:var(--ff)}
-.hc-sym{font-size:42px;color:var(--t2);margin-bottom:20px;font-family:var(--fm)}
-.hc-hint{font-size:12px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:44px 32px;text-align:center;cursor:pointer;position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(123,110,246,.12),transparent 70%);pointer-events:none}
+.hc-letter{font-size:96px;font-weight:900;letter-spacing:-4px;line-height:1;color:var(--p);margin-bottom:6px;transition:all .3s}
+.hc-sym{font-size:40px;color:var(--t2);margin-bottom:16px;font-family:var(--fm)}
+.hc-hint{font-size:11px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:600}
 
-/* features strip */
 .feats{max-width:1000px;margin:0 auto;padding:0 40px 80px}
-.feats-label{font-size:12px;color:var(--p);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
-.feats-h{font-size:28px;font-weight:800;letter-spacing:-0.8px;margin-bottom:32px}
-.feats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sec-lbl{font-size:12px;color:var(--p);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.sec-title{font-size:clamp(22px,2.5vw,34px);font-weight:800;letter-spacing:-.8px;margin-bottom:32px}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .fc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 20px;transition:all .2s}
 .fc:hover{background:var(--card);transform:translateY(-3px);border-color:var(--border2)}
 .fc-ico{font-size:30px;margin-bottom:14px}
 .fc-t{font-size:15px;font-weight:700;margin-bottom:6px}
-.fc-d{font-size:13px;color:var(--t2);line-height:1.6;font-weight:400}
+.fc-d{font-size:13px;color:var(--t2);line-height:1.6}
 
-/* ════ APP ════ */
-#pg-app{min-height:100vh;display:flex;flex-direction:column}
-
-/* top nav */
-.app-nav{background:rgba(10,11,20,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;gap:0;position:sticky;top:0;z-index:50;height:56px}
-.nav-brand{font-size:17px;font-weight:800;cursor:pointer;margin-right:32px;white-space:nowrap;flex-shrink:0}
+/* ── APP NAV ── */
+.app-nav{background:rgba(10,11,20,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;gap:0;position:sticky;top:0;z-index:50;height:54px}
+.nav-brand{font-size:17px;font-weight:800;cursor:pointer;margin-right:28px;flex-shrink:0}
 .nav-brand b{color:var(--p)}
-.nav-items{display:flex;height:100%}
-.nitem{background:none;border:none;color:var(--t3);padding:0 16px;font-size:14px;font-weight:500;font-family:var(--ff);cursor:pointer;height:100%;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
-.nitem:hover{color:var(--t1)}
-.nitem.on{color:var(--p);border-bottom-color:var(--p)}
-.nav-r{margin-left:auto;display:flex;align-items:center;gap:10px}
-.xp-tag{background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.22);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;color:var(--p2);white-space:nowrap}
-.vbtn{background:var(--card);border:1px solid var(--border);color:var(--t2);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--ff);transition:all .2s;white-space:nowrap}
-.vbtn:hover{border-color:var(--p);color:var(--t1)}
+.nav-tabs{display:flex;height:100%}
+.ntab{background:none;border:none;color:var(--t3);padding:0 14px;font-size:13px;font-weight:500;font-family:var(--ff);cursor:pointer;height:100%;border-bottom:2px solid transparent;transition:all .2s}
+.ntab:hover{color:var(--t1)}
+.ntab.on{color:var(--p);border-bottom-color:var(--p)}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.xp-chip{background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.22);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;color:var(--p2)}
+.voice-btn{background:var(--card);border:1px solid var(--border);color:var(--t2);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--ff);transition:all .2s}
+.voice-btn:hover{border-color:var(--p);color:var(--t1)}
 
-/* main content wrapper - key to stopping stretch */
 .app-body{flex:1;padding:40px;max-width:1000px;margin:0 auto;width:100%}
-
 .view{display:none}
 .view.on{display:block}
 
 /* section heading */
 .vh{margin-bottom:28px}
 .vhl{font-size:12px;color:var(--p);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
-.vht{font-size:28px;font-weight:800;letter-spacing:-0.8px}
+.vht{font-size:26px;font-weight:800;letter-spacing:-.8px}
 
 /* ── DASHBOARD ── */
-/* level bar */
-.lev-bar{background:var(--surface);border:1px solid rgba(123,110,246,.18);border-radius:16px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;gap:32px}
-.lb-info{}
+.lev-bar{background:var(--surface);border:1px solid rgba(123,110,246,.18);border-radius:16px;padding:22px 28px;margin-bottom:20px;display:flex;align-items:center;gap:28px}
 .lb-level{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--p);margin-bottom:4px}
-.lb-xp{font-size:24px;font-weight:800;letter-spacing:-0.5px}
-.lb-prog{flex:1}
+.lb-xp{font-size:22px;font-weight:800;letter-spacing:-.5px}
 .pbar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden}
-.pfill{height:100%;background:linear-gradient(90deg,var(--p),var(--p2));border-radius:99px;transition:width .7s ease}
-.lb-next{font-size:13px;color:var(--t3);margin-top:6px}
+.pfill{height:100%;background:linear-gradient(90deg,var(--p),var(--p2));border-radius:99px;transition:width .7s}
+.lb-next{font-size:12px;color:var(--t3);margin-top:6px}
 
-/* stats row */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
-.sc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:10px}
 .sc-ico{font-size:22px}
-.sc-val{font-size:22px;font-weight:800;letter-spacing:-0.5px}
-.sc-lbl{font-size:12px;color:var(--t3);margin-top:1px}
+.sc-val{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.sc-lbl{font-size:11px;color:var(--t3);margin-top:1px}
 
-/* quick actions */
-.qa-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px}
-.qa{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;cursor:pointer;display:flex;align-items:center;gap:16px;transition:all .2s}
+.qa-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px}
+.qa{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .2s}
 .qa:hover{background:var(--card);border-color:var(--border2);transform:translateY(-2px)}
 .qa.hi{border-color:rgba(123,110,246,.2);background:linear-gradient(135deg,rgba(123,110,246,.1),rgba(123,110,246,.03))}
-.qa.hi:hover{border-color:rgba(123,110,246,.4)}
-.qa-ico{font-size:32px}
-.qa-t{font-size:15px;font-weight:700;margin-bottom:2px}
-.qa-s{font-size:13px;color:var(--t2)}
+.qa-ico{font-size:30px}
+.qa-t{font-size:14px;font-weight:700;margin-bottom:2px}
+.qa-s{font-size:12px;color:var(--t2)}
 
-/* lessons grid - 3 col */
-.lessons-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.lessons-hd-l{font-size:14px;font-weight:800}
-.lessons-hd-r{font-size:13px;color:var(--t3)}
-.lg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.lcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.lcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s}
+.les-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.les-hd-t{font-size:14px;font-weight:800}
+.lg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.lcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.lcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s;background:linear-gradient(90deg,var(--p),var(--p2))}
 .lcard:hover:not(.lk)::before,.lcard.ld::before{opacity:1}
 .lcard:hover:not(.lk){background:var(--card);border-color:var(--border2);transform:translateY(-2px)}
 .lcard.ld{border-color:rgba(62,201,154,.18)}
 .lcard.ld::before{background:linear-gradient(90deg,var(--g),#2dd4bf)}
-.lcard::before{background:linear-gradient(90deg,var(--p),var(--p2))}
 .lcard.lk{opacity:.38;cursor:default}
-.lc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.lc-ico{width:44px;height:44px;background:var(--card2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
-.lc-ico.d{background:rgba(62,201,154,.1);color:var(--g)}
-.diff-pill{font-size:10px;font-weight:700;padding:3px 9px;border-radius:6px;letter-spacing:.5px}
-.lc-name{font-size:15px;font-weight:700;margin-bottom:3px}
-.lc-sub{font-size:12px;color:var(--t2);margin-bottom:14px}
+.lc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.lc-ico{width:42px;height:42px;background:var(--card2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.lc-ico.d{background:rgba(62,201,154,.1)}
+.diff-pill{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
+.lc-name{font-size:14px;font-weight:700;margin-bottom:3px}
+.lc-sub{font-size:12px;color:var(--t2);margin-bottom:12px}
 .lc-ft{display:flex;align-items:center;justify-content:space-between}
 .lc-xp{font-size:12px;font-weight:700;color:var(--p)}
-.lc-arr{width:26px;height:26px;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff}
+.lc-arr{width:24px;height:24px;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff}
 
 /* ── LESSON ── */
-.lesson-layout{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
-
+.lesson-layout{display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start}
 .lesson-main{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;display:flex;flex-direction:column;align-items:center}
-.lesson-pbar{width:100%;height:5px;background:var(--card2);border-radius:99px;overflow:hidden;margin-bottom:40px}
-.lesson-pfill{height:100%;background:linear-gradient(90deg,var(--p),var(--p2));border-radius:99px;transition:width .4s}
+.lp-bar{width:100%;height:5px;background:var(--card2);border-radius:99px;overflow:hidden;margin-bottom:40px}
+.lp-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--p2));border-radius:99px;transition:width .4s}
 .big-letter{font-size:120px;font-weight:900;letter-spacing:-5px;line-height:1;color:var(--p);margin-bottom:4px}
 .big-sym{font-size:44px;color:var(--t2);margin-bottom:36px;font-family:var(--fm)}
-.cell-wrap{margin-bottom:28px}
-.dot-row{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.cell-wrap{margin-bottom:26px}
+.dot-row{display:flex;align-items:center;gap:12px;margin-bottom:18px}
 .dot-row-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3)}
 .dot-pills{display:flex;gap:6px}
-.dp{width:30px;height:30px;border-radius:50%;background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.3);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--p);font-weight:700}
-.hint-toggler{background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.16);color:var(--y);padding:9px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--ff);transition:all .2s;margin-bottom:12px}
-.hint-toggler:hover{background:rgba(245,200,66,.12)}
-.hint-txt{background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.13);border-radius:10px;padding:14px 22px;font-size:14px;color:var(--y);text-align:center;line-height:1.6;width:100%}
+.dp{width:28px;height:28px;border-radius:50%;background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.3);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--p);font-weight:700}
+.hint-tog{background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.16);color:var(--y);padding:9px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--ff);transition:all .2s;margin-bottom:12px}
+.hint-box{background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.13);border-radius:10px;padding:14px 22px;font-size:14px;color:var(--y);text-align:center;line-height:1.6;width:100%}
 
-.lesson-side{}
-.side-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px}
-.side-card-t{font-size:14px;font-weight:700;margin-bottom:3px}
-.side-card-s{font-size:12px;color:var(--t2);margin-bottom:16px}
-.prog-track{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:18px}
-.pt{width:9px;height:9px;border-radius:50%;background:var(--card2);transition:all .3s}
-.pt.done{background:var(--p)}
-.pt.curr{background:var(--p2);transform:scale(1.4)}
+.side-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px}
+.side-t{font-size:14px;font-weight:700;margin-bottom:3px}
+.side-s{font-size:12px;color:var(--t2);margin-bottom:14px}
+.prog-track{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px}
+.pt{width:8px;height:8px;border-radius:50%;background:var(--card2);transition:all .3s}
+.pt.pdone{background:var(--p)}
+.pt.pcurr{background:var(--p2);transform:scale(1.4)}
 .side-btns{display:flex;gap:8px}
 .sbtn{flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:700;font-family:var(--ff);cursor:pointer;transition:all .2s;border:1px solid var(--border)}
 .sbtn.s{background:var(--card);color:var(--t2)}
@@ -187,12 +172,12 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .sbtn.p{background:var(--p);color:#fff;border-color:var(--p)}
 .sbtn.p:hover{background:var(--p3)}
 .sbtn:disabled{opacity:.28;cursor:default}
-.ref-side{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px}
+.ref-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px}
 .ref-lbl{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--t3);margin-bottom:12px}
-.ref-inner{display:flex;align-items:center;gap:16px}
+.ref-inner{display:flex;align-items:center;gap:14px}
 .ref-notes{font-size:12px;color:var(--t2);line-height:2.2}
 
-/* Braille cells */
+/* ── BRAILLE CELLS ── */
 .braille-cell{background:var(--card);border:2px solid var(--border2);border-radius:14px;padding:12px 10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .dot{width:24px;height:24px;border-radius:50%;background:var(--card2);transition:all .3s}
 .dot.active{background:var(--p);box-shadow:0 0 10px rgba(123,110,246,.45)}
@@ -200,241 +185,234 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .cell-sm{padding:7px;gap:5px;border-radius:9px}
 .cell-lg .dot{width:34px;height:34px}
 .cell-lg{padding:16px 13px;gap:11px;border-radius:18px}
+/* numbered dots */
+.cell-num .dot{width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+.cell-num{border-color:rgba(123,110,246,.2)}
+.dn{font-size:11px;font-weight:800;color:rgba(255,255,255,.3);pointer-events:none}
+.dot.active .dn{color:rgba(255,255,255,.9)}
 
-/* completion */
+/* ── COMPLETION ── */
 .comp{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:60px 40px}
-.comp-e{font-size:88px;margin-bottom:20px;animation:pop .5s cubic-bezier(.26,1.6,.6,1)}
+.comp-e{font-size:88px;margin-bottom:18px;animation:pop .5s cubic-bezier(.26,1.6,.6,1)}
 @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 .comp-h{font-size:44px;font-weight:900;letter-spacing:-1.5px;margin-bottom:10px}
-.comp-p{font-size:16px;color:var(--t2);margin-bottom:24px}
-.comp-xp{font-size:22px;font-weight:800;color:var(--p);background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.2);border-radius:12px;padding:12px 32px;margin-bottom:32px;display:inline-block}
+.comp-p{font-size:16px;color:var(--t2);margin-bottom:22px}
+.comp-xp{font-size:22px;font-weight:800;color:var(--p);background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.2);border-radius:12px;padding:12px 32px;margin-bottom:28px;display:inline-block}
 .comp-btns{display:flex;gap:12px}
-.abtn{padding:13px 28px;border-radius:10px;font-size:14px;font-weight:700;font-family:var(--ff);cursor:pointer;transition:all .2s}
-.abtn.p{background:var(--p);color:#fff;border:none}
-.abtn.p:hover{background:var(--p3)}
-.abtn.o{background:var(--card);color:var(--t2);border:1px solid var(--border)}
-.abtn.o:hover{background:var(--card2);color:var(--t1)}
 
-/* quiz */
-.quiz-layout{display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start}
+/* ── QUIZ ── */
+.quiz-layout{display:grid;grid-template-columns:1fr 270px;gap:18px;align-items:start}
 .quiz-main{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;display:flex;flex-direction:column;align-items:center}
 .q-ey{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
-.q-h{font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-bottom:32px}
-.q-cell-area{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:32px}
-.opts-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:12px;align-self:flex-start;width:100%}
+.q-h{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:28px}
+.q-cell-area{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:28px}
+.opts-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:10px;align-self:flex-start;width:100%}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
-.opt{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:18px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .2s}
+.opt{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:16px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .2s}
 .opt:hover{background:var(--card2);border-color:var(--border2)}
 .opt.c{border-color:var(--g);background:rgba(62,201,154,.06)}
 .opt.w{border-color:var(--r);background:rgba(240,90,106,.06)}
-.opt-l{font-size:38px;font-weight:900;color:var(--t1);letter-spacing:-1px}
+.opt-l{font-size:36px;font-weight:900;color:var(--t1);letter-spacing:-1px}
 .opt.c .opt-l{color:var(--g)}
 .opt.w .opt-l{color:var(--r)}
-.q-fb{margin-top:18px;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:700;font-family:var(--ff)}
+.q-fb{margin-top:16px;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:700;font-family:var(--ff)}
 .q-fb.c{background:rgba(62,201,154,.08);border:1px solid rgba(62,201,154,.25);color:var(--g)}
 .q-fb.w{background:rgba(240,90,106,.08);border:1px solid rgba(240,90,106,.25);color:var(--r)}
-.quiz-side .side-card{margin-bottom:12px}
 .qsr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
 .qsr:last-child{border-bottom:none}
 .qsr-l{font-size:13px;color:var(--t2)}
-.qsr-v{font-size:17px;font-weight:800}
+.qsr-v{font-size:16px;font-weight:800}
 
-/* result */
+/* ── RESULT ── */
 .result{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:60px 40px}
-.ring{width:180px;height:180px;border-radius:50%;border:3px solid var(--p);display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(123,110,246,.05);margin:24px 0}
-.ring-pct{font-size:48px;font-weight:900;color:var(--p);letter-spacing:-2px}
-.ring-s{font-size:13px;color:var(--t3)}
-.res-row{display:flex;gap:48px;margin:24px 0}
-.rv{text-align:center}
-.rv-v{font-size:32px;font-weight:900;letter-spacing:-1px}
-.rv-l{font-size:12px;color:var(--t3);margin-top:3px}
+.ring{width:170px;height:170px;border-radius:50%;border:3px solid var(--p);display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(123,110,246,.05);margin:22px 0}
+.ring-pct{font-size:46px;font-weight:900;color:var(--p);letter-spacing:-2px}
+.ring-s{font-size:12px;color:var(--t3)}
+.res-row{display:flex;gap:44px;margin:20px 0}
+.rv-v{font-size:30px;font-weight:900;letter-spacing:-1px;text-align:center}
+.rv-l{font-size:12px;color:var(--t3);margin-top:3px;text-align:center}
 
-/* alphabet */
-.alph-wrap{display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:start}
-.alph-sidebar{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;position:sticky;top:72px}
-.alph-tabs-v{display:flex;flex-direction:column;gap:5px;margin-bottom:20px}
-.atv{background:none;border:none;color:var(--t3);padding:10px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--ff);text-align:left;width:100%;transition:all .2s}
-.atv:hover{background:var(--card);color:var(--t1)}
-.atv.on{background:var(--p);color:#fff}
-.alph-detail{background:var(--card);border-radius:10px;padding:18px;text-align:center;border:1px solid var(--border)}
-.ad-letter{font-size:60px;font-weight:900;color:var(--p);line-height:1}
-.ad-sym{font-size:30px;color:var(--t2);margin:6px 0 12px;font-family:var(--fm)}
-.ad-dots{font-size:12px;color:var(--p);font-weight:700;background:rgba(123,110,246,.1);border-radius:6px;padding:4px 12px;display:inline-block;margin-bottom:6px}
+/* ── ALPHABET ── */
+.alph-wrap{display:grid;grid-template-columns:230px 1fr;gap:18px;align-items:start}
+.alph-side{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;position:sticky;top:70px}
+.atab-btns{display:flex;flex-direction:column;gap:5px;margin-bottom:18px}
+.atab-btn{background:none;border:none;color:var(--t3);padding:10px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--ff);text-align:left;width:100%;transition:all .2s}
+.atab-btn:hover{background:var(--card);color:var(--t1)}
+.atab-btn.on{background:var(--p);color:#fff}
+.alph-detail{background:var(--card);border-radius:10px;padding:16px;text-align:center;border:1px solid var(--border)}
+.ad-letter{font-size:56px;font-weight:900;color:var(--p);line-height:1}
+.ad-sym{font-size:28px;color:var(--t2);margin:6px 0 12px;font-family:var(--fm)}
+.ad-dots{font-size:12px;color:var(--p);font-weight:700;background:rgba(123,110,246,.1);border-radius:6px;padding:3px 12px;display:inline-block;margin-bottom:6px}
 .ad-hint{font-size:12px;color:var(--t2);line-height:1.55}
-.alph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
-.acard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s}
+.alph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:8px}
+.acard{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s}
 .acard:hover{background:var(--card);border-color:var(--border2);transform:translateY(-2px)}
 .acard.sel{border-color:var(--p);background:rgba(123,110,246,.07)}
-.ac-l{font-size:22px;font-weight:900;color:var(--p);margin-bottom:6px}
-.ac-s{font-size:16px;color:var(--t2);margin-top:6px;font-family:var(--fm)}
+.ac-l{font-size:20px;font-weight:900;color:var(--p);margin-bottom:6px}
+.ac-s{font-size:15px;color:var(--t2);margin-top:6px;font-family:var(--fm)}
 
-/* translator */
-.trans-wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.tp{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px}
-.tp-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
-.tp-ta{background:none;border:none;color:var(--t1);font-size:18px;font-family:var(--ff);width:100%;resize:none;height:110px;outline:none;line-height:1.6;font-weight:400}
+/* ── TRANSLATOR ── */
+.trans-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.tp{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px}
+.tp-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:12px}
+.tp-ta{background:none;border:none;color:var(--t1);font-size:18px;font-family:var(--ff);width:100%;resize:none;height:110px;outline:none;line-height:1.6}
 .tp-ta::placeholder{color:var(--t3)}
-.tp-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.tp-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
 .tp-cnt{font-size:12px;color:var(--t3)}
 .tp-clr{background:none;border:1px solid var(--border);color:var(--t3);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:var(--ff);transition:all .2s}
 .tp-clr:hover{border-color:var(--r);color:var(--r)}
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
-.chip{background:rgba(123,110,246,.07);border:1px solid rgba(123,110,246,.18);border-radius:6px;padding:6px 13px;font-size:12px;color:var(--p);cursor:pointer;font-weight:600;transition:all .2s}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.chip{background:rgba(123,110,246,.07);border:1px solid rgba(123,110,246,.18);border-radius:6px;padding:6px 12px;font-size:12px;color:var(--p);cursor:pointer;font-weight:600;transition:all .2s}
 .chip:hover{background:rgba(123,110,246,.16)}
-.sym-out{font-size:36px;letter-spacing:5px;color:var(--p);min-height:56px;margin-bottom:22px;line-height:1.4;font-family:var(--fm)}
-.cells-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;margin-bottom:22px}
+.sym-out{font-size:34px;letter-spacing:5px;color:var(--p);min-height:52px;margin-bottom:20px;line-height:1.4;font-family:var(--fm)}
+.cells-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;margin-bottom:20px}
 .cells-scroll::-webkit-scrollbar{height:3px}
 .cells-scroll::-webkit-scrollbar-thumb{background:var(--border2)}
 .ci{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0}
 .ci-l{font-size:13px;font-weight:800;color:var(--p)}
 .det-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .det-item:last-child{border-bottom:none}
-.di-l{font-size:15px;font-weight:800;color:var(--p);width:20px}
+.di-l{font-size:14px;font-weight:800;color:var(--p);width:20px}
 .di-s{font-size:18px;color:var(--t2);width:24px;font-family:var(--fm)}
 .di-dots{display:flex;gap:3px}
 .di-d{width:20px;height:20px;border-radius:50%;background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.25);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--p);font-weight:700}
 .di-h{font-size:12px;color:var(--t2);flex:1}
 
-/* progress */
-.prog-wrap{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start}
-.prog-main-card{background:var(--surface);border:1px solid rgba(123,110,246,.18);border-radius:16px;padding:24px;margin-bottom:12px}
-.pmc-lv{font-size:38px;font-weight:900;color:var(--p);letter-spacing:-1.5px;margin-bottom:2px}
-.pmc-role{font-size:13px;color:var(--t2);margin-bottom:16px}
-.pmc-xp{font-size:20px;font-weight:800;margin-bottom:10px}
-.pmc-next{font-size:12px;color:var(--t3);margin-top:7px}
+/* ── PROGRESS ── */
+.prog-wrap{display:grid;grid-template-columns:270px 1fr;gap:18px;align-items:start}
+.prog-card{background:var(--surface);border:1px solid rgba(123,110,246,.18);border-radius:16px;padding:22px;margin-bottom:12px}
+.pc-lv{font-size:36px;font-weight:900;color:var(--p);letter-spacing:-1.5px;margin-bottom:2px}
+.pc-role{font-size:13px;color:var(--t2);margin-bottom:14px}
+.pc-xp{font-size:18px;font-weight:800;margin-bottom:10px}
+.pc-next{font-size:12px;color:var(--t3);margin-top:7px}
 .prog-stats-sm{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .pss{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
 .pss-ico{font-size:20px;margin-bottom:4px}
 .pss-v{font-size:20px;font-weight:800;margin-bottom:1px}
 .pss-l{font-size:11px;color:var(--t3)}
-.ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
-.ach{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:12px;transition:all .2s}
+.ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.ach{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;transition:all .2s}
 .ach.ul{border-color:rgba(62,201,154,.18)}
-.ach.ul:hover{background:var(--card)}
 .ach.lk{opacity:.35}
-.ach-ico{font-size:26px;width:32px;text-align:center;flex-shrink:0}
-.ach-b{flex:1}
-.ach-n{font-size:14px;font-weight:700;margin-bottom:2px}
+.ach-ico{font-size:24px;width:30px;text-align:center;flex-shrink:0}
+.ach-n{font-size:13px;font-weight:700;margin-bottom:2px}
 .ach-d{font-size:12px;color:var(--t2)}
-.ach-tick{width:24px;height:24px;border-radius:50%;background:rgba(62,201,154,.1);border:1px solid var(--g);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--g);font-weight:700;flex-shrink:0}
-.qs-row{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:8px;padding:12px 14px;margin-bottom:7px;border:1px solid var(--border)}
-.qsr-ico{font-size:16px;width:20px}
-.qsr-n{font-size:13px;font-weight:500;flex:1}
-.qsr-bw{width:100px;height:5px;background:var(--card2);border-radius:99px;overflow:hidden}
+.ach-tick{width:22px;height:22px;border-radius:50%;background:rgba(62,201,154,.1);border:1px solid var(--g);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--g);font-weight:700;flex-shrink:0}
+.qs-row{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:8px;padding:11px 14px;margin-bottom:7px;border:1px solid var(--border)}
+.qsr-ico{font-size:14px;width:18px}
+.qsr-nm{font-size:13px;font-weight:500;flex:1}
+.qsr-bw{width:90px;height:5px;background:var(--card2);border-radius:99px;overflow:hidden}
 .qsr-bf{height:100%;border-radius:99px}
-.qsr-p{font-size:13px;font-weight:700;width:36px;text-align:right}
+.qsr-p{font-size:13px;font-weight:700;width:34px;text-align:right}
 
-/* numbered dots in translator */
-.cell-num{border-color:rgba(123,110,246,.25)}
-.dot-num{position:relative;display:flex;align-items:center;justify-content:center}
-.dn{font-size:9px;font-weight:800;color:rgba(255,255,255,.35);position:absolute;pointer-events:none;font-family:var(--ff);line-height:1}
-.dot-num.active .dn{color:rgba(255,255,255,.9)}
-.cell-num .dot{width:32px;height:32px}
-.cell-num .dot-num .dn{font-size:11px}
+/* ════════════════════════════════
+   TEACHER DASHBOARD
+════════════════════════════════ */
+/* login page */
+#pg-teacher-login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px}
+.tl-wrap{width:100%;max-width:480px}
+.tl-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:36px;margin-bottom:14px}
+.tl-icon{font-size:48px;margin-bottom:14px;text-align:center}
+.tl-h{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;text-align:center}
+.tl-p{font-size:14px;color:var(--t2);margin-bottom:24px;text-align:center;line-height:1.6}
+.tl-err{font-size:13px;color:var(--r);margin-bottom:10px;display:none;text-align:center}
+.tl-divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+.tl-sub-h{font-size:13px;color:var(--t3);text-align:center;margin-bottom:14px}
 
-/* ── TEACHER DASHBOARD ── */
-.t-login{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:40px}
-.t-login-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:400px}
-.t-login-icon{font-size:52px;margin-bottom:16px}
-.t-login-h{font-size:24px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px}
-.t-login-p{font-size:14px;color:var(--t2);margin-bottom:28px;line-height:1.6}
-.t-input{background:var(--card);border:1px solid var(--border2);color:var(--t1);padding:12px 16px;border-radius:10px;font-size:16px;font-family:var(--ff);width:100%;outline:none;margin-bottom:12px;transition:border-color .2s}
-.t-input:focus{border-color:var(--p)}
-.t-input::placeholder{color:var(--t3)}
-.t-err{font-size:13px;color:var(--r);margin-bottom:12px;display:none}
-.t-btn{background:var(--p);color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;font-family:var(--ff);cursor:pointer;width:100%;transition:all .2s}
-.t-btn:hover{background:var(--p3)}
-.t-btn.sec{background:var(--card);color:var(--t2);border:1px solid var(--border);margin-top:8px}
-.t-btn.sec:hover{background:var(--card2);color:var(--t1)}
-.t-btn.danger{background:rgba(240,90,106,.12);color:var(--r);border:1px solid rgba(240,90,106,.25);margin-top:8px}
-.t-btn.danger:hover{background:rgba(240,90,106,.2)}
-.t-btn.sm{padding:8px 18px;font-size:13px;width:auto;border-radius:8px}
-.t-btn.green{background:var(--g);color:#fff;border:none}
-.t-btn.green:hover{background:#31a87f}
-
-.t-nav{background:rgba(10,11,20,.95);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;height:56px;position:sticky;top:0;z-index:100}
+/* teacher nav */
+.t-nav{background:rgba(10,11,20,.95);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;height:54px;position:sticky;top:0;z-index:100}
 .t-nav-brand{font-size:16px;font-weight:800;margin-right:8px}
 .t-nav-brand b{color:var(--p)}
-.t-nav-badge{background:rgba(62,201,154,.12);border:1px solid rgba(62,201,154,.25);color:var(--g);font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;letter-spacing:.5px;margin-right:auto}
-.t-nav-r{display:flex;align-items:center;gap:10px}
-.t-nav-class{font-size:13px;color:var(--t2);font-weight:500}
+.t-badge{background:rgba(62,201,154,.12);border:1px solid rgba(62,201,154,.25);color:var(--g);font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;letter-spacing:.5px;margin-right:auto}
+.t-nav-r{display:flex;align-items:center;gap:8px}
 
 .t-body{max-width:1000px;margin:0 auto;padding:36px 40px}
 
-/* class overview */
-.t-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
-.t-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;align-items:center;gap:12px}
-.t-stat-ico{font-size:24px}
-.t-stat-v{font-size:22px;font-weight:800;letter-spacing:-0.5px}
-.t-stat-l{font-size:12px;color:var(--t3);margin-top:2px}
+/* overview stats */
+.t-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+.t-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:10px}
+.t-stat-ico{font-size:22px}
+.t-stat-v{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.t-stat-l{font-size:11px;color:var(--t3);margin-top:2px}
 
 /* students table */
-.t-section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.t-section-t{font-size:17px;font-weight:800;letter-spacing:-0.3px}
-.t-table{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;width:100%;margin-bottom:28px}
-.t-table-head{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr 80px;padding:12px 20px;border-bottom:1px solid var(--border);background:var(--card)}
-.t-table-head span{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3)}
-.t-table-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr 80px;padding:14px 20px;border-bottom:1px solid var(--border);align-items:center;transition:background .2s;cursor:pointer}
-.t-table-row:last-child{border-bottom:none}
-.t-table-row:hover{background:var(--card)}
-.t-row-name{font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px}
-.t-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
-.t-row-val{font-size:14px;font-weight:600}
-.t-row-bar{display:flex;align-items:center;gap:8px}
-.t-mini-bar{flex:1;height:5px;background:var(--card2);border-radius:99px;overflow:hidden}
+.t-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.t-hd-t{font-size:16px;font-weight:800}
+.t-table{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:24px}
+.t-thead{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.4fr 80px;padding:11px 18px;border-bottom:1px solid var(--border);background:var(--card)}
+.t-thead span{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3)}
+.t-trow{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.4fr 80px;padding:13px 18px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:background .2s}
+.t-trow:last-child{border-bottom:none}
+.t-trow:hover{background:var(--card)}
+.t-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.t-name-cell{display:flex;align-items:center;gap:10px}
+.t-name-main{font-size:13px;font-weight:600}
+.t-name-note{font-size:11px;color:var(--t3);margin-top:1px}
+.t-val{font-size:13px;font-weight:600}
+.t-mini-wrap{display:flex;align-items:center;gap:6px}
+.t-mini-bar{flex:1;height:4px;background:var(--card2);border-radius:99px;overflow:hidden}
 .t-mini-fill{height:100%;border-radius:99px;background:var(--p)}
-.t-mini-pct{font-size:12px;font-weight:700;color:var(--t2);width:32px;text-align:right}
-.t-view-btn{background:var(--card2);border:1px solid var(--border);color:var(--t2);padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ff);transition:all .2s}
+.t-mini-pct{font-size:11px;font-weight:700;color:var(--t2);width:28px;text-align:right}
+.t-view-btn{background:var(--card2);border:1px solid var(--border);color:var(--t2);padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--ff);transition:all .2s}
 .t-view-btn:hover{border-color:var(--p);color:var(--p)}
-.t-empty{text-align:center;padding:48px;color:var(--t3);font-size:14px}
+.t-empty{text-align:center;padding:44px;color:var(--t3);font-size:14px}
 
-/* add student modal */
-.t-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
-.t-modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:32px;width:100%;max-width:440px}
-.t-modal-h{font-size:20px;font-weight:800;margin-bottom:6px}
-.t-modal-p{font-size:13px;color:var(--t2);margin-bottom:24px}
-.t-modal-label{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--t3);margin-bottom:6px;display:block}
-.t-modal-btns{display:flex;gap:10px;margin-top:20px}
+/* settings card */
+.t-settings{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px}
+.t-settings-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.t-settings-row:last-child{border-bottom:none}
+.t-settings-t{font-size:14px;font-weight:600}
+.t-settings-s{font-size:12px;color:var(--t2);margin-top:2px}
 
-/* individual student view */
-.t-student-hd{display:flex;align-items:center;gap:16px;margin-bottom:28px}
-.t-student-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900}
-.t-student-name{font-size:24px;font-weight:800;letter-spacing:-0.5px}
-.t-student-sub{font-size:14px;color:var(--t2);margin-top:2px}
-.t-student-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
-.t-les-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:28px}
-.t-les-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
-.t-les-card.done{border-color:rgba(62,201,154,.2)}
-.t-les-card.not-started{opacity:.5}
-.t-les-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.t-les-icon{font-size:18px}
-.t-les-status{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px}
-.status-done{background:rgba(62,201,154,.12);color:var(--g)}
-.status-pending{background:rgba(123,110,246,.1);color:var(--p2)}
-.status-none{background:var(--card2);color:var(--t3)}
-.t-les-name{font-size:14px;font-weight:700;margin-bottom:2px}
-.t-les-score{font-size:13px;color:var(--t2)}
+/* student view */
+.sv-hd{display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap}
+.sv-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;flex-shrink:0}
+.sv-name{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.sv-sub{font-size:13px;color:var(--t2);margin-top:2px}
+.sv-actions{margin-left:auto;display:flex;gap:8px}
+.sv-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.sv-les-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.sv-les{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px}
+.sv-les.done{border-color:rgba(62,201,154,.2)}
+.sv-les.ns{opacity:.45}
+.sv-les-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sv-les-ico{font-size:16px}
+.sv-status{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
+.st-done{background:rgba(62,201,154,.12);color:var(--g)}
+.st-prog{background:rgba(123,110,246,.12);color:var(--p2)}
+.st-none{background:var(--card2);color:var(--t3)}
+.sv-les-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.sv-les-score{font-size:12px;color:var(--t2)}
+.notes-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px}
+.note-item{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.note-item:last-child{border-bottom:none}
+.note-text{font-size:13px;color:var(--t1)}
+.note-date{font-size:11px;color:var(--t3);margin-top:2px}
+.note-del{background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0;transition:color .2s}
+.note-del:hover{color:var(--r)}
+.note-input-row{display:flex;gap:8px;margin-top:12px}
 
-/* notes section */
-.t-notes-area{background:var(--card);border:1px solid var(--border2);color:var(--t1);padding:14px 16px;border-radius:10px;font-size:14px;font-family:var(--ff);width:100%;resize:none;height:100px;outline:none;line-height:1.6;transition:border-color .2s}
-.t-notes-area:focus{border-color:var(--p)}
-.t-notes-area::placeholder{color:var(--t3)}
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:28px;width:100%;max-width:420px}
+.modal-h{font-size:18px;font-weight:800;margin-bottom:6px}
+.modal-p{font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6}
+.modal-btns{display:flex;gap:10px;margin-top:18px}
 
 /* responsive */
 @media(max-width:900px){
   .hero-wrap{grid-template-columns:1fr;gap:40px}
-  .feats-grid{grid-template-columns:1fr 1fr}
+  .feat-grid{grid-template-columns:1fr 1fr}
   .lesson-layout,.quiz-layout,.alph-wrap,.trans-wrap,.prog-wrap{grid-template-columns:1fr}
-  .app-nav{padding:0 20px}
-  .app-body{padding:24px 20px}
+  .app-nav,.t-nav{padding:0 20px}
+  .app-body,.t-body{padding:24px 20px}
   .hero-wrap,.feats,.land-nav{padding-left:20px;padding-right:20px}
+  .t-thead,.t-trow{grid-template-columns:2fr 1fr 1fr 1.2fr 70px;gap:0}
+  .t-thead span:nth-child(3),.t-trow>div:nth-child(3){display:none}
 }
 @media(max-width:600px){
-  .lg,.stats-row,.qa-row,.ach-grid,.prog-stats-sm{grid-template-columns:1fr 1fr}
-  .feats-grid{grid-template-columns:1fr}
-}
-@media(max-width:400px){
-  .lg,.stats-row,.ach-grid{grid-template-columns:1fr}
+  .lg,.stats-row,.qa-row,.ach-grid,.t-overview,.sv-stats,.sv-les-grid,.prog-stats-sm{grid-template-columns:1fr 1fr}
+  .feat-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -445,38 +423,36 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
   <nav class="land-nav">
     <div class="brand">Braille<b>Learn</b></div>
     <div class="land-nav-r">
-      <button class="gbtn" onclick="showPg('pg-teacher-login')">👩‍🏫 Teacher login</button>
-      <button class="gbtn" onclick="goApp('dashboard')">Sign in</button>
-      <button class="gbtn fill" onclick="goApp('dashboard')">Start free →</button>
+      <button class="nbtn teacher" onclick="showPg('pg-teacher-login')">👩‍🏫 Teacher login</button>
+      <button class="nbtn" onclick="goApp('dashboard')">Student login</button>
+      <button class="nbtn fill" onclick="goApp('dashboard')">Start free →</button>
     </div>
   </nav>
-
   <div class="hero-wrap">
     <div>
-      <div class="hero-tag">Free · No download · Works everywhere</div>
-      <h1 class="hero-h">Learn <span>Braille</span><br>the fun way.</h1>
-      <p class="hero-p">Interactive lessons, instant quizzes, and a real-time translator. For children, adults, teachers, and anyone curious about Braille.</p>
-      <div class="hero-btns">
-        <button class="hbtn p" onclick="goApp('dashboard')">Start learning free</button>
-        <button class="hbtn o" onclick="goApp('translator')">Try translator →</button>
+      <div class="h-tag">Free · No download · Works everywhere</div>
+      <h1 class="h-title">Learn <span>Braille</span><br>the fun way.</h1>
+      <p class="h-desc">Interactive lessons, instant quizzes, and a real-time translator. For children, adults, teachers, and anyone curious about Braille.</p>
+      <div class="h-btns">
+        <button class="btn btn-p" onclick="goApp('dashboard')">Start learning free</button>
+        <button class="btn btn-o" onclick="goApp('translator')">Try translator →</button>
       </div>
     </div>
-    <div class="hero-card" onclick="cycleHero()" title="Click to see next letter">
+    <div class="hero-card" onclick="cycleHero()">
       <div class="hc-letter" id="hc-l">A</div>
       <div id="hc-cell"></div>
       <div class="hc-sym" id="hc-s">⠁</div>
       <div class="hc-hint">Click to explore the alphabet</div>
     </div>
   </div>
-
   <div class="feats">
-    <div class="feats-label">What's included</div>
-    <div class="feats-h">Everything you need to learn Braille</div>
-    <div class="feats-grid">
+    <div class="sec-lbl">What's included</div>
+    <div class="sec-title">Everything you need to learn Braille</div>
+    <div class="feat-grid">
       <div class="fc"><div class="fc-ico">📖</div><div class="fc-t">6 Structured Lessons</div><div class="fc-d">Learn A–Z and 0–9 step by step, from beginner to advanced with hints.</div></div>
       <div class="fc"><div class="fc-ico">🎯</div><div class="fc-t">Quizzes & Feedback</div><div class="fc-d">Multiple-choice quizzes after every lesson with voice and visual feedback.</div></div>
-      <div class="fc"><div class="fc-ico">🔤</div><div class="fc-t">Braille Translator</div><div class="fc-d">Type any word or sentence and instantly see it translated into Braille.</div></div>
-      <div class="fc"><div class="fc-ico">📊</div><div class="fc-t">Progress & Badges</div><div class="fc-d">Earn XP, level up, maintain streaks and unlock achievement badges.</div></div>
+      <div class="fc"><div class="fc-ico">🔤</div><div class="fc-t">Braille Translator</div><div class="fc-d">Type any word and instantly see it translated into Braille dots.</div></div>
+      <div class="fc"><div class="fc-ico">👩‍🏫</div><div class="fc-t">Teacher Dashboard</div><div class="fc-d">Track each student individually, add notes, and monitor progress.</div></div>
     </div>
   </div>
 </div>
@@ -485,49 +461,39 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 <div class="pg" id="pg-app" style="display:flex;flex-direction:column;min-height:100vh">
   <nav class="app-nav">
     <div class="nav-brand" onclick="goApp('dashboard')">Braille<b>Learn</b></div>
-    <div class="nav-items">
-      <button class="nitem" id="ni-dashboard" onclick="goApp('dashboard')">Dashboard</button>
-      <button class="nitem" id="ni-alphabet" onclick="goApp('alphabet')">Alphabet</button>
-      <button class="nitem" id="ni-translator" onclick="goApp('translator')">Translator</button>
-      <button class="nitem" id="ni-progress" onclick="goApp('progress')">Progress</button>
+    <div class="nav-tabs">
+      <button class="ntab" id="ni-dashboard" onclick="goApp('dashboard')">Dashboard</button>
+      <button class="ntab" id="ni-alphabet" onclick="goApp('alphabet')">Alphabet</button>
+      <button class="ntab" id="ni-translator" onclick="goApp('translator')">Translator</button>
+      <button class="ntab" id="ni-progress" onclick="goApp('progress')">Progress</button>
     </div>
     <div class="nav-r">
-      <div class="xp-tag" id="nav-xp">0 XP · Lv 1</div>
-      <button class="vbtn" id="vbtn" onclick="toggleMute()">🔊 Voice on</button>
-      <button class="vbtn" onclick="showPg('pg-teacher-login')">👩‍🏫 Teacher</button>
+      <div class="xp-chip" id="nav-xp">0 XP · Lv 1</div>
+      <button class="voice-btn" id="vbtn" onclick="toggleMute()">🔊 Voice on</button>
+      <button class="voice-btn" onclick="showPg('pg-teacher-login')">👩‍🏫 Teacher</button>
     </div>
   </nav>
-
   <div class="app-body">
 
     <!-- DASHBOARD -->
     <div class="view on" id="view-dashboard">
       <div class="lev-bar">
-        <div class="lb-info">
-          <div class="lb-level">Level <span id="lv-num">1</span></div>
-          <div class="lb-xp"><span id="xp-tot">0</span> XP earned</div>
-        </div>
-        <div class="lb-prog">
-          <div class="pbar"><div class="pfill" id="lv-bar" style="width:0%"></div></div>
-          <div class="lb-next" id="xp-nxt">200 XP to next level</div>
-        </div>
+        <div><div class="lb-level">Level <span id="lv-num">1</span></div><div class="lb-xp"><span id="xp-tot">0</span> XP earned</div></div>
+        <div style="flex:1"><div class="pbar"><div class="pfill" id="lv-bar" style="width:0%"></div></div><div class="lb-next" id="xp-nxt">200 XP to next level</div></div>
       </div>
-
       <div class="stats-row">
         <div class="sc"><div class="sc-ico">🔥</div><div><div class="sc-val" id="st-streak" style="color:var(--o)">1</div><div class="sc-lbl">Day streak</div></div></div>
         <div class="sc"><div class="sc-ico">📚</div><div><div class="sc-val" id="st-done" style="color:var(--g)">0</div><div class="sc-lbl">Lessons done</div></div></div>
         <div class="sc"><div class="sc-ico">🎯</div><div><div class="sc-val" id="st-quiz" style="color:var(--y)">0</div><div class="sc-lbl">Quizzes taken</div></div></div>
         <div class="sc"><div class="sc-ico">⭐</div><div><div class="sc-val" id="st-lv" style="color:var(--p2)">1</div><div class="sc-lbl">Current level</div></div></div>
       </div>
-
       <div class="qa-row">
         <div class="qa hi" onclick="goApp('translator')"><div class="qa-ico">🔤</div><div><div class="qa-t">Braille Translator</div><div class="qa-s">Type any text to see it in Braille instantly</div></div></div>
         <div class="qa" onclick="goApp('alphabet')"><div class="qa-ico">🅰️</div><div><div class="qa-t">Alphabet Reference</div><div class="qa-s">Browse the full A–Z and number guide</div></div></div>
       </div>
-
-      <div class="lessons-hd">
-        <div class="lessons-hd-l" id="les-prog">0 of 6 lessons completed</div>
-        <div class="lessons-hd-r"><button class="gbtn" style="padding:6px 14px;font-size:12px" onclick="goApp('progress')">View progress →</button></div>
+      <div class="les-hd">
+        <div class="les-hd-t" id="les-prog">0 of 6 lessons completed</div>
+        <button class="nbtn" style="padding:6px 14px;font-size:12px" onclick="goApp('progress')">View progress →</button>
       </div>
       <div class="lg" id="les-grid"></div>
     </div>
@@ -536,33 +502,27 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div class="view" id="view-lesson">
       <div class="lesson-layout">
         <div class="lesson-main">
-          <div class="lesson-pbar"><div class="lesson-pfill" id="les-pfill" style="width:0%"></div></div>
+          <div class="lp-bar"><div class="lp-fill" id="les-pfill" style="width:0%"></div></div>
           <div class="big-letter" id="les-letter">A</div>
           <div class="big-sym" id="les-sym">⠁</div>
           <div class="cell-wrap" id="les-cell"></div>
-          <div class="dot-row">
-            <div class="dot-row-lbl">Active dots</div>
-            <div class="dot-pills" id="les-dots"></div>
-          </div>
-          <button class="hint-toggler" id="hint-tog" onclick="toggleHint()">💡 Show hint</button>
-          <div class="hint-txt" id="hint-txt" style="display:none"></div>
+          <div class="dot-row"><div class="dot-row-lbl">Active dots</div><div class="dot-pills" id="les-dots"></div></div>
+          <button class="hint-tog" id="hint-tog" onclick="toggleHint()">💡 Show hint</button>
+          <div class="hint-box" id="hint-box" style="display:none"></div>
         </div>
-        <div class="lesson-side">
+        <div>
           <div class="side-card">
-            <div class="side-card-t" id="sc-title">Lesson</div>
-            <div class="side-card-s" id="sc-sub">Letter 1 of 5</div>
+            <div class="side-t" id="sc-title">Lesson</div>
+            <div class="side-s" id="sc-sub">Letter 1 of 5</div>
             <div class="prog-track" id="prog-track"></div>
             <div class="side-btns">
               <button class="sbtn s" id="btn-prev" onclick="lesPrev()">← Prev</button>
               <button class="sbtn p" id="btn-next" onclick="lesNext()">Next →</button>
             </div>
           </div>
-          <div class="ref-side">
+          <div class="ref-card">
             <div class="ref-lbl">Dot reference</div>
-            <div class="ref-inner">
-              <div id="ref-cell"></div>
-              <div class="ref-notes">1–3 · Left column<br>4–6 · Right column<br>Top to bottom</div>
-            </div>
+            <div class="ref-inner"><div id="ref-cell"></div><div class="ref-notes">1–3 · Left column<br>4–6 · Right column<br>Top to bottom</div></div>
           </div>
         </div>
       </div>
@@ -576,8 +536,8 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
         <div class="comp-p" id="comp-sub">You learned 5 letters!</div>
         <div class="comp-xp" id="comp-xp">+50 XP earned</div>
         <div class="comp-btns">
-          <button class="abtn p" onclick="startQuiz()">Take the Quiz →</button>
-          <button class="abtn o" onclick="goApp('dashboard')">Back to Dashboard</button>
+          <button class="btn btn-p" onclick="startQuiz()">Take the Quiz →</button>
+          <button class="btn btn-o" onclick="goApp('dashboard')">Back to Dashboard</button>
         </div>
       </div>
     </div>
@@ -586,22 +546,19 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div class="view" id="view-quiz">
       <div class="quiz-layout">
         <div class="quiz-main">
-          <div class="lesson-pbar" style="width:100%;margin-bottom:36px"><div class="lesson-pfill" id="qz-pfill" style="width:0%"></div></div>
+          <div class="lp-bar" style="width:100%;margin-bottom:32px"><div class="lp-fill" id="qz-pfill" style="width:0%"></div></div>
           <div class="q-ey">Question <span id="qz-n">1</span> of <span id="qz-t">5</span></div>
           <div class="q-h">Which letter is this?</div>
-          <div class="q-cell-area">
-            <div id="qz-cell"></div>
-            <div class="dot-pills" id="qz-dots"></div>
-          </div>
+          <div class="q-cell-area"><div id="qz-cell"></div><div class="dot-pills" id="qz-dots"></div></div>
           <div class="opts-lbl">Select the correct letter</div>
           <div class="opts" id="opts"></div>
           <div class="q-fb" id="qz-fb" style="display:none"></div>
         </div>
-        <div class="quiz-side">
+        <div>
           <div class="side-card">
-            <div class="side-card-t">Quiz stats</div>
-            <div class="qsr"><span class="qsr-l">Score</span><span class="qsr-v" id="qz-score" style="color:var(--g)">0</span></div>
-            <div class="qsr"><span class="qsr-l">Question</span><span class="qsr-v" id="qz-qn">1 / 5</span></div>
+            <div class="side-t">Quiz stats</div>
+            <div class="qsr"><span class="qsr-l">Score</span><span class="qsr-v" id="qz-sc" style="color:var(--g)">0</span></div>
+            <div class="qsr"><span class="qsr-l">Question</span><span class="qsr-v" id="qz-qn">1/5</span></div>
             <div class="qsr"><span class="qsr-l">XP bonus</span><span class="qsr-v" id="qz-xp" style="color:var(--y)">+0</span></div>
           </div>
         </div>
@@ -612,19 +569,16 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div class="view" id="view-result">
       <div class="result">
         <div style="font-size:72px" id="res-e">🏆</div>
-        <div style="font-size:40px;font-weight:900;letter-spacing:-1.5px;margin-top:16px" id="res-t">Excellent!</div>
-        <div class="ring">
-          <div class="ring-pct" id="ring-p">100%</div>
-          <div class="ring-s" id="ring-s">5 / 5 correct</div>
-        </div>
+        <div style="font-size:38px;font-weight:900;letter-spacing:-1.5px;margin-top:14px" id="res-t">Excellent!</div>
+        <div class="ring"><div class="ring-pct" id="ring-p">100%</div><div class="ring-s" id="ring-s">5/5 correct</div></div>
         <div class="res-row">
-          <div class="rv"><div class="rv-v" id="res-c" style="color:var(--g)">5</div><div class="rv-l">Correct</div></div>
-          <div class="rv"><div class="rv-v" id="res-w" style="color:var(--r)">0</div><div class="rv-l">Wrong</div></div>
-          <div class="rv"><div class="rv-v" id="res-x" style="color:var(--y)">+50</div><div class="rv-l">XP earned</div></div>
+          <div><div class="rv-v" id="res-c" style="color:var(--g)">5</div><div class="rv-l">Correct</div></div>
+          <div><div class="rv-v" id="res-w" style="color:var(--r)">0</div><div class="rv-l">Wrong</div></div>
+          <div><div class="rv-v" id="res-x" style="color:var(--y)">+50</div><div class="rv-l">XP earned</div></div>
         </div>
         <div style="display:flex;gap:12px">
-          <button class="abtn p" onclick="retryQuiz()">Try again</button>
-          <button class="abtn o" onclick="goApp('dashboard')">Back to dashboard</button>
+          <button class="btn btn-p" onclick="retryQuiz()">Try again</button>
+          <button class="btn btn-o" onclick="goApp('dashboard')">Back to dashboard</button>
         </div>
       </div>
     </div>
@@ -633,14 +587,12 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div class="view" id="view-alphabet">
       <div class="vh"><div class="vhl">Reference guide</div><div class="vht">Braille alphabet & numbers</div></div>
       <div class="alph-wrap">
-        <div class="alph-sidebar">
-          <div class="alph-tabs-v">
-            <button class="atv on" id="atv-l" onclick="switchAlph('letters')">A–Z Alphabet</button>
-            <button class="atv" id="atv-n" onclick="switchAlph('numbers')">0–9 Numbers</button>
+        <div class="alph-side">
+          <div class="atab-btns">
+            <button class="atab-btn on" id="atv-l" onclick="switchAlph('letters')">A–Z Alphabet</button>
+            <button class="atab-btn" id="atv-n" onclick="switchAlph('numbers')">0–9 Numbers</button>
           </div>
-          <div class="alph-detail" id="alph-detail">
-            <div style="font-size:13px;color:var(--t3)">Click any letter to see details</div>
-          </div>
+          <div class="alph-detail" id="alph-detail"><div style="font-size:13px;color:var(--t3)">Click any letter to see details</div></div>
         </div>
         <div class="alph-grid" id="alph-grid"></div>
       </div>
@@ -653,10 +605,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
         <div class="tp">
           <div class="tp-lbl">Your text</div>
           <textarea class="tp-ta" id="tp-ta" placeholder="Type anything here…" maxlength="60" oninput="doTrans()"></textarea>
-          <div class="tp-foot">
-            <span class="tp-cnt"><span id="tp-cnt">0</span>/60</span>
-            <button class="tp-clr" onclick="clrTrans()">Clear</button>
-          </div>
+          <div class="tp-foot"><span class="tp-cnt"><span id="tp-cnt">0</span>/60</span><button class="tp-clr" onclick="clrTrans()">Clear</button></div>
           <div class="chips">
             <span class="chip" onclick="setTrans('Hello')">Hello</span>
             <span class="chip" onclick="setTrans('Braille')">Braille</span>
@@ -680,12 +629,12 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <div class="vh"><div class="vhl">Your journey</div><div class="vht">Progress & achievements</div></div>
       <div class="prog-wrap">
         <div>
-          <div class="prog-main-card">
-            <div class="pmc-lv">Level <span id="pm-lv">1</span></div>
-            <div class="pmc-role">Braille Learner</div>
-            <div class="pmc-xp"><span id="pm-xp">0</span> XP total</div>
+          <div class="prog-card">
+            <div class="pc-lv">Level <span id="pm-lv">1</span></div>
+            <div class="pc-role">Braille Learner</div>
+            <div class="pc-xp"><span id="pm-xp">0</span> XP total</div>
             <div class="pbar"><div class="pfill" id="pm-bar" style="width:0%"></div></div>
-            <div class="pmc-next" id="pm-nxt">200 XP to next level</div>
+            <div class="pc-next" id="pm-nxt">200 XP to next level</div>
           </div>
           <div class="prog-stats-sm">
             <div class="pss"><div class="pss-ico">🔥</div><div class="pss-v" id="pm-streak" style="color:var(--o)">1</div><div class="pss-l">Streak</div></div>
@@ -697,7 +646,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
         <div>
           <div class="vhl" style="margin-bottom:12px">Achievements</div>
           <div class="ach-grid" id="ach-grid"></div>
-          <div class="vhl" style="margin-bottom:12px;margin-top:20px">Quiz scores</div>
+          <div class="vhl" style="margin-bottom:12px;margin-top:18px">Quiz scores</div>
           <div id="qs-list"></div>
         </div>
       </div>
@@ -708,23 +657,26 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 
 <!-- ═══ TEACHER LOGIN ═══ -->
 <div class="pg" id="pg-teacher-login">
-  <div class="t-login">
-    <div class="t-login-card">
-      <div class="t-login-icon">👩‍🏫</div>
-      <div class="t-login-h">Teacher Dashboard</div>
-      <div class="t-login-p">Sign in to track your students' Braille progress individually.</div>
-      <input class="t-input" type="text" id="tl-name" placeholder="Your name (e.g. Mrs Smith)" maxlength="40">
-      <input class="t-input" type="password" id="tl-pin" placeholder="PIN (default: 1234)" maxlength="10" onkeydown="if(event.key==='Enter')teacherLogin()">
-      <div class="t-err" id="tl-err">Incorrect PIN. Please try again.</div>
-      <button class="t-btn" onclick="teacherLogin()">Sign In →</button>
-      <button class="t-btn sec" onclick="showPg('pg-land')">← Back to app</button>
-      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-        <div style="font-size:12px;color:var(--t3);margin-bottom:10px">First time? Create your dashboard</div>
-        <input class="t-input" type="text" id="tl-new-name" placeholder="Your name" maxlength="40" style="margin-bottom:8px">
-        <input class="t-input" type="password" id="tl-new-pin" placeholder="Choose a PIN" maxlength="10" style="margin-bottom:8px">
-        <input class="t-input" type="text" id="tl-class" placeholder="Class name (e.g. Year 3 Braille)" maxlength="40" style="margin-bottom:8px">
-        <button class="t-btn green" onclick="teacherRegister()">Create Dashboard →</button>
-      </div>
+  <div style="max-width:480px;margin:0 auto;padding:40px 20px;width:100%">
+    <div class="tl-card">
+      <div class="tl-icon">👩‍🏫</div>
+      <div class="tl-h">Teacher Dashboard</div>
+      <div class="tl-p">Sign in to track your students' Braille progress individually.</div>
+      <label class="inp-lbl">Your PIN</label>
+      <input class="inp" type="password" id="tl-pin" placeholder="Enter your PIN" maxlength="10" onkeydown="if(event.key==='Enter')teacherLogin()">
+      <div class="tl-err" id="tl-err">Incorrect PIN. Please try again.</div>
+      <button class="btn btn-p" style="width:100%" onclick="teacherLogin()">Sign In →</button>
+      <button class="btn btn-o" style="width:100%;margin-top:8px" onclick="showPg('pg-land')">← Back to app</button>
+      <hr class="tl-divider">
+      <div class="tl-sub-h">First time? Create your teacher dashboard</div>
+      <label class="inp-lbl">Your name</label>
+      <input class="inp" type="text" id="tl-rname" placeholder="e.g. Mrs Smith" maxlength="40">
+      <label class="inp-lbl">Class name</label>
+      <input class="inp" type="text" id="tl-rclass" placeholder="e.g. Year 3 Braille Group" maxlength="40">
+      <label class="inp-lbl">Choose a PIN</label>
+      <input class="inp" type="password" id="tl-rpin" placeholder="Choose a PIN (e.g. 1234)" maxlength="10">
+      <div class="tl-err" id="tl-rerr">Please fill in all fields.</div>
+      <button class="btn btn-g" style="width:100%" onclick="teacherRegister()">Create Dashboard →</button>
     </div>
   </div>
 </div>
@@ -733,139 +685,123 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 <div class="pg" id="pg-teacher">
   <nav class="t-nav">
     <div class="t-nav-brand">Braille<b>Learn</b></div>
-    <div class="t-nav-badge">TEACHER</div>
+    <div class="t-badge">TEACHER</div>
     <div class="t-nav-r">
-      <span class="t-nav-class" id="t-class-name">My Class</span>
-      <button class="t-btn sm sec" onclick="showPg('pg-land')" style="margin:0">← Student view</button>
-      <button class="t-btn sm danger" onclick="teacherLogout()" style="margin:0">Sign out</button>
+      <span style="font-size:13px;color:var(--t2);font-weight:500" id="t-class-lbl"></span>
+      <button class="btn btn-o btn-sm" onclick="showPg('pg-land')">← Student view</button>
+      <button class="btn btn-r btn-sm" onclick="teacherLogout()">Sign out</button>
     </div>
   </nav>
 
-  <!-- OVERVIEW -->
-  <div class="t-body" id="t-view-overview">
-    <div style="margin-bottom:24px">
-      <div style="font-size:12px;color:var(--p);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Class overview</div>
-      <div style="font-size:26px;font-weight:800;letter-spacing:-0.5px" id="t-welcome">Welcome back!</div>
+  <!-- CLASS OVERVIEW -->
+  <div class="t-body" id="tv-overview">
+    <div style="margin-bottom:22px">
+      <div class="vhl">Class overview</div>
+      <div style="font-size:24px;font-weight:800;letter-spacing:-.5px" id="t-welcome">Welcome back!</div>
     </div>
     <div class="t-overview">
-      <div class="t-stat"><div class="t-stat-ico">👥</div><div><div class="t-stat-v" id="to-students">0</div><div class="t-stat-l">Students</div></div></div>
-      <div class="t-stat"><div class="t-stat-ico">📚</div><div><div class="t-stat-v" id="to-lessons">0</div><div class="t-stat-l">Avg lessons done</div></div></div>
-      <div class="t-stat"><div class="t-stat-ico">🎯</div><div><div class="t-stat-v" id="to-quizzes">0</div><div class="t-stat-l">Avg quiz score</div></div></div>
-      <div class="t-stat"><div class="t-stat-ico">⭐</div><div><div class="t-stat-v" id="to-xp">0</div><div class="t-stat-l">Avg XP earned</div></div></div>
+      <div class="t-stat"><div class="t-stat-ico">👥</div><div><div class="t-stat-v" id="to-stu">0</div><div class="t-stat-l">Students</div></div></div>
+      <div class="t-stat"><div class="t-stat-ico">📚</div><div><div class="t-stat-v" id="to-les">—</div><div class="t-stat-l">Avg lessons</div></div></div>
+      <div class="t-stat"><div class="t-stat-ico">🎯</div><div><div class="t-stat-v" id="to-qz">—</div><div class="t-stat-l">Avg quiz score</div></div></div>
+      <div class="t-stat"><div class="t-stat-ico">⭐</div><div><div class="t-stat-v" id="to-xp">—</div><div class="t-stat-l">Avg XP</div></div></div>
     </div>
-    <div class="t-section-hd">
-      <div class="t-section-t">Your Students</div>
-      <button class="t-btn sm" onclick="openAddStudent()">+ Add Student</button>
+    <div class="t-hd"><div class="t-hd-t">Students</div><button class="btn btn-p btn-sm" onclick="openModal('modal-add')">+ Add Student</button></div>
+    <div class="t-table">
+      <div class="t-thead"><span>Student</span><span>Lessons</span><span>Avg Score</span><span>XP</span><span>Progress</span><span></span></div>
+      <div id="t-tbody"></div>
     </div>
-    <div class="t-table" id="t-students-table">
-      <div class="t-table-head">
-        <span>Student</span><span>Lessons</span><span>Quizzes</span><span>XP</span><span>Progress</span><span></span>
+    <div class="t-hd" style="margin-top:4px"><div class="t-hd-t">Settings</div></div>
+    <div class="t-settings">
+      <div class="t-settings-row">
+        <div><div class="t-settings-t">Class name</div><div class="t-settings-s" id="set-class-name"></div></div>
+        <button class="btn btn-o btn-sm" onclick="openModal('modal-class')">Edit</button>
       </div>
-      <div id="t-students-body"></div>
-    </div>
-
-    <!-- settings -->
-    <div class="t-section-hd" style="margin-top:8px">
-      <div class="t-section-t">Settings</div>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div><div style="font-size:14px;font-weight:600">Class name</div><div style="font-size:12px;color:var(--t2);margin-top:2px" id="t-settings-class"></div></div>
-        <button class="t-btn sm sec" onclick="openEditClass()">Edit</button>
-      </div>
-      <div style="border-top:1px solid var(--border);padding-top:12px;display:flex;align-items:center;justify-content:space-between">
-        <div><div style="font-size:14px;font-weight:600">Change PIN</div><div style="font-size:12px;color:var(--t2);margin-top:2px">Update your teacher login PIN</div></div>
-        <button class="t-btn sm sec" onclick="openChangePin()">Change</button>
+      <div class="t-settings-row">
+        <div><div class="t-settings-t">Change PIN</div><div class="t-settings-s">Update your teacher login PIN</div></div>
+        <button class="btn btn-o btn-sm" onclick="openModal('modal-pin')">Change</button>
       </div>
     </div>
   </div>
 
-  <!-- INDIVIDUAL STUDENT VIEW -->
-  <div class="t-body" id="t-view-student" style="display:none">
-    <button style="background:none;border:none;color:var(--p);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:20px;font-family:var(--ff)" onclick="backToOverview()">← Back to class</button>
-    <div class="t-student-hd">
-      <div class="t-student-avatar" id="sv-avatar"></div>
-      <div>
-        <div class="t-student-name" id="sv-name">Student</div>
-        <div class="t-student-sub" id="sv-sub">Added recently</div>
-      </div>
-      <div style="margin-left:auto;display:flex;gap:8px">
-        <button class="t-btn sm green" onclick="openAddNote()">📝 Add note</button>
-        <button class="t-btn sm danger" onclick="removeStudent()" style="margin:0">Remove</button>
+  <!-- STUDENT VIEW -->
+  <div class="t-body" id="tv-student" style="display:none">
+    <button onclick="backToOverview()" style="background:none;border:none;color:var(--p);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:18px;font-family:var(--ff)">← Back to class</button>
+    <div class="sv-hd">
+      <div class="sv-av" id="sv-av"></div>
+      <div><div class="sv-name" id="sv-name">Student</div><div class="sv-sub" id="sv-sub"></div></div>
+      <div class="sv-actions">
+        <button class="btn btn-r btn-sm" onclick="removeStudent()">Remove student</button>
       </div>
     </div>
-
-    <div class="t-student-stats">
-      <div class="t-stat"><div class="t-stat-ico">📚</div><div><div class="t-stat-v" id="sv-lessons" style="color:var(--g)">0</div><div class="t-stat-l">Lessons done</div></div></div>
-      <div class="t-stat"><div class="t-stat-ico">🎯</div><div><div class="t-stat-v" id="sv-quizzes" style="color:var(--y)">0</div><div class="t-stat-l">Quizzes taken</div></div></div>
+    <div class="sv-stats">
+      <div class="t-stat"><div class="t-stat-ico">📚</div><div><div class="t-stat-v" id="sv-les" style="color:var(--g)">0/6</div><div class="t-stat-l">Lessons done</div></div></div>
+      <div class="t-stat"><div class="t-stat-ico">🎯</div><div><div class="t-stat-v" id="sv-qt" style="color:var(--y)">0</div><div class="t-stat-l">Quizzes taken</div></div></div>
       <div class="t-stat"><div class="t-stat-ico">⭐</div><div><div class="t-stat-v" id="sv-xp" style="color:var(--p2)">0</div><div class="t-stat-l">XP earned</div></div></div>
       <div class="t-stat"><div class="t-stat-ico">📊</div><div><div class="t-stat-v" id="sv-pct" style="color:var(--pk)">0%</div><div class="t-stat-l">Complete</div></div></div>
     </div>
-
-    <div style="font-size:15px;font-weight:700;margin-bottom:14px">Lesson Progress</div>
-    <div class="t-les-grid" id="sv-lessons-grid"></div>
-
-    <div style="font-size:15px;font-weight:700;margin-bottom:14px;margin-top:4px">Teacher Notes</div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px">
-      <div id="sv-notes-list" style="margin-bottom:12px"></div>
-      <div style="display:flex;gap:10px">
-        <input class="t-input" type="text" id="sv-note-input" placeholder="Add a note about this student…" style="margin:0;flex:1" onkeydown="if(event.key==='Enter')saveNote()">
-        <button class="t-btn sm" onclick="saveNote()" style="flex-shrink:0">Save note</button>
+    <div style="font-size:15px;font-weight:700;margin-bottom:12px">Lesson progress</div>
+    <div class="sv-les-grid" id="sv-les-grid"></div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:12px">Teacher notes</div>
+    <div class="notes-box">
+      <div id="sv-notes"></div>
+      <div class="note-input-row">
+        <input class="inp" type="text" id="note-inp" placeholder="Add a note about this student…" style="margin:0;flex:1" onkeydown="if(event.key==='Enter')saveNote()">
+        <button class="btn btn-p btn-sm" onclick="saveNote()">Save</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ADD STUDENT MODAL -->
-<div class="t-modal-bg" id="modal-add-student" style="display:none">
-  <div class="t-modal">
-    <div class="t-modal-h">Add a student</div>
-    <div class="t-modal-p">Enter the student's name. You can then manually update their progress or they can log in and study on their own device.</div>
-    <label class="t-modal-label">Student name</label>
-    <input class="t-input" type="text" id="add-student-name" placeholder="e.g. Ryan" maxlength="40" onkeydown="if(event.key==='Enter')confirmAddStudent()">
-    <label class="t-modal-label" style="margin-top:14px">Notes (optional)</label>
-    <input class="t-input" type="text" id="add-student-note" placeholder="e.g. visually impaired, needs audio support" maxlength="100">
-    <div class="t-modal-btns">
-      <button class="t-btn" onclick="confirmAddStudent()">Add Student</button>
-      <button class="t-btn sec" onclick="closeModal('modal-add-student')" style="margin:0">Cancel</button>
+<!-- MODALS -->
+<div class="modal-bg" id="modal-add" style="display:none" onclick="if(event.target===this)closeModal('modal-add')">
+  <div class="modal">
+    <div class="modal-h">Add a student</div>
+    <div class="modal-p">Enter the student's name to add them to your class.</div>
+    <label class="inp-lbl">Student name</label>
+    <input class="inp" type="text" id="add-name" placeholder="e.g. Ryan" maxlength="40" onkeydown="if(event.key==='Enter')confirmAdd()">
+    <label class="inp-lbl">Notes (optional)</label>
+    <input class="inp" type="text" id="add-note" placeholder="e.g. visually impaired, needs audio" maxlength="100">
+    <div class="modal-btns">
+      <button class="btn btn-p" onclick="confirmAdd()">Add Student</button>
+      <button class="btn btn-o" onclick="closeModal('modal-add')">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- EDIT CLASS MODAL -->
-<div class="t-modal-bg" id="modal-edit-class" style="display:none">
-  <div class="t-modal">
-    <div class="t-modal-h">Edit class name</div>
-    <div class="t-modal-p">Update the name of your class.</div>
-    <input class="t-input" type="text" id="edit-class-name" placeholder="Class name" maxlength="40">
-    <div class="t-modal-btns">
-      <button class="t-btn" onclick="confirmEditClass()">Save</button>
-      <button class="t-btn sec" onclick="closeModal('modal-edit-class')" style="margin:0">Cancel</button>
+<div class="modal-bg" id="modal-class" style="display:none" onclick="if(event.target===this)closeModal('modal-class')">
+  <div class="modal">
+    <div class="modal-h">Edit class name</div>
+    <input class="inp" type="text" id="edit-class" placeholder="Class name" maxlength="40">
+    <div class="modal-btns">
+      <button class="btn btn-p" onclick="confirmEditClass()">Save</button>
+      <button class="btn btn-o" onclick="closeModal('modal-class')">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- CHANGE PIN MODAL -->
-<div class="t-modal-bg" id="modal-change-pin" style="display:none">
-  <div class="t-modal">
-    <div class="t-modal-h">Change PIN</div>
-    <div class="t-modal-p">Enter your current PIN then choose a new one.</div>
-    <label class="t-modal-label">Current PIN</label>
-    <input class="t-input" type="password" id="pin-current" placeholder="Current PIN" maxlength="10">
-    <label class="t-modal-label" style="margin-top:12px">New PIN</label>
-    <input class="t-input" type="password" id="pin-new" placeholder="New PIN" maxlength="10">
-    <div class="t-err" id="pin-err">Current PIN is incorrect.</div>
-    <div class="t-modal-btns">
-      <button class="t-btn" onclick="confirmChangePin()">Update PIN</button>
-      <button class="t-btn sec" onclick="closeModal('modal-change-pin')" style="margin:0">Cancel</button>
+<div class="modal-bg" id="modal-pin" style="display:none" onclick="if(event.target===this)closeModal('modal-pin')">
+  <div class="modal">
+    <div class="modal-h">Change PIN</div>
+    <label class="inp-lbl">Current PIN</label>
+    <input class="inp" type="password" id="pin-cur" placeholder="Current PIN" maxlength="10">
+    <label class="inp-lbl">New PIN</label>
+    <input class="inp" type="password" id="pin-new" placeholder="New PIN" maxlength="10">
+    <div class="tl-err" id="pin-err" style="display:none">Current PIN is incorrect.</div>
+    <div class="modal-btns">
+      <button class="btn btn-p" onclick="confirmPin()">Update PIN</button>
+      <button class="btn btn-o" onclick="closeModal('modal-pin')">Cancel</button>
     </div>
   </div>
 </div>
 
+<script>
+// ═══════════════════════════════════════
+// BRAILLE DATA
+// ═══════════════════════════════════════
 const BR={
   a:{dots:[1],sym:'⠁',hint:'One dot — top left'},b:{dots:[1,2],sym:'⠃',hint:'Two dots — left column top'},
   c:{dots:[1,4],sym:'⠉',hint:'Two dots — top row'},d:{dots:[1,4,5],sym:'⠙',hint:'Three dots — top + mid right'},
-  e:{dots:[1,5],sym:'⠑',hint:'Diagonal — top left, mid right'},f:{dots:[1,2,4],sym:'⠋',hint:'Three dots — L shape'},
+  e:{dots:[1,5],sym:'⠑',hint:'Diagonal — top left to mid right'},f:{dots:[1,2,4],sym:'⠋',hint:'Three dots — L shape'},
   g:{dots:[1,2,4,5],sym:'⠛',hint:'Four dots — top square'},h:{dots:[1,2,5],sym:'⠓',hint:'Three dots'},
   i:{dots:[2,4],sym:'⠊',hint:'Two dots — middle row'},j:{dots:[2,4,5],sym:'⠚',hint:'Three dots — mid + right'},
   k:{dots:[1,3],sym:'⠅',hint:'Two dots — left column'},l:{dots:[1,2,3],sym:'⠇',hint:'Full left column'},
@@ -891,46 +827,69 @@ const LES=[
   {id:6,t:'Numbers 0–9',s:'All digits',i:'🔢',l:['1','2','3','4','5','6','7','8','9','0'],xp:100,d:'Intermediate',c:'var(--y)'}
 ];
 
-function ld(){try{const s=localStorage.getItem('bl4');if(s)return JSON.parse(s);}catch(e){}return{xp:0,streak:1,done:[],scores:{},qt:0,at:'letters'};}
-function sv(){try{localStorage.setItem('bl4',JSON.stringify(S));}catch(e){}}
-let S=ld(),LS={l:null,i:0},QS={q:[],i:0,sc:0,sel:null},muted=false;
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+function ldS(){try{const s=localStorage.getItem('bl4');if(s)return JSON.parse(s);}catch(e){}return{xp:0,streak:1,done:[],scores:{},qt:0,at:'letters'};}
+function svS(){try{localStorage.setItem('bl4',JSON.stringify(S));}catch(e){}}
+let S=ldS(),LS={l:null,i:0},QS={q:[],i:0,sc:0,sel:null},muted=false;
 
 function lv(x){return Math.floor(x/200)+1}
 function lp(x){return((x%200)/200)*100}
 
+// ═══════════════════════════════════════
+// BRAILLE CELL RENDERER
+// ═══════════════════════════════════════
 function mkCell(dots,sz='',numbered=false){
   const lay=[[1,4],[2,5],[3,6]];
   let h=`<div class="braille-cell${sz?' cell-'+sz:''}${numbered?' cell-num':''}">`;
   lay.forEach(r=>r.forEach(d=>{
-    const active=dots&&dots.includes(d);
+    const a=dots&&dots.includes(d);
     if(numbered){
-      h+=`<div class="dot${active?' active':''} dot-num"><span class="dn">${d}</span></div>`;
-    } else {
-      h+=`<div class="dot${active?' active':''}"></div>`;
+      h+=`<div class="dot${a?' active':''}"><span class="dn">${d}</span></div>`;
+    }else{
+      h+=`<div class="dot${a?' active':''}"></div>`;
     }
   }));
   return h+'</div>';
 }
 
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+function showPg(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo(0,0);
+}
+
 function goApp(v){
   document.getElementById('pg-land').classList.remove('on');
   document.getElementById('pg-app').classList.add('on');
-  showV(v);
+  showView(v);
 }
-function showV(v){
+
+function showView(v){
   ['dashboard','lesson','complete','quiz','result','alphabet','translator','progress'].forEach(x=>{
     const e=document.getElementById('view-'+x);
     if(e)e.className='view'+(x===v?' on':'');
   });
-  document.querySelectorAll('.nitem').forEach(n=>n.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(n=>n.classList.remove('on'));
   const ni=document.getElementById('ni-'+v);if(ni)ni.classList.add('on');
   if(v==='dashboard')rDash();
   if(v==='alphabet')rAlph();
   if(v==='progress')rProg();
-  updNav();window.scrollTo(0,0);
+  updNav();
+  window.scrollTo(0,0);
 }
-function updNav(){document.getElementById('nav-xp').textContent=S.xp+' XP · Lv '+lv(S.xp);}
 
+function updNav(){
+  document.getElementById('nav-xp').textContent=S.xp+' XP · Lv '+lv(S.xp);
+}
+
+// ═══════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════
 function rDash(){
   const l=lv(S.xp);
   document.getElementById('lv-num').textContent=l;
@@ -952,46 +911,52 @@ function rDash(){
   }).join('');
 }
 
-function stLes(i){LS.l=LES[i];LS.i=0;showV('lesson');rLes();}
+// ═══════════════════════════════════════
+// LESSONS
+// ═══════════════════════════════════════
+function stLes(i){LS.l=LES[i];LS.i=0;showView('lesson');rLes();}
 function rLes(){
   const l=LS.l,i=LS.i,k=l.l[i],d=BR[k];
   document.getElementById('les-letter').textContent=k.toUpperCase();
   document.getElementById('les-sym').textContent=d.sym;
   document.getElementById('les-cell').innerHTML=mkCell(d.dots,'lg');
   document.getElementById('les-dots').innerHTML=d.dots.map(n=>`<div class="dp">${n}</div>`).join('');
-  document.getElementById('hint-txt').style.display='none';
-  document.getElementById('hint-txt').textContent=d.hint;
+  document.getElementById('hint-box').style.display='none';
+  document.getElementById('hint-box').textContent=d.hint;
   document.getElementById('hint-tog').textContent='💡 Show hint';
   document.getElementById('les-pfill').style.width=(i/l.l.length*100)+'%';
   document.getElementById('sc-title').textContent=l.t;
   document.getElementById('sc-sub').textContent='Letter '+(i+1)+' of '+l.l.length;
-  document.getElementById('prog-track').innerHTML=l.l.map((_,j)=>`<div class="pt${j<i?' done':j===i?' curr':''}"></div>`).join('');
+  document.getElementById('prog-track').innerHTML=l.l.map((_,j)=>`<div class="pt${j<i?' pdone':j===i?' pcurr':''}"></div>`).join('');
   document.getElementById('btn-prev').disabled=i===0;
   document.getElementById('btn-next').textContent=i===l.l.length-1?'Finish ✓':'Next →';
   document.getElementById('ref-cell').innerHTML=mkCell([1,2,3,4,5,6],'sm');
   setTimeout(()=>spkLetter(k,d.dots),300);
 }
 function toggleHint(){
-  const b=document.getElementById('hint-txt'),btn=document.getElementById('hint-tog'),show=b.style.display==='none';
+  const b=document.getElementById('hint-box'),btn=document.getElementById('hint-tog'),show=b.style.display==='none';
   b.style.display=show?'block':'none';btn.textContent=show?'👁️ Hide hint':'💡 Show hint';
 }
 function lesNext(){const l=LS.l;if(LS.i<l.l.length-1){LS.i++;rLes();}else compLes();}
 function lesPrev(){if(LS.i>0){LS.i--;rLes();}}
 function compLes(){
   const l=LS.l;
-  if(!S.done.includes(l.id)){S.done.push(l.id);S.xp+=l.xp;sv();}
+  if(!S.done.includes(l.id)){S.done.push(l.id);S.xp+=l.xp;svS();}
   document.getElementById('comp-sub').textContent=`You learned ${l.l.length} ${l.id===6?'numbers':'letters'}!`;
   document.getElementById('comp-xp').textContent=`+${l.xp} XP earned`;
-  showV('complete');spk('Lesson complete! Great work!');
+  showView('complete');spk('Lesson complete! Great work!');
 }
 
+// ═══════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════
 function startQuiz(){
   const items=LS.l.l,all=Object.keys(BR);
   QS.q=items.map(k=>{
     const o=[...all.filter(x=>x!==k).sort(()=>Math.random()-.5).slice(0,3).map(x=>({k:x,dots:BR[x].dots})),{k,dots:BR[k].dots}].sort(()=>Math.random()-.5);
     return{k,...BR[k],o};
   });
-  QS.i=0;QS.sc=0;QS.sel=null;showV('quiz');rQuiz();
+  QS.i=0;QS.sc=0;QS.sel=null;showView('quiz');rQuiz();
 }
 function rQuiz(){
   const q=QS.q[QS.i],tot=QS.q.length;
@@ -1000,8 +965,8 @@ function rQuiz(){
   document.getElementById('qz-pfill').style.width=(QS.i/tot*100)+'%';
   document.getElementById('qz-n').textContent=QS.i+1;
   document.getElementById('qz-t').textContent=tot;
-  document.getElementById('qz-score').textContent=QS.sc;
-  document.getElementById('qz-qn').textContent=(QS.i+1)+' / '+tot;
+  document.getElementById('qz-sc').textContent=QS.sc;
+  document.getElementById('qz-qn').textContent=(QS.i+1)+'/'+tot;
   document.getElementById('qz-xp').textContent='+'+Math.round(QS.sc/tot*50);
   document.getElementById('qz-fb').style.display='none';
   QS.sel=null;
@@ -1026,18 +991,21 @@ function showRes(){
   const tot=QS.q.length,pct=Math.round(QS.sc/tot*100),bon=Math.round(pct/100*50);
   S.xp+=bon;S.qt=(S.qt||0)+1;
   if(!S.scores[LS.l.id]||pct>S.scores[LS.l.id])S.scores[LS.l.id]=pct;
-  sv();
+  svS();
   document.getElementById('res-e').textContent=pct>=80?'🏆':pct>=60?'✅':'💪';
   document.getElementById('res-t').textContent=pct>=80?'Excellent!':pct>=60?'Good job!':'Keep going!';
   document.getElementById('ring-p').textContent=pct+'%';
-  document.getElementById('ring-s').textContent=QS.sc+' / '+tot+' correct';
+  document.getElementById('ring-s').textContent=QS.sc+'/'+tot+' correct';
   document.getElementById('res-c').textContent=QS.sc;
   document.getElementById('res-w').textContent=tot-QS.sc;
   document.getElementById('res-x').textContent='+'+bon;
-  showV('result');spk(pct>=80?'Excellent!':pct>=60?'Good job!':'Keep practicing!');
+  showView('result');spk(pct>=80?'Excellent!':pct>=60?'Good job!':'Keep practicing!');
 }
 function retryQuiz(){startQuiz();}
 
+// ═══════════════════════════════════════
+// ALPHABET
+// ═══════════════════════════════════════
 function rAlph(){
   const isL=S.at==='letters';
   const keys=isL?Object.keys(BR).filter(k=>isNaN(k)):['0','1','2','3','4','5','6','7','8','9'];
@@ -1049,8 +1017,8 @@ function rAlph(){
 }
 function switchAlph(t){
   S.at=t;
-  document.getElementById('atv-l').className='atv'+(t==='letters'?' on':'');
-  document.getElementById('atv-n').className='atv'+(t==='numbers'?' on':'');
+  document.getElementById('atv-l').className='atab-btn'+(t==='letters'?' on':'');
+  document.getElementById('atv-n').className='atab-btn'+(t==='numbers'?' on':'');
   document.getElementById('alph-detail').innerHTML='<div style="font-size:13px;color:var(--t3)">Click any letter to see details</div>';
   rAlph();
 }
@@ -1067,16 +1035,24 @@ function selAlph(k){
   spkLetter(k,d.dots);
 }
 
-let transSpkTimer=null;
+// ═══════════════════════════════════════
+// TRANSLATOR
+// ═══════════════════════════════════════
+let transTimer=null;
 function setTrans(v){document.getElementById('tp-ta').value=v;doTrans();}
 function clrTrans(){document.getElementById('tp-ta').value='';doTrans();}
 function doTrans(){
   const inp=document.getElementById('tp-ta').value;
   document.getElementById('tp-cnt').textContent=inp.length;
-  if(!inp){document.getElementById('sym-out').textContent='—';document.getElementById('cells-out').innerHTML='';document.getElementById('det-list').innerHTML='';return;}
+  if(!inp){
+    document.getElementById('sym-out').textContent='—';
+    document.getElementById('cells-out').innerHTML='';
+    document.getElementById('det-list').innerHTML='';
+    return;
+  }
   let sy='',ce='',de='';
   inp.toLowerCase().split('').forEach(c=>{
-    if(c===' '){sy+=' ';ce+='<div style="width:20px"></div>';return;}
+    if(c===' '){sy+=' ';ce+='<div style="width:16px"></div>';return;}
     const d=BR[c];if(!d){sy+=c;return;}
     sy+=d.sym;
     ce+=`<div class="ci">${mkCell(d.dots,'',true)}<div class="ci-l">${c.toUpperCase()}</div></div>`;
@@ -1085,18 +1061,19 @@ function doTrans(){
   document.getElementById('sym-out').textContent=sy||'—';
   document.getElementById('cells-out').innerHTML=ce;
   document.getElementById('det-list').innerHTML=de;
-  // speak the last typed letter after a short pause
   if(!muted&&inp.length>0){
-    clearTimeout(transSpkTimer);
-    transSpkTimer=setTimeout(()=>{
+    clearTimeout(transTimer);
+    transTimer=setTimeout(()=>{
       const last=inp[inp.length-1].toLowerCase();
       if(last===' '){spk('space');return;}
-      const d=BR[last];
-      if(d)spkLetter(last,d.dots);
+      const d=BR[last];if(d)spkLetter(last,d.dots);
     },400);
   }
 }
 
+// ═══════════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════════
 function rProg(){
   const l=lv(S.xp);
   document.getElementById('pm-lv').textContent=l;
@@ -1124,47 +1101,63 @@ function rProg(){
   document.getElementById('qs-list').innerHTML=LES.map(l=>{
     const sc=S.scores[l.id];
     const col=sc>=80?'var(--g)':sc>=60?'var(--y)':'var(--r)';
-    return`<div class="qs-row"><span class="qsr-ico">${l.i}</span><span class="qsr-n">${l.t}</span>
+    return`<div class="qs-row"><span class="qsr-ico">${l.i}</span><span class="qsr-nm">${l.t}</span>
       <div class="qsr-bw"><div class="qsr-bf" style="width:${sc||0}%;background:${col}"></div></div>
       <span class="qsr-p" style="color:${sc?col:'var(--t3)'}">${sc?sc+'%':'—'}</span></div>`;
   }).join('');
 }
 
-// speech
-function toggleMute(){muted=!muted;window.speechSynthesis&&window.speechSynthesis.cancel();document.getElementById('vbtn').textContent=muted?'🔇 Voice off':'🔊 Voice on';}
-function spk(t,r=.95,p=1){if(!window.speechSynthesis||muted)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=r;u.pitch=p;u.volume=1;window.speechSynthesis.speak(u);}
-function spkLetter(k,dots){if(!window.speechSynthesis||muted)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(`${isNaN(k)?'Letter '+k.toUpperCase():'Number '+k}. ${dots.length} ${dots.length===1?'dot':'dots'}. Dot ${dots.join(', ')}.`);u.rate=.9;u.pitch=1;u.volume=1;window.speechSynthesis.speak(u);}
-function spkAns(ok,k){if(!window.speechSynthesis||muted)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(ok?'Correct! Well done!':`Wrong. The answer is ${k.toUpperCase()}.`);u.rate=.95;u.pitch=ok?1.1:.85;u.volume=1;window.speechSynthesis.speak(u);}
-
-
-// ══════════════════════════════
-// TEACHER DASHBOARD
-// ══════════════════════════════
-const AVATARS=['#7b6ef6','#3ec99a','#f5c842','#f7923a','#e8569d','#f05a6a','#4a9eff','#a259ff'];
-function avatarColor(name){return AVATARS[name.charCodeAt(0)%AVATARS.length];}
-function initials(name){return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
-
-function loadTeacher(){try{const t=localStorage.getItem('bl_teacher');if(t)return JSON.parse(t);}catch(e){}return null;}
-function saveTeacher(t){try{localStorage.setItem('bl_teacher',JSON.stringify(t));}catch(e){}}
-
-let TC=loadTeacher(); // teacher config
-let currentStudentId=null;
-
-function showPg(id){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-  window.scrollTo(0,0);
+// ═══════════════════════════════════════
+// SPEECH
+// ═══════════════════════════════════════
+function toggleMute(){
+  muted=!muted;
+  window.speechSynthesis&&window.speechSynthesis.cancel();
+  document.getElementById('vbtn').textContent=muted?'🔇 Voice off':'🔊 Voice on';
+}
+function spk(t,r=.95,p=1){
+  if(!window.speechSynthesis||muted)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t);u.rate=r;u.pitch=p;u.volume=1;
+  window.speechSynthesis.speak(u);
+}
+function spkLetter(k,dots){
+  if(!window.speechSynthesis||muted)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(`${isNaN(k)?'Letter '+k.toUpperCase():'Number '+k}. ${dots.length} ${dots.length===1?'dot':'dots'}. Dot ${dots.join(', ')}.`);
+  u.rate=.9;u.pitch=1;u.volume=1;window.speechSynthesis.speak(u);
+}
+function spkAns(ok,k){
+  if(!window.speechSynthesis||muted)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(ok?'Correct! Well done!':`Wrong. The answer is ${k.toUpperCase()}.`);
+  u.rate=.95;u.pitch=ok?1.1:.85;u.volume=1;window.speechSynthesis.speak(u);
 }
 
+// ═══════════════════════════════════════
+// TEACHER DASHBOARD
+// ═══════════════════════════════════════
+const AV_COLORS=['#7b6ef6','#3ec99a','#f5c842','#f7923a','#e8569d','#4a9eff','#f05a6a','#a259ff'];
+function avColor(n){return AV_COLORS[n.charCodeAt(0)%AV_COLORS.length];}
+function avInitials(n){return n.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?';}
+
+function ldT(){try{const t=localStorage.getItem('bl_tc');if(t)return JSON.parse(t);}catch(e){}return null;}
+function svT(){try{localStorage.setItem('bl_tc',JSON.stringify(TC));}catch(e){}}
+
+let TC=ldT();
+let curStu=null;
+
 function teacherRegister(){
-  const name=document.getElementById('tl-new-name').value.trim();
-  const pin=document.getElementById('tl-new-pin').value.trim();
-  const cls=document.getElementById('tl-class').value.trim();
-  if(!name||!pin||!cls){alert('Please fill in all fields.');return;}
-  if(TC){if(!confirm('A dashboard already exists. Overwrite it?'))return;}
-  TC={name,pin,className:cls,students:[],createdAt:Date.now()};
-  saveTeacher(TC);
-  openTeacherDash();
+  const name=document.getElementById('tl-rname').value.trim();
+  const cls=document.getElementById('tl-rclass').value.trim();
+  const pin=document.getElementById('tl-rpin').value.trim();
+  const err=document.getElementById('tl-rerr');
+  if(!name||!cls||!pin){err.style.display='block';return;}
+  err.style.display='none';
+  if(TC&&!confirm('A dashboard already exists. Replace it?'))return;
+  TC={name,className:cls,pin,students:[],created:Date.now()};
+  svT();
+  openTeacher();
 }
 
 function teacherLogin(){
@@ -1173,7 +1166,8 @@ function teacherLogin(){
   if(!TC){err.textContent='No dashboard found. Please create one below.';err.style.display='block';return;}
   if(pin!==TC.pin){err.style.display='block';return;}
   err.style.display='none';
-  openTeacherDash();
+  document.getElementById('tl-pin').value='';
+  openTeacher();
 }
 
 function teacherLogout(){
@@ -1181,195 +1175,179 @@ function teacherLogout(){
   document.getElementById('tl-pin').value='';
 }
 
-function openTeacherDash(){
+function openTeacher(){
   showPg('pg-teacher');
-  document.getElementById('t-view-overview').style.display='block';
-  document.getElementById('t-view-student').style.display='none';
-  document.getElementById('t-class-name').textContent=TC.className;
+  document.getElementById('tv-overview').style.display='block';
+  document.getElementById('tv-student').style.display='none';
+  document.getElementById('t-class-lbl').textContent=TC.className;
   document.getElementById('t-welcome').textContent='Welcome back, '+TC.name+'!';
-  document.getElementById('t-settings-class').textContent=TC.className;
-  renderStudentsTable();
-  renderOverviewStats();
+  document.getElementById('set-class-name').textContent=TC.className;
+  rStudents();
+  rOverviewStats();
 }
 
-function renderOverviewStats(){
+function rOverviewStats(){
   const ss=TC.students;
-  document.getElementById('to-students').textContent=ss.length;
-  if(ss.length===0){
-    document.getElementById('to-lessons').textContent='—';
-    document.getElementById('to-quizzes').textContent='—';
+  document.getElementById('to-stu').textContent=ss.length;
+  if(!ss.length){
+    document.getElementById('to-les').textContent='—';
+    document.getElementById('to-qz').textContent='—';
     document.getElementById('to-xp').textContent='—';
     return;
   }
-  const avgLes=Math.round(ss.reduce((a,s)=>a+(s.progress?.done?.length||0),0)/ss.length);
-  const avgXP=Math.round(ss.reduce((a,s)=>a+(s.progress?.xp||0),0)/ss.length);
-  const quizScores=ss.flatMap(s=>Object.values(s.progress?.scores||{}));
-  const avgQ=quizScores.length?Math.round(quizScores.reduce((a,b)=>a+b,0)/quizScores.length)+'%':'—';
-  document.getElementById('to-lessons').textContent=avgLes+' / 6';
-  document.getElementById('to-quizzes').textContent=avgQ;
+  const avgL=Math.round(ss.reduce((a,s)=>a+(s.p?.done?.length||0),0)/ss.length);
+  const avgXP=Math.round(ss.reduce((a,s)=>a+(s.p?.xp||0),0)/ss.length);
+  const allScores=ss.flatMap(s=>Object.values(s.p?.scores||{}));
+  const avgQ=allScores.length?Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length)+'%':'—';
+  document.getElementById('to-les').textContent=avgL+'/6';
+  document.getElementById('to-qz').textContent=avgQ;
   document.getElementById('to-xp').textContent=avgXP;
 }
 
-function renderStudentsTable(){
-  const body=document.getElementById('t-students-body');
-  if(TC.students.length===0){
-    body.innerHTML=`<div class="t-empty">No students yet. Click "+ Add Student" to get started.</div>`;
+function rStudents(){
+  const body=document.getElementById('t-tbody');
+  if(!TC.students.length){
+    body.innerHTML='<div class="t-empty">No students yet. Click "+ Add Student" to get started.</div>';
     return;
   }
   body.innerHTML=TC.students.map(s=>{
-    const done=s.progress?.done?.length||0;
-    const xp=s.progress?.xp||0;
-    const qt=s.progress?.qt||0;
+    const done=s.p?.done?.length||0,xp=s.p?.xp||0;
     const pct=Math.round(done/6*100);
-    const scores=Object.values(s.progress?.scores||{});
-    const avgScore=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length)+'%':'—';
-    const col=avatarColor(s.name);
-    return`<div class="t-table-row" onclick="viewStudent('${s.id}')">
-      <div class="t-row-name">
-        <div class="t-avatar" style="background:${col}22;color:${col}">${initials(s.name)}</div>
-        <div><div style="font-size:14px;font-weight:600">${s.name}</div><div style="font-size:11px;color:var(--t3)">${s.note||'No notes'}</div></div>
+    const sc=Object.values(s.p?.scores||{});
+    const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b,0)/sc.length)+'%':'—';
+    const col=avColor(s.name);
+    return`<div class="t-trow" onclick="viewStudent('${s.id}')">
+      <div class="t-name-cell">
+        <div class="t-av" style="background:${col}22;color:${col}">${avInitials(s.name)}</div>
+        <div><div class="t-name-main">${s.name}</div><div class="t-name-note">${s.note||'No notes'}</div></div>
       </div>
-      <div class="t-row-val" style="color:var(--g)">${done} / 6</div>
-      <div class="t-row-val" style="color:var(--y)">${avgScore}</div>
-      <div class="t-row-val" style="color:var(--p2)">${xp}</div>
-      <div class="t-row-bar"><div class="t-mini-bar"><div class="t-mini-fill" style="width:${pct}%"></div></div><div class="t-mini-pct">${pct}%</div></div>
+      <div class="t-val" style="color:var(--g)">${done}/6</div>
+      <div class="t-val" style="color:var(--y)">${avg}</div>
+      <div class="t-val" style="color:var(--p2)">${xp} XP</div>
+      <div class="t-mini-wrap"><div class="t-mini-bar"><div class="t-mini-fill" style="width:${pct}%"></div></div><div class="t-mini-pct">${pct}%</div></div>
       <button class="t-view-btn" onclick="event.stopPropagation();viewStudent('${s.id}')">View →</button>
     </div>`;
   }).join('');
 }
 
 function viewStudent(id){
-  currentStudentId=id;
-  const s=TC.students.find(x=>x.id===id);
-  if(!s)return;
-  document.getElementById('t-view-overview').style.display='none';
-  document.getElementById('t-view-student').style.display='block';
-  const col=avatarColor(s.name);
-  document.getElementById('sv-avatar').style.background=col+'22';
-  document.getElementById('sv-avatar').style.color=col;
-  document.getElementById('sv-avatar').textContent=initials(s.name);
+  curStu=id;
+  const s=TC.students.find(x=>x.id===id);if(!s)return;
+  document.getElementById('tv-overview').style.display='none';
+  document.getElementById('tv-student').style.display='block';
+  const col=avColor(s.name);
+  const av=document.getElementById('sv-av');
+  av.style.background=col+'22';av.style.color=col;av.textContent=avInitials(s.name);
   document.getElementById('sv-name').textContent=s.name;
-  document.getElementById('sv-sub').textContent='Added '+new Date(s.addedAt).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+(s.note?'  ·  '+s.note:'');
-  const p=s.progress||{};
-  const done=p.done||[];
-  const scores=p.scores||{};
-  document.getElementById('sv-lessons').textContent=done.length+' / 6';
-  document.getElementById('sv-quizzes').textContent=p.qt||0;
+  document.getElementById('sv-sub').textContent='Added '+new Date(s.added).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+(s.note?' · '+s.note:'');
+  const p=s.p||{};const done=p.done||[];const scores=p.scores||{};
+  document.getElementById('sv-les').textContent=done.length+'/6';
+  document.getElementById('sv-qt').textContent=p.qt||0;
   document.getElementById('sv-xp').textContent=p.xp||0;
   document.getElementById('sv-pct').textContent=Math.round(done.length/6*100)+'%';
-  // lessons grid
-  document.getElementById('sv-lessons-grid').innerHTML=LES.map(l=>{
-    const isDone=done.includes(l.id);
+  document.getElementById('sv-les-grid').innerHTML=LES.map(l=>{
+    const d=done.includes(l.id);
+    const inProg=!d&&(l.id===1||done.includes(l.id-1));
     const sc=scores[l.id];
-    const status=isDone?'done':done.includes(l.id-1)||l.id===1?'pending':'none';
-    return`<div class="t-les-card ${isDone?'done':status==='none'?'not-started':''}">
-      <div class="t-les-top">
-        <span class="t-les-icon">${l.i}</span>
-        <span class="t-les-status ${status==='done'?'status-done':status==='pending'?'status-pending':'status-none'}">
-          ${status==='done'?'Completed':status==='pending'?'In progress':'Not started'}
-        </span>
+    return`<div class="sv-les${d?' done':!d&&!inProg?' ns':''}">
+      <div class="sv-les-top"><span class="sv-les-ico">${l.i}</span>
+        <span class="sv-status ${d?'st-done':inProg?'st-prog':'st-none'}">${d?'Done':inProg?'In progress':'Not started'}</span>
       </div>
-      <div class="t-les-name">${l.t}</div>
-      <div class="t-les-score">${sc?'Quiz score: <b style="color:var(--g)">'+sc+'%</b>':'No quiz taken yet'}</div>
+      <div class="sv-les-name">${l.t}</div>
+      <div class="sv-les-score">${sc?'Quiz: <b style="color:var(--g)">'+sc+'%</b>':'No quiz yet'}</div>
     </div>`;
   }).join('');
-  // notes
-  renderNotes(s);
-  document.getElementById('sv-note-input').value='';
+  rNotes(s);
+  document.getElementById('note-inp').value='';
   window.scrollTo(0,0);
 }
 
-function renderNotes(s){
+function rNotes(s){
   const notes=s.notes||[];
-  document.getElementById('sv-notes-list').innerHTML=notes.length===0
-    ?'<div style="font-size:13px;color:var(--t3);margin-bottom:8px">No notes yet for this student.</div>'
-    :notes.map((n,i)=>`<div style="display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
-        <div><div style="font-size:13px;color:var(--t1)">${n.text}</div><div style="font-size:11px;color:var(--t3);margin-top:3px">${new Date(n.at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</div></div>
-        <button onclick="deleteNote(${i})" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">×</button>
+  document.getElementById('sv-notes').innerHTML=!notes.length
+    ?'<div style="font-size:13px;color:var(--t3);padding:8px 0 12px">No notes yet for this student.</div>'
+    :notes.map((n,i)=>`<div class="note-item">
+        <div><div class="note-text">${n.text}</div><div class="note-date">${new Date(n.at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</div></div>
+        <button class="note-del" onclick="delNote(${i})">×</button>
       </div>`).join('');
 }
 
 function saveNote(){
-  const input=document.getElementById('sv-note-input');
-  const text=input.value.trim();
-  if(!text)return;
-  const s=TC.students.find(x=>x.id===currentStudentId);
-  if(!s)return;
+  const inp=document.getElementById('note-inp');
+  const text=inp.value.trim();if(!text)return;
+  const s=TC.students.find(x=>x.id===curStu);if(!s)return;
   if(!s.notes)s.notes=[];
   s.notes.unshift({text,at:Date.now()});
-  saveTeacher(TC);
-  renderNotes(s);
-  input.value='';
+  svT();rNotes(s);inp.value='';
 }
 
-function deleteNote(idx){
-  const s=TC.students.find(x=>x.id===currentStudentId);
-  if(!s||!s.notes)return;
-  s.notes.splice(idx,1);
-  saveTeacher(TC);
-  renderNotes(s);
+function delNote(idx){
+  const s=TC.students.find(x=>x.id===curStu);if(!s)return;
+  if(!confirm('Delete this note?'))return;
+  s.notes.splice(idx,1);svT();rNotes(s);
 }
 
 function removeStudent(){
-  const s=TC.students.find(x=>x.id===currentStudentId);
-  if(!s)return;
+  const s=TC.students.find(x=>x.id===curStu);if(!s)return;
   if(!confirm('Remove '+s.name+' from your class? This cannot be undone.'))return;
-  TC.students=TC.students.filter(x=>x.id!==currentStudentId);
-  saveTeacher(TC);
-  backToOverview();
+  TC.students=TC.students.filter(x=>x.id!==curStu);
+  svT();backToOverview();
 }
 
 function backToOverview(){
-  currentStudentId=null;
-  document.getElementById('t-view-student').style.display='none';
-  document.getElementById('t-view-overview').style.display='block';
-  renderStudentsTable();
-  renderOverviewStats();
-  window.scrollTo(0,0);
+  curStu=null;
+  document.getElementById('tv-student').style.display='none';
+  document.getElementById('tv-overview').style.display='block';
+  rStudents();rOverviewStats();window.scrollTo(0,0);
 }
 
-function openAddStudent(){document.getElementById('modal-add-student').style.display='flex';document.getElementById('add-student-name').focus();}
-function confirmAddStudent(){
-  const name=document.getElementById('add-student-name').value.trim();
-  const note=document.getElementById('add-student-note').value.trim();
+// modals
+function openModal(id){
+  document.getElementById(id).style.display='flex';
+  if(id==='modal-add'){document.getElementById('add-name').value='';document.getElementById('add-note').value='';}
+  if(id==='modal-class')document.getElementById('edit-class').value=TC.className;
+  if(id==='modal-pin'){document.getElementById('pin-cur').value='';document.getElementById('pin-new').value='';document.getElementById('pin-err').style.display='none';}
+}
+function closeModal(id){document.getElementById(id).style.display='none';}
+
+function confirmAdd(){
+  const name=document.getElementById('add-name').value.trim();
+  const note=document.getElementById('add-note').value.trim();
   if(!name){alert('Please enter a student name.');return;}
-  const student={id:'s_'+Date.now(),name,note,addedAt:Date.now(),notes:[],progress:{xp:0,done:[],scores:{},qt:0,streak:0}};
-  TC.students.push(student);
-  saveTeacher(TC);
-  closeModal('modal-add-student');
-  document.getElementById('add-student-name').value='';
-  document.getElementById('add-student-note').value='';
-  renderStudentsTable();
-  renderOverviewStats();
+  TC.students.push({id:'s'+Date.now(),name,note,added:Date.now(),notes:[],p:{xp:0,done:[],scores:{},qt:0,streak:0}});
+  svT();closeModal('modal-add');rStudents();rOverviewStats();
 }
 
-function openEditClass(){document.getElementById('edit-class-name').value=TC.className;document.getElementById('modal-edit-class').style.display='flex';}
 function confirmEditClass(){
-  const n=document.getElementById('edit-class-name').value.trim();
-  if(!n)return;
-  TC.className=n;saveTeacher(TC);
-  document.getElementById('t-class-name').textContent=n;
-  document.getElementById('t-settings-class').textContent=n;
-  closeModal('modal-edit-class');
+  const n=document.getElementById('edit-class').value.trim();if(!n)return;
+  TC.className=n;svT();
+  document.getElementById('t-class-lbl').textContent=n;
+  document.getElementById('set-class-name').textContent=n;
+  closeModal('modal-class');
 }
 
-function openChangePin(){document.getElementById('pin-current').value='';document.getElementById('pin-new').value='';document.getElementById('pin-err').style.display='none';document.getElementById('modal-change-pin').style.display='flex';}
-function confirmChangePin(){
-  const cur=document.getElementById('pin-current').value.trim();
+function confirmPin(){
+  const cur=document.getElementById('pin-cur').value.trim();
   const nw=document.getElementById('pin-new').value.trim();
   const err=document.getElementById('pin-err');
   if(cur!==TC.pin){err.style.display='block';return;}
   if(!nw){alert('Please enter a new PIN.');return;}
-  TC.pin=nw;saveTeacher(TC);
-  closeModal('modal-change-pin');
-  alert('PIN updated successfully!');
+  TC.pin=nw;svT();closeModal('modal-pin');alert('PIN updated!');
 }
 
-function openAddNote(){document.getElementById('sv-note-input').focus();}
-function closeModal(id){document.getElementById(id).style.display='none';}
-
-function cycleHero(){const k=hKeys[hi%hKeys.length];document.getElementById('hc-l').textContent=k.toUpperCase();document.getElementById('hc-s').textContent=BR[k].sym;document.getElementById('hc-cell').innerHTML=mkCell(BR[k].dots,'lg');hi++;}
-cycleHero();setInterval(cycleHero,2800);
+// ═══════════════════════════════════════
+// HERO ANIMATION
+// ═══════════════════════════════════════
+const hKeys=Object.keys(BR).filter(k=>isNaN(k));let hi=0;
+function cycleHero(){
+  const k=hKeys[hi%hKeys.length];
+  document.getElementById('hc-l').textContent=k.toUpperCase();
+  document.getElementById('hc-s').textContent=BR[k].sym;
+  document.getElementById('hc-cell').innerHTML=mkCell(BR[k].dots,'lg');
+  hi++;
+}
+cycleHero();
+setInterval(cycleHero,2800);
 </script>
 </body>
 </html>
