@@ -1075,37 +1075,17 @@ function rLes(){
   document.getElementById('btn-prev').disabled=i===0;
   document.getElementById('btn-next').textContent=i===l.l.length-1?'Finish ✓':'Next →';
   document.getElementById('ref-cell').innerHTML=mkCell([1,2,3,4,5,6],'sm');
-  // speak letter then tip
-  setTimeout(()=>{
-    spkLetter(k,d.dots);
-  },200);
+  spkLetter(k,d.dots);
 }
 
 function speakCurrentLesson(){
-  if(!window.speechSynthesis)return;
-  if(muted)return;
-  const k=LS.l.l[LS.i];
-  const d=BR[k];
-  window.speechSynthesis.cancel();
-  // short pause then speak - needed on some browsers
-  setTimeout(()=>{
-    const name=isNaN(k)?'Letter '+k.toUpperCase():'Number '+k;
-    const dotText=d.dots.length===1?'1 dot. Dot '+d.dots[0]+'.':`${d.dots.length} dots. Dots ${d.dots.join(', ')}.`;
-    const u=new SpeechSynthesisUtterance(`${name}. ${dotText}`);
-    u.rate=0.88;u.pitch=1;u.volume=1;
-    window.speechSynthesis.speak(u);
-  },100);
+  if(!LS.l)return;
+  spkLetter(LS.l.l[LS.i],BR[LS.l.l[LS.i]].dots);
 }
 function speakTip(){
-  if(!window.speechSynthesis||muted)return;
+  if(!LS.l)return;
   const k=LS.l.l[LS.i];
-  const d=BR[k];
-  window.speechSynthesis.cancel();
-  setTimeout(()=>{
-    const u=new SpeechSynthesisUtterance(d.tip||d.hint);
-    u.rate=0.88;u.pitch=1;u.volume=1;
-    window.speechSynthesis.speak(u);
-  },100);
+  spk(BR[k].tip||BR[k].hint,0.88);
 }
 function lesNext(){const l=LS.l;if(LS.i<l.l.length-1){LS.i++;rLes();}else compLes();}
 function lesPrev(){if(LS.i>0){LS.i--;rLes();}}
@@ -1525,29 +1505,44 @@ function rProg(){
 // ═══════════════════════════════════════
 // SPEECH
 // ═══════════════════════════════════════
-function toggleMute(){
-  muted=!muted;
-  window.speechSynthesis&&window.speechSynthesis.cancel();
-  document.getElementById('vbtn').textContent=muted?'🔇 Voice off':'🔊 Voice on';
-}
-function spk(t,r=.95,p=1){
-  if(!window.speechSynthesis||muted)return;
+// ═══════════════════════════════════════
+// SPEECH SYSTEM
+// ═══════════════════════════════════════
+let spkQueue=[];
+let spkBusy=false;
+
+function spk(text,rate=0.92,pitch=1){
+  if(!window.speechSynthesis||muted||!text)return;
+  // cancel anything playing and speak immediately
   window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t);u.rate=r;u.pitch=p;u.volume=1;
-  window.speechSynthesis.speak(u);
+  spkBusy=false;
+  setTimeout(()=>{
+    const u=new SpeechSynthesisUtterance(String(text));
+    u.rate=rate;u.pitch=pitch;u.volume=1;
+    u.onend=()=>{spkBusy=false;};
+    u.onerror=()=>{spkBusy=false;};
+    spkBusy=true;
+    window.speechSynthesis.speak(u);
+  },80);
 }
+
 function spkLetter(k,dots){
   if(!window.speechSynthesis||muted)return;
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(`${isNaN(k)?'Letter '+k.toUpperCase():'Number '+k}. ${dots.length} ${dots.length===1?'dot':'dots'}. Dot ${dots.join(', ')}.`);
-  u.rate=.9;u.pitch=1;u.volume=1;window.speechSynthesis.speak(u);
+  const name=isNaN(k)?'Letter '+k.toUpperCase():'Number '+k;
+  const dotText=dots.length===1?'1 dot. Dot '+dots[0]+'.':`${dots.length} dots. Dots ${dots.join(', ')}.`;
+  spk(`${name}. ${dotText}`,0.88);
 }
+
 function spkAns(ok,k){
-  if(!window.speechSynthesis||muted)return;
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(ok?'Correct! Well done!':`Wrong. The answer is ${k.toUpperCase()}.`);
-  u.rate=.95;u.pitch=ok?1.1:.85;u.volume=1;window.speechSynthesis.speak(u);
+  spk(ok?'Correct! Well done!':`Wrong. The answer is ${k.toUpperCase()}.`,0.95,ok?1.1:0.85);
 }
+
+function toggleMute(){
+  muted=!muted;
+  if(muted){window.speechSynthesis&&window.speechSynthesis.cancel();}
+  document.getElementById('vbtn').textContent=muted?'🔇 Voice off':'🔊 Voice on';
+}
+
 
 // ═══════════════════════════════════════
 // TEACHER DASHBOARD
