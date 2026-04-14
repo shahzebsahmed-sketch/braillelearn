@@ -1189,19 +1189,64 @@ function tapDot(n){
     const el=document.getElementById('td'+d);
     if(el)el.className='tap-dot'+(tapDots.includes(d)?' on':'');
   });
-  document.getElementById('tap-active-dots')&&(document.getElementById('tap-active-dots').textContent=tapDots.length?tapDots.join(', '):'none');
-  // find matching letter and show it clearly
-  const match=tapDots.length?Object.entries(BR).find(([k,v])=>v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d))):null;
-  document.getElementById('tap-match-letter').textContent=match?match[0].toUpperCase():'?';
-  document.getElementById('tap-match-sym').textContent=match?match[1].sym:'—';
-  document.getElementById('tap-match-dots').textContent=tapDots.length?'Dots: '+tapDots.join(', '):'Tap dots above to identify';
-  document.getElementById('tap-match-letter').style.color=match?'var(--p)':'var(--t3)';
+
+  if(!tapDots.length){
+    document.getElementById('tap-match-letter').textContent='?';
+    document.getElementById('tap-match-letter').style.color='var(--t3)';
+    document.getElementById('tap-match-sym').textContent='—';
+    document.getElementById('tap-match-dots').textContent='Tap dots above to identify';
+    return;
+  }
+
+  // find all matches (letter + number)
+  const matches=Object.entries(BR).filter(([k,v])=>
+    v.dots.length===tapDots.length && v.dots.every(d=>tapDots.includes(d))
+  );
+  const letterMatch=matches.find(([k])=>isNaN(k));
+  const numMatch=matches.find(([k])=>!isNaN(k));
+
+  if(matches.length===0){
+    document.getElementById('tap-match-letter').textContent='?';
+    document.getElementById('tap-match-letter').style.color='var(--t3)';
+    document.getElementById('tap-match-sym').textContent='No match';
+    document.getElementById('tap-match-dots').textContent='Dots: '+tapDots.join(', ');
+    return;
+  }
+
+  // Show letter and number if both exist
+  let display='';
+  if(letterMatch && numMatch){
+    display=`<div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap">
+      <div style="text-align:center">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--g);margin-bottom:4px">Letter</div>
+        <div style="font-size:64px;font-weight:900;color:var(--p);line-height:1;letter-spacing:-2px">${letterMatch[0].toUpperCase()}</div>
+        <div style="font-size:24px;color:var(--t2);margin-top:4px;font-family:var(--fm)">${letterMatch[1].sym}</div>
+      </div>
+      <div style="font-size:28px;color:var(--t3);font-weight:300">/</div>
+      <div style="text-align:center">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--y);margin-bottom:4px">Number</div>
+        <div style="font-size:64px;font-weight:900;color:var(--y);line-height:1;letter-spacing:-2px">${numMatch[0]}</div>
+        <div style="font-size:24px;color:var(--t2);margin-top:4px;font-family:var(--fm)">${numMatch[1].sym}</div>
+      </div>
+    </div>`;
+  } else if(letterMatch){
+    display=`<div style="font-size:64px;font-weight:900;color:var(--p);line-height:1;letter-spacing:-2px">${letterMatch[0].toUpperCase()}</div>
+    <div style="font-size:24px;color:var(--t2);margin-top:4px;font-family:var(--fm)">${letterMatch[1].sym}</div>`;
+  } else if(numMatch){
+    display=`<div style="font-size:64px;font-weight:900;color:var(--y);line-height:1;letter-spacing:-2px">${numMatch[0]}</div>
+    <div style="font-size:24px;color:var(--t2);margin-top:4px;font-family:var(--fm)">${numMatch[1].sym}</div>`;
+  }
+
+  document.getElementById('tap-match-letter').innerHTML=display;
+  document.getElementById('tap-match-letter').style.color='';
+  document.getElementById('tap-match-sym').textContent='';
+  document.getElementById('tap-match-dots').textContent='Dots: '+tapDots.join(', ');
 }
 
 function tapClearDots(){
   tapDots=[];
   [1,2,3,4,5,6].forEach(d=>{const el=document.getElementById('td'+d);if(el)el.className='tap-dot';});
-  document.getElementById('tap-match-letter').textContent='?';
+  document.getElementById('tap-match-letter').innerHTML='?';
   document.getElementById('tap-match-letter').style.color='var(--t3)';
   document.getElementById('tap-match-sym').textContent='—';
   document.getElementById('tap-match-dots').textContent='Tap dots above to identify';
@@ -1209,12 +1254,16 @@ function tapClearDots(){
 
 function tapAddLetter(){
   if(!tapDots.length)return;
-  const match=Object.entries(BR).find(([k,v])=>v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d)));
-  if(!match){alert('No Braille letter matches these dots. Try again.');return;}
-  tapWord.push({char:match[0],dots:[...tapDots],sym:match[1].sym});
+  const letterMatch=Object.entries(BR).find(([k,v])=>!isNaN(k)?false:v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d)));
+  const numMatch=Object.entries(BR).find(([k,v])=>isNaN(k)?false:v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d)));
+  const match=letterMatch||numMatch;
+  if(!match){alert('No Braille letter matches these dots. Please check the dots and try again.');return;}
+  // Use letter version for word building
+  const useMatch=letterMatch||numMatch;
+  tapWord.push({char:useMatch[0],dots:[...tapDots],sym:useMatch[1].sym});
   renderTapResult();
   tapClearDots();
-  spk('Letter '+match[0].toUpperCase());
+  spk(isNaN(useMatch[0])?'Letter '+useMatch[0].toUpperCase():'Number '+useMatch[0]);
 }
 
 function tapAddSpace(){
