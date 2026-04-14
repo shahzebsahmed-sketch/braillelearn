@@ -399,6 +399,12 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .modal-p{font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6}
 .modal-btns{display:flex;gap:10px;margin-top:18px}
 
+/* ── MEMORY TIP ── */
+.mem-tip-box{background:linear-gradient(135deg,rgba(123,110,246,.08),rgba(245,200,66,.06));border:1px solid rgba(123,110,246,.2);border-radius:14px;padding:16px 20px;display:flex;align-items:flex-start;gap:12px;width:100%;margin-top:4px}
+.mem-tip-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.mem-tip-text{font-size:14px;color:var(--t2);line-height:1.65;font-style:italic}
+.mem-tip-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--p);margin-bottom:6px}
+
 /* ── TRANSLATOR TABS ── */
 .tr-tab{background:none;border:none;color:var(--t3);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--ff);transition:all .2s;white-space:nowrap}
 .tr-tab:hover{color:var(--t1)}
@@ -525,12 +531,18 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <div class="lesson-layout">
         <div class="lesson-main">
           <div class="lp-bar"><div class="lp-fill" id="les-pfill" style="width:0%"></div></div>
-          <div class="big-letter" id="les-letter">A</div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:4px">
+            <div class="big-letter" id="les-letter">A</div>
+            <button onclick="speakCurrentLesson()" title="Hear this letter" style="background:rgba(123,110,246,.15);border:1px solid rgba(123,110,246,.3);color:var(--p);width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;align-self:center" onmouseover="this.style.background='rgba(123,110,246,.3)'" onmouseout="this.style.background='rgba(123,110,246,.15)'">🔊</button>
+          </div>
           <div class="big-sym" id="les-sym">⠁</div>
-          <div class="cell-wrap" id="les-cell"></div>
+          <div class="cell-wrap" id="les-cell" onclick="speakCurrentLesson()" style="cursor:pointer" title="Click to hear this letter"></div>
+          <div style="font-size:11px;color:var(--t3);margin-top:-8px;margin-bottom:8px">Click cell to hear</div>
           <div class="dot-row"><div class="dot-row-lbl">Active dots</div><div class="dot-pills" id="les-dots"></div></div>
-          <button class="hint-tog" id="hint-tog" onclick="toggleHint()">💡 Show hint</button>
-          <div class="hint-box" id="hint-box" style="display:none"></div>
+          <div class="mem-tip-box" id="les-tip" style="margin-top:16px">
+            <div class="mem-tip-icon">💡</div>
+            <div class="mem-tip-text" id="les-tip-text"></div>
+          </div>
         </div>
         <div>
           <div class="side-card">
@@ -894,25 +906,44 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 // BRAILLE DATA
 // ═══════════════════════════════════════
 const BR={
-  a:{dots:[1],sym:'⠁',hint:'One dot — top left'},b:{dots:[1,2],sym:'⠃',hint:'Two dots — left column top'},
-  c:{dots:[1,4],sym:'⠉',hint:'Two dots — top row'},d:{dots:[1,4,5],sym:'⠙',hint:'Three dots — top + mid right'},
-  e:{dots:[1,5],sym:'⠑',hint:'Diagonal — top left to mid right'},f:{dots:[1,2,4],sym:'⠋',hint:'Three dots — L shape'},
-  g:{dots:[1,2,4,5],sym:'⠛',hint:'Four dots — top square'},h:{dots:[1,2,5],sym:'⠓',hint:'Three dots'},
-  i:{dots:[2,4],sym:'⠊',hint:'Two dots — middle row'},j:{dots:[2,4,5],sym:'⠚',hint:'Three dots — mid + right'},
-  k:{dots:[1,3],sym:'⠅',hint:'Two dots — left column'},l:{dots:[1,2,3],sym:'⠇',hint:'Full left column'},
-  m:{dots:[1,3,4],sym:'⠍',hint:'Three dots — left + top right'},n:{dots:[1,3,4,5],sym:'⠝',hint:'Four dots'},
-  o:{dots:[1,3,5],sym:'⠕',hint:'Three dots — left + mid right'},p:{dots:[1,2,3,4],sym:'⠏',hint:'Four dots'},
-  q:{dots:[1,2,3,4,5],sym:'⠟',hint:'Five dots'},r:{dots:[1,2,3,5],sym:'⠗',hint:'Four dots'},
-  s:{dots:[2,3,4],sym:'⠎',hint:'Three dots — inner square'},t:{dots:[2,3,4,5],sym:'⠞',hint:'Four dots — lower square'},
-  u:{dots:[1,3,6],sym:'⠥',hint:'Three dots — left + bottom right'},v:{dots:[1,2,3,6],sym:'⠧',hint:'Four dots — left + bottom right'},
-  w:{dots:[2,4,5,6],sym:'⠺',hint:'Four dots — right side'},x:{dots:[1,3,4,6],sym:'⠭',hint:'Four dots — cross'},
-  y:{dots:[1,3,4,5,6],sym:'⠽',hint:'Five dots'},z:{dots:[1,3,5,6],sym:'⠵',hint:'Four dots'},
-  '1':{dots:[1],sym:'⠁',hint:'Same as A'},'2':{dots:[1,2],sym:'⠃',hint:'Same as B'},
-  '3':{dots:[1,4],sym:'⠉',hint:'Same as C'},'4':{dots:[1,4,5],sym:'⠙',hint:'Same as D'},
-  '5':{dots:[1,5],sym:'⠑',hint:'Same as E'},'6':{dots:[1,2,4],sym:'⠋',hint:'Same as F'},
-  '7':{dots:[1,2,4,5],sym:'⠛',hint:'Same as G'},'8':{dots:[1,2,5],sym:'⠓',hint:'Same as H'},
-  '9':{dots:[2,4],sym:'⠊',hint:'Same as I'},'0':{dots:[2,4,5],sym:'⠚',hint:'Same as J'}
+  a:{dots:[1],sym:'⠁',hint:'One dot — top left',tip:'Think of A as the very start — just ONE dot, top left corner. A is first in the alphabet, so it only needs 1 dot!'},
+  b:{dots:[1,2],sym:'⠃',hint:'Two dots — left column top',tip:'B has a big round belly on the left side. Imagine two dots stacked on top of each other like a tall letter B standing up straight.'},
+  c:{dots:[1,4],sym:'⠉',hint:'Two dots — top row',tip:'C is a curved shape that opens to the right. Picture two dots sitting side by side at the TOP — like eyes looking forward, wide open like the letter C.'},
+  d:{dots:[1,4,5],sym:'⠙',hint:'Three dots — top + mid right',tip:'D has a straight back and a bump. Two dots on top like C, then add one more on the right middle. The extra dot fills out D\'s round tummy!'},
+  e:{dots:[1,5],sym:'⠑',hint:'Diagonal — top left to mid right',tip:'E goes diagonally! Top left dot and middle right dot — like drawing a line from top-left to middle-right. Think of E stretching across.'},
+  f:{dots:[1,2,4],sym:'⠋',hint:'Three dots — L shape',tip:'F makes an L-shape with dots. Two on the left (1,2) and one top right (4) — like an upside-down L. Imagine F has a foot and an arm reaching out.'},
+  g:{dots:[1,2,4,5],sym:'⠛',hint:'Four dots — top square',tip:'G is a perfect SQUARE of 4 dots at the top! Think of G as a box — four corners of a square. It\'s the most balanced letter in Braille.'},
+  h:{dots:[1,2,5],sym:'⠓',hint:'Three dots — left top + mid right',tip:'H looks like a bridge — two dots on the left top and one jumping to the right middle. Imagine H as two pillars (left) with a crossbeam (right).'},
+  i:{dots:[2,4],sym:'⠊',hint:'Two dots — middle row',tip:'I is just one straight line — and in Braille it\'s TWO dots in the middle row. Simple and slim just like the letter I itself! Dots 2 and 4 sit right in the middle.'},
+  j:{dots:[2,4,5],sym:'⠚',hint:'Three dots — mid + right',tip:'J has a hook at the bottom. Start with I (dots 2,4) and add dot 5 below on the right — that\'s the hook curving back up, just like J!'},
+  k:{dots:[1,3],sym:'⠅',hint:'Two dots — left column',tip:'K kicks out to both sides — but in Braille it\'s A (dot 1) moved down to include dot 3. K is like A with longer legs reaching down!'},
+  l:{dots:[1,2,3],sym:'⠇',hint:'Full left column',tip:'L fills the whole left side! All three dots on the left column (1, 2, 3). Think of L as a full left wall — every left dot is lit up.'},
+  m:{dots:[1,3,4],sym:'⠍',hint:'Three dots — left + top right',tip:'M has two humps! Dots 1 and 3 on the left (top and bottom) with dot 4 bridging the top right — like two mountain humps side by side.'},
+  n:{dots:[1,3,4,5],sym:'⠝',hint:'Four dots — left + right top',tip:'N is almost a square but missing one corner. Think of it as M with an extra dot (5) — like N adding an extra leg to stand firmer.'},
+  o:{dots:[1,3,5],sym:'⠕',hint:'Three dots — diagonal stripe',tip:'O is round and these three dots make a diagonal stripe from top-left to bottom-right. Picture a ball rolling diagonally — that\'s O!'},
+  p:{dots:[1,2,3,4],sym:'⠏',hint:'Four dots — two columns top',tip:'P has a round bump. Imagine filling the top-left square with 4 dots — like filling in the round part of P. All four corners of the top half!'},
+  q:{dots:[1,2,3,4,5],sym:'⠟',hint:'Five dots — almost full cell',tip:'Q is almost a full cell — FIVE dots! Only dot 6 is missing. Q is like a full house with one room empty at the bottom right.'},
+  r:{dots:[1,2,3,5],sym:'⠗',hint:'Four dots — left column + mid right',tip:'R has a leg that kicks right. Full left column (1,2,3) plus dot 5 on the right middle — like R standing tall with one leg stepping out to the right.'},
+  s:{dots:[2,3,4],sym:'⠎',hint:'Three dots — inner square',tip:'S is sneaky — it skips dot 1! Dots 2, 3 and 4 make a small triangle. Think of S as hiding in the middle of the cell, leaving the top-left corner empty.'},
+  t:{dots:[2,3,4,5],sym:'⠞',hint:'Four dots — lower square',tip:'T is a table shape — four dots making a square in the lower half. Dots 2,3 on the left and 4,5 on the right — a perfect little table top!'},
+  u:{dots:[1,3,6],sym:'⠥',hint:'Three dots — left column + bottom right',tip:'U is a cup shape — open at the top! Dots 1 and 3 on the left, dot 6 bottom right. Think of it as the sides and bottom of a U-shaped cup.'},
+  v:{dots:[1,2,3,6],sym:'⠧',hint:'Four dots — left column + bottom right',tip:'V points downward. Full left column (1,2,3) and dot 6 at bottom right — like a V shape where the left side goes all the way down and the right just touches the bottom.'},
+  w:{dots:[2,4,5,6],sym:'⠺',hint:'Four dots — right side heavy',tip:'W is wide! It skips dot 1 and lives on the RIGHT side of the cell. Dots 2,4,5,6 — all on the right half. W spreads wide like its three bumps!'},
+  x:{dots:[1,3,4,6],sym:'⠭',hint:'Four dots — cross pattern',tip:'X marks the spot! Dots 1 and 6 are the diagonal corners (top-left, bottom-right) and dots 3,4 are the other two — making a cross shape, just like X!'},
+  y:{dots:[1,3,4,5,6],sym:'⠽',hint:'Five dots — almost full right',tip:'Y branches off — five dots, only missing dot 2! Almost a full cell. Think of Y as nearly complete but leaving a small gap at the middle-left.'},
+  z:{dots:[1,3,5,6],sym:'⠵',hint:'Four dots — diagonal corners',tip:'Z zigzags! Dot 1 top-left, dot 3 bottom-left, dot 5 middle-right, dot 6 bottom-right. Trace them and you get a Z-shaped zigzag pattern!'},
+  '1':{dots:[1],sym:'⠁',hint:'Same pattern as letter A',tip:'Number 1 shares its pattern with letter A — just ONE dot at the top left. Easy to remember: 1 dot = number 1!'},
+  '2':{dots:[1,2],sym:'⠃',hint:'Same pattern as letter B',tip:'Number 2 matches letter B — two dots stacked on the left. Two dots for the number 2. The count matches!'},
+  '3':{dots:[1,4],sym:'⠉',hint:'Same pattern as letter C',tip:'Number 3 shares with letter C — two dots side by side at the top. Think of 3 as two eyes looking forward.'},
+  '4':{dots:[1,4,5],sym:'⠙',hint:'Same pattern as letter D',tip:'Number 4 matches letter D — three dots forming a triangle at the top. Four has four letters, D has a round belly, both need 3 dots!'},
+  '5':{dots:[1,5],sym:'⠑',hint:'Same pattern as letter E',tip:'Number 5 shares with E — two dots diagonally. Give me five — stretch diagonally from top-left to middle-right!'},
+  '6':{dots:[1,2,4],sym:'⠋',hint:'Same pattern as letter F',tip:'Number 6 matches letter F — three dots in an L shape. Six has a curved bottom, F has a foot — both use the same L-shaped dots.'},
+  '7':{dots:[1,2,4,5],sym:'⠛',hint:'Same pattern as letter G',tip:'Number 7 shares with G — the perfect square of 4 dots. Lucky number 7 gets the most balanced pattern in Braille!'},
+  '8':{dots:[1,2,5],sym:'⠓',hint:'Same pattern as letter H',tip:'Number 8 matches letter H — the bridge pattern. Eight looks like two circles stacked, H is a bridge — both balance two sides!'},
+  '9':{dots:[2,4],sym:'⠊',hint:'Same pattern as letter I',tip:'Number 9 shares with I — two middle dots. Nearly 10, nearly at the top — 9 sits quietly in the middle row.'},
+  '0':{dots:[2,4,5],sym:'⠚',hint:'Same pattern as letter J',tip:'Zero matches letter J — the hook pattern. Zero is a round loop, J has a hook — both curve back around on the right side.'}
 };
+
 const LES=[
   {id:1,t:'First Letters',s:'A, B, C, D, E',i:'🌱',l:['a','b','c','d','e'],xp:50,d:'Beginner',c:'var(--g)'},
   {id:2,t:'Letters F–J',s:'F, G, H, I, J',i:'📖',l:['f','g','h','i','j'],xp:50,d:'Beginner',c:'var(--g)'},
@@ -1032,9 +1063,7 @@ function rLes(){
   document.getElementById('les-sym').textContent=d.sym;
   document.getElementById('les-cell').innerHTML=mkCell(d.dots,'lg');
   document.getElementById('les-dots').innerHTML=d.dots.map(n=>`<div class="dp">${n}</div>`).join('');
-  document.getElementById('hint-box').style.display='none';
-  document.getElementById('hint-box').textContent=d.hint;
-  document.getElementById('hint-tog').textContent='💡 Show hint';
+  document.getElementById('les-tip-text').innerHTML=`<div class="mem-tip-label">Memory tip</div>${d.tip||d.hint}`;
   document.getElementById('les-pfill').style.width=(i/l.l.length*100)+'%';
   document.getElementById('sc-title').textContent=l.t;
   document.getElementById('sc-sub').textContent='Letter '+(i+1)+' of '+l.l.length;
@@ -1042,11 +1071,20 @@ function rLes(){
   document.getElementById('btn-prev').disabled=i===0;
   document.getElementById('btn-next').textContent=i===l.l.length-1?'Finish ✓':'Next →';
   document.getElementById('ref-cell').innerHTML=mkCell([1,2,3,4,5,6],'sm');
-  setTimeout(()=>spkLetter(k,d.dots),300);
+  // speak letter then tip
+  setTimeout(()=>{
+    spkLetter(k,d.dots);
+  },200);
 }
-function toggleHint(){
-  const b=document.getElementById('hint-box'),btn=document.getElementById('hint-tog'),show=b.style.display==='none';
-  b.style.display=show?'block':'none';btn.textContent=show?'👁️ Hide hint':'💡 Show hint';
+
+function speakCurrentLesson(){
+  const k=LS.l.l[LS.i];
+  const d=BR[k];
+  window.speechSynthesis&&window.speechSynthesis.cancel();
+  const msg=`${isNaN(k)?'Letter '+k.toUpperCase():'Number '+k}. ${d.dots.length} ${d.dots.length===1?'dot':'dots'}. Dot ${d.dots.join(', ')}. Memory tip: ${d.tip}`;
+  const u=new SpeechSynthesisUtterance(msg);
+  u.rate=0.88;u.pitch=1;u.volume=1;
+  window.speechSynthesis.speak(u);
 }
 function lesNext(){const l=LS.l;if(LS.i<l.l.length-1){LS.i++;rLes();}else compLes();}
 function lesPrev(){if(LS.i>0){LS.i--;rLes();}}
