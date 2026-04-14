@@ -239,7 +239,10 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 <div class="screen" id="screen-home">
   <div class="scroll-area">
     <div class="home-pad">
-      <div class="greeting">Good day! 👋</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+        <div class="greeting">Good day! 👋</div>
+        <button onclick="toggleMute()" id="mute-btn" style="background:#1e1e3f;border:1px solid #2d2d5e;border-radius:10px;padding:6px 12px;color:#a0a0c8;cursor:pointer;font-size:13px;font-weight:600">🔊 Voice On</button>
+      </div>
       <div class="tagline">Continue your Braille journey</div>
       <div class="level-card">
         <div class="level-row">
@@ -602,6 +605,7 @@ function renderLesson(){
   document.getElementById('next-btn').textContent=idx===items.length-1?'Finish ✓':'Next ›';
   document.getElementById('lesson-dots-ind').innerHTML=items.map((_,i)=>`<div class="dot-ind${i===idx?' active':''}"></div>`).join('');
   document.getElementById('ref-cell').innerHTML=makeCell([1,2,3,4,5,6],'sm');
+  setTimeout(()=>speakLetter(key, d.dots), 300);
 }
 
 function toggleHint(){
@@ -656,6 +660,7 @@ function renderQuiz(){
       <span class="option-letter">${opt.key.toUpperCase()}</span>
       ${makeCell(opt.dots,'sm')}
     </div>`).join('');
+  setTimeout(()=>speak(`${q.dots.length} ${q.dots.length===1?'dot':'dots'}. Dot ${q.dots.join(', ')}. Which letter is this?`, 0.9), 400);
 }
 
 function answerQuiz(chosen){
@@ -670,7 +675,7 @@ function answerQuiz(chosen){
   fb.style.display='block';
   fb.className='feedback '+(correct?'correct':'wrong');
   fb.textContent=correct?'✓ Correct!':`✗ It's "${q.key.toUpperCase()}"`;
-  setTimeout(()=>{
+  speakQuizAnswer(correct, q.key);  setTimeout(()=>{
     if(quizState.idx<quizState.questions.length-1){quizState.idx++;renderQuiz();}
     else showResult();
   },1100);
@@ -778,6 +783,45 @@ function renderProgress(){
       <div class="ach-info"><div class="ach-title">${a.title}</div><div class="ach-desc">${a.desc}</div></div>
       ${a.unlocked?'<div class="ach-check">✓</div>':''}
     </div>`).join('');
+}
+
+// SPEECH
+let muted=false;
+function toggleMute(){
+  muted=!muted;
+  window.speechSynthesis.cancel();
+  const btn=document.getElementById('mute-btn');
+  if(btn)btn.textContent=muted?'🔇 Voice Off':'🔊 Voice On';
+}
+
+function speak(text, rate=0.95, pitch=1){
+  if(!window.speechSynthesis||muted)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.rate=rate; u.pitch=pitch; u.volume=1;
+  window.speechSynthesis.speak(u);
+}
+
+function speakLetter(key, dots){
+  if(!window.speechSynthesis||muted)return;
+  window.speechSynthesis.cancel();
+  const isNum=!isNaN(key);
+  const name=isNum?`Number ${key}`:`Letter ${key.toUpperCase()}`;
+  const dotCount=dots.length;
+  const dotList=dots.join(', ');
+  const msg=`${name}. ${dotCount} ${dotCount===1?'dot':'dots'}. Dot ${dotList}.`;
+  const u=new SpeechSynthesisUtterance(msg);
+  u.rate=0.9; u.pitch=1; u.volume=1;
+  window.speechSynthesis.speak(u);
+}
+
+function speakQuizAnswer(correct, letterKey){
+  if(!window.speechSynthesis||muted)return;
+  window.speechSynthesis.cancel();
+  const msg=correct?'Correct! Well done!':`Wrong. The answer is ${letterKey.toUpperCase()}.`;
+  const u=new SpeechSynthesisUtterance(msg);
+  u.rate=0.95; u.pitch=correct?1.1:0.9; u.volume=1;
+  window.speechSynthesis.speak(u);
 }
 
 // Init
