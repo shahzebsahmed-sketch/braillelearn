@@ -541,7 +541,11 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
           <div class="dot-row"><div class="dot-row-lbl">Active dots</div><div class="dot-pills" id="les-dots"></div></div>
           <div class="mem-tip-box" id="les-tip" style="margin-top:16px">
             <div class="mem-tip-icon">💡</div>
-            <div class="mem-tip-text" id="les-tip-text"></div>
+            <div style="flex:1">
+              <div class="mem-tip-label">Memory tip</div>
+              <div class="mem-tip-text" id="les-tip-text"></div>
+            </div>
+            <button onclick="speakTip()" title="Hear this tip" style="background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.2);color:var(--y);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">🔊</button>
           </div>
         </div>
         <div>
@@ -1078,13 +1082,30 @@ function rLes(){
 }
 
 function speakCurrentLesson(){
+  if(!window.speechSynthesis)return;
+  if(muted)return;
   const k=LS.l.l[LS.i];
   const d=BR[k];
-  window.speechSynthesis&&window.speechSynthesis.cancel();
-  const msg=`${isNaN(k)?'Letter '+k.toUpperCase():'Number '+k}. ${d.dots.length} ${d.dots.length===1?'dot':'dots'}. Dot ${d.dots.join(', ')}. Memory tip: ${d.tip}`;
-  const u=new SpeechSynthesisUtterance(msg);
-  u.rate=0.88;u.pitch=1;u.volume=1;
-  window.speechSynthesis.speak(u);
+  window.speechSynthesis.cancel();
+  // short pause then speak - needed on some browsers
+  setTimeout(()=>{
+    const name=isNaN(k)?'Letter '+k.toUpperCase():'Number '+k;
+    const dotText=d.dots.length===1?'1 dot. Dot '+d.dots[0]+'.':`${d.dots.length} dots. Dots ${d.dots.join(', ')}.`;
+    const u=new SpeechSynthesisUtterance(`${name}. ${dotText}`);
+    u.rate=0.88;u.pitch=1;u.volume=1;
+    window.speechSynthesis.speak(u);
+  },100);
+}
+function speakTip(){
+  if(!window.speechSynthesis||muted)return;
+  const k=LS.l.l[LS.i];
+  const d=BR[k];
+  window.speechSynthesis.cancel();
+  setTimeout(()=>{
+    const u=new SpeechSynthesisUtterance(d.tip||d.hint);
+    u.rate=0.88;u.pitch=1;u.volume=1;
+    window.speechSynthesis.speak(u);
+  },100);
 }
 function lesNext(){const l=LS.l;if(LS.i<l.l.length-1){LS.i++;rLes();}else compLes();}
 function lesPrev(){if(LS.i>0){LS.i--;rLes();}}
