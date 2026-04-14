@@ -399,6 +399,53 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .modal-p{font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6}
 .modal-btns{display:flex;gap:10px;margin-top:18px}
 
+/* ── LANDING SECTIONS ── */
+.land-section{padding:80px 0;border-top:1px solid var(--border)}
+.land-section-inner{max-width:1000px;margin:0 auto;padding:0 40px}
+.land-2col{display:grid;grid-template-columns:1fr 320px;gap:60px;align-items:start;margin-bottom:60px}
+
+/* school benefits */
+.school-benefits{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.school-benefit{display:flex;align-items:flex-start;gap:12px;font-size:15px;color:var(--t2);line-height:1.5}
+.school-benefit b{color:var(--t1)}
+.sb-tick{width:22px;height:22px;border-radius:50%;background:rgba(62,201,154,.15);border:1px solid rgba(62,201,154,.3);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--g);font-weight:700;flex-shrink:0;margin-top:2px}
+
+/* school price card */
+.school-price-card{background:var(--surface);border:1px solid rgba(123,110,246,.25);border-radius:20px;padding:28px;position:sticky;top:80px}
+.spc-tag{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--p);margin-bottom:12px}
+.spc-price{font-size:32px;font-weight:900;letter-spacing:-1px;color:var(--t1);line-height:1.1;margin-bottom:10px}
+.spc-price span{font-size:14px;font-weight:400;color:var(--t2);letter-spacing:0}
+.spc-desc{font-size:14px;color:var(--t2);line-height:1.6}
+
+/* enquiry form */
+.school-form-wrap{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px}
+.enquiry-form{}
+.ef-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:0}
+.ef-field{display:flex;flex-direction:column;margin-bottom:14px}
+
+/* support section */
+.support-section{background:linear-gradient(135deg,rgba(123,110,246,.06),rgba(232,86,157,.04))}
+.support-inner{display:flex;flex-direction:column;align-items:center;padding:20px 0}
+.support-heart{font-size:56px;margin-bottom:20px}
+.support-stats{display:flex;gap:48px;margin-bottom:36px}
+.support-stat{text-align:center}
+.ss-val{font-size:36px;font-weight:900;letter-spacing:-1px;color:var(--p)}
+.ss-lbl{font-size:13px;color:var(--t3);margin-top:4px}
+.support-btn{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#7b2ff7,#e8569d);color:#fff;border:none;border-radius:16px;padding:20px 32px;cursor:pointer;text-decoration:none;font-family:var(--ff);transition:all .25s;width:100%;max-width:480px}
+.support-btn:hover{transform:translateY(-2px);box-shadow:0 16px 48px rgba(123,47,247,.3)}
+
+/* footer */
+.land-footer{padding:28px 0;border-top:1px solid var(--border);background:var(--bg)}
+
+/* responsive */
+@media(max-width:900px){
+  .land-2col{grid-template-columns:1fr;gap:32px}
+  .school-price-card{position:static}
+  .ef-row{grid-template-columns:1fr}
+  .support-stats{gap:28px}
+  .land-section-inner{padding:0 20px}
+}
+
 /* ── MEMORY TIP ── */
 .mem-tip-box{background:linear-gradient(135deg,rgba(123,110,246,.08),rgba(245,200,66,.06));border:1px solid rgba(123,110,246,.2);border-radius:14px;padding:16px 20px;display:flex;align-items:flex-start;gap:12px;width:100%;margin-top:4px}
 .mem-tip-icon{font-size:22px;flex-shrink:0;margin-top:2px}
@@ -481,6 +528,114 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <div class="fc"><div class="fc-ico">🎯</div><div class="fc-t">Quizzes & Feedback</div><div class="fc-d">Multiple-choice quizzes after every lesson with voice and visual feedback.</div></div>
       <div class="fc"><div class="fc-ico">🔤</div><div class="fc-t">Braille Translator</div><div class="fc-d">Type any word and instantly see it translated into Braille dots.</div></div>
       <div class="fc"><div class="fc-ico">👩‍🏫</div><div class="fc-t">Teacher Dashboard</div><div class="fc-d">Track each student individually, add notes, and monitor progress.</div></div>
+    </div>
+  </div>
+
+  <!-- FOR SCHOOLS SECTION -->
+  <div class="land-section" id="section-schools">
+    <div class="land-section-inner">
+      <div class="land-2col">
+        <div>
+          <div class="sec-lbl">For schools & educators</div>
+          <div class="sec-title" style="margin-bottom:16px">Bring BrailleLearn<br>to your classroom</div>
+          <p style="font-size:16px;color:var(--t2);line-height:1.75;margin-bottom:24px;max-width:480px">BrailleLearn was built for a blind child and designed with teachers in mind. Get a school licence with full teacher dashboard access, unlimited students, and dedicated support.</p>
+          <div class="school-benefits">
+            <div class="school-benefit"><div class="sb-tick">✓</div><div><b>Unlimited students</b> — add your whole class</div></div>
+            <div class="school-benefit"><div class="sb-tick">✓</div><div><b>Individual progress tracking</b> — see every student's journey</div></div>
+            <div class="school-benefit"><div class="sb-tick">✓</div><div><b>Teacher notes</b> — record observations per student</div></div>
+            <div class="school-benefit"><div class="sb-tick">✓</div><div><b>Voice-enabled</b> — fully accessible for visually impaired learners</div></div>
+            <div class="school-benefit"><div class="sb-tick">✓</div><div><b>Works on any device</b> — no installation, no IT setup needed</div></div>
+          </div>
+          <button class="btn btn-p" style="margin-top:28px;font-size:15px" onclick="document.getElementById('school-form').scrollIntoView({behavior:'smooth'})">Enquire about a school licence →</button>
+        </div>
+        <div class="school-price-card">
+          <div class="spc-tag">School licence</div>
+          <div class="spc-price">Contact us<br><span>for pricing</span></div>
+          <div class="spc-desc">Tailored for your school's needs. Get in touch and we'll find the right plan for you.</div>
+          <div style="border-top:1px solid var(--border);margin:20px 0"></div>
+          <div style="font-size:13px;color:var(--t2);line-height:1.8">
+            ✓ Full teacher dashboard<br>
+            ✓ Unlimited students<br>
+            ✓ All 6 lessons + quizzes<br>
+            ✓ Priority support<br>
+            ✓ Perfect for SEND learners
+          </div>
+        </div>
+      </div>
+
+      <!-- Enquiry form -->
+      <div class="school-form-wrap" id="school-form">
+        <div class="sec-lbl" style="margin-bottom:8px">School enquiry</div>
+        <div style="font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:20px">Get in touch about a school licence</div>
+        <div class="enquiry-form">
+          <div class="ef-row">
+            <div class="ef-field">
+              <label class="inp-lbl">Your name</label>
+              <input class="inp" type="text" id="ef-name" placeholder="e.g. Mrs Sarah Jones" maxlength="60">
+            </div>
+            <div class="ef-field">
+              <label class="inp-lbl">School name</label>
+              <input class="inp" type="text" id="ef-school" placeholder="e.g. St Mary's Primary School" maxlength="80">
+            </div>
+          </div>
+          <div class="ef-row">
+            <div class="ef-field">
+              <label class="inp-lbl">Email address</label>
+              <input class="inp" type="email" id="ef-email" placeholder="your@school.co.uk" maxlength="100">
+            </div>
+            <div class="ef-field">
+              <label class="inp-lbl">Number of students</label>
+              <input class="inp" type="text" id="ef-students" placeholder="e.g. 30" maxlength="10">
+            </div>
+          </div>
+          <div class="ef-field" style="margin-bottom:14px">
+            <label class="inp-lbl">Any additional information</label>
+            <textarea class="inp" id="ef-message" placeholder="Tell us about your school and how you'd use BrailleLearn…" style="height:90px;resize:none"></textarea>
+          </div>
+          <div id="ef-success" style="display:none;background:rgba(62,201,154,.1);border:1px solid rgba(62,201,154,.25);border-radius:10px;padding:14px 18px;font-size:14px;color:var(--g);margin-bottom:14px">
+            ✓ Thank you! We'll be in touch within 2 working days.
+          </div>
+          <button class="btn btn-p" style="font-size:15px" onclick="submitEnquiry()">Send enquiry →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPPORT SECTION -->
+  <div class="land-section support-section">
+    <div class="land-section-inner">
+      <div class="support-inner">
+        <div class="support-heart">💜</div>
+        <div class="sec-title" style="margin-bottom:12px;text-align:center">Support this project</div>
+        <p style="font-size:16px;color:var(--t2);line-height:1.75;text-align:center;max-width:580px;margin:0 auto 12px">BrailleLearn was created by a parent for their blind son. Every contribution helps keep it free for blind children and their families around the world.</p>
+        <p style="font-size:14px;color:var(--t3);text-align:center;max-width:500px;margin:0 auto 32px">Your support goes towards new lessons, accessibility features, and keeping the platform free for everyone who needs it.</p>
+        <div class="support-stats">
+          <div class="support-stat"><div class="ss-val">100%</div><div class="ss-lbl">Free for learners</div></div>
+          <div class="support-stat"><div class="ss-val">26+</div><div class="ss-lbl">Letters & numbers</div></div>
+          <div class="support-stat"><div class="ss-val">∞</div><div class="ss-lbl">Children it can reach</div></div>
+        </div>
+        <a href="YOUR_GOFUNDME_LINK_HERE" target="_blank" class="support-btn">
+          <span style="font-size:20px">💜</span>
+          <div>
+            <div style="font-size:16px;font-weight:800">Support BrailleLearn</div>
+            <div style="font-size:12px;opacity:.85;margin-top:1px">Help blind children learn Braille for free</div>
+          </div>
+          <span style="font-size:18px;margin-left:auto">→</span>
+        </a>
+        <p style="font-size:12px;color:var(--t3);margin-top:16px;text-align:center">You'll be taken to our GoFundMe page · Every amount helps</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="land-footer">
+    <div class="land-section-inner" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div class="brand" style="font-size:16px">Braille<b>Learn</b></div>
+      <div style="font-size:13px;color:var(--t3)">Built with 💜 for blind children and their families · braillelearn.co.uk</div>
+      <div style="display:flex;gap:16px">
+        <a href="mailto:hello@braillelearn.co.uk" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">Contact us</a>
+        <a href="YOUR_GOFUNDME_LINK_HERE" target="_blank" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">Support us</a>
+      </div>
     </div>
   </div>
 </div>
@@ -1750,6 +1905,27 @@ function confirmPin(){
   if(cur!==TC.pin){err.style.display='block';return;}
   if(!nw){alert('Please enter a new PIN.');return;}
   TC.pin=nw;svT();closeModal('modal-pin');alert('PIN updated!');
+}
+
+// ═══════════════════════════════════════
+// SCHOOL ENQUIRY FORM
+// ═══════════════════════════════════════
+function submitEnquiry(){
+  const name=document.getElementById('ef-name').value.trim();
+  const school=document.getElementById('ef-school').value.trim();
+  const email=document.getElementById('ef-email').value.trim();
+  const students=document.getElementById('ef-students').value.trim();
+  const message=document.getElementById('ef-message').value.trim();
+  if(!name||!school||!email){
+    alert('Please fill in your name, school name and email address.');return;
+  }
+  // Build mailto link
+  const subject=encodeURIComponent('BrailleLearn School Licence Enquiry — '+school);
+  const body=encodeURIComponent(
+    `Name: ${name}\nSchool: ${school}\nEmail: ${email}\nStudents: ${students||'Not specified'}\n\nMessage:\n${message||'No additional message'}`
+  );
+  window.location.href=`mailto:hello@braillelearn.co.uk?subject=${subject}&body=${body}`;
+  document.getElementById('ef-success').style.display='block';
 }
 
 // ═══════════════════════════════════════
