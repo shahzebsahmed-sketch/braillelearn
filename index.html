@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>BrailleLearn – Learn Braille for Everyone</title>
+<meta name="description" content="Learn Braille interactively. Lessons, quizzes, translator and more. Free for everyone.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a1a;color:#fff;overflow:hidden}
+.app{max-width:430px;margin:0 auto;height:100vh;background:#0d0d1f;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden}
+.screen.active{display:flex}
+
+/* Scrollable content areas */
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll-area::-webkit-scrollbar{width:3px}
+.scroll-area::-webkit-scrollbar-thumb{background:#2d2d5e;border-radius:2px}
+
+/* Header */
+.header{padding:14px 18px 12px;display:flex;align-items:center;gap:12px;background:#0d0d1f;border-bottom:1px solid #1e1e3f;flex-shrink:0}
+.back-btn{background:#1e1e3f;border:none;color:#a0a0c8;width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.header-title{font-size:17px;font-weight:600;color:#fff;flex:1}
+
+/* Home */
+.home-pad{padding:18px}
+.greeting{font-size:22px;font-weight:700;color:#fff;margin-bottom:3px}
+.tagline{font-size:14px;color:#a0a0c8;margin-bottom:18px}
+
+.level-card{background:#12122a;border-radius:16px;padding:16px;border:1px solid #2d2d5e;margin-bottom:14px}
+.level-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.level-label{font-size:11px;font-weight:600;letter-spacing:1.2px;color:#6c63ff;text-transform:uppercase}
+.xp-text{font-size:20px;font-weight:700;color:#fff;margin-top:2px}
+.next-lvl{font-size:12px;color:#5a5a8a;text-align:right}
+.prog-bar{height:8px;background:#2d2d5e;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#6c63ff,#9b95ff);border-radius:99px;transition:width 0.6s ease}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat-card{background:#12122a;border-radius:12px;padding:12px 6px;text-align:center;border:1px solid #2d2d5e}
+.stat-icon{font-size:20px;margin-bottom:4px}
+.stat-val{font-size:20px;font-weight:700;margin-bottom:2px}
+.stat-lbl{font-size:11px;color:#5a5a8a}
+
+.quick-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
+.quick-btn{background:#1e1e3f;border:1px solid #2d2d5e;border-radius:12px;padding:13px;cursor:pointer;color:#fff;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;transition:all 0.2s}
+.quick-btn:hover{background:#2d2d5f;transform:translateY(-1px)}
+.quick-btn.primary{background:#6c63ff;border-color:#6c63ff}
+.quick-btn.primary:hover{background:#5a52dd}
+.quick-icon{font-size:20px}
+
+.section-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:3px}
+.section-sub{font-size:13px;color:#5a5a8a;margin-bottom:12px}
+
+.lesson-card{background:#12122a;border-radius:14px;padding:13px;margin-bottom:8px;border:1px solid #2d2d5e;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.2s}
+.lesson-card:hover:not(.locked){background:#1a1a3a;border-color:#3d3d6e;transform:translateY(-1px)}
+.lesson-card.completed{border-color:rgba(76,175,138,0.3)}
+.lesson-card.locked{opacity:0.4;cursor:default}
+.lesson-ico{width:46px;height:46px;background:#1e1e3f;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.lesson-ico.done{background:rgba(76,175,138,0.15)}
+.lesson-info{flex:1;min-width:0}
+.lesson-name{font-size:15px;font-weight:600;color:#fff;margin-bottom:2px}
+.lesson-sub2{font-size:12px;color:#a0a0c8;margin-bottom:3px}
+.lesson-xp{font-size:11px;color:#6c63ff;font-weight:600}
+.diff-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;display:inline-block;margin-left:6px;vertical-align:middle}
+.badge-done{background:rgba(76,175,138,0.15);color:#4caf8a;font-size:12px;padding:4px 10px;border-radius:99px;font-weight:600;white-space:nowrap}
+.badge-go{background:#6c63ff;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+
+/* Braille Cell */
+.braille-cell{background:#1a1a2e;border:2px solid #2d2d5e;border-radius:14px;padding:12px 10px;display:grid;grid-template-columns:1fr 1fr;gap:9px;width:fit-content}
+.dot{width:26px;height:26px;border-radius:50%;background:#2d2d5e;transition:all 0.25s;cursor:default}
+.dot.active{background:#6c63ff;box-shadow:0 0 8px rgba(108,99,255,0.6)}
+.cell-sm .dot{width:16px;height:16px}
+.cell-sm{padding:7px;gap:5px;border-radius:10px;border-radius:10px}
+.cell-md .dot{width:20px;height:20px}
+.cell-md{padding:9px;gap:7px}
+
+/* Lesson screen */
+.lesson-pad{padding:18px;padding-bottom:100px}
+.letter-display{text-align:center;margin-bottom:16px}
+.big-letter{font-size:80px;font-weight:900;color:#6c63ff;line-height:1}
+.braille-sym{font-size:34px;color:#a0a0c8;margin-top:4px}
+.cell-wrap{display:flex;justify-content:center;margin:16px 0}
+.dot-info{text-align:center;margin:12px 0}
+.dot-info-label{font-size:11px;letter-spacing:1.2px;color:#5a5a8a;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.dot-pills{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.dot-pill{width:30px;height:30px;border-radius:50%;background:rgba(108,99,255,0.15);border:1px solid #6c63ff;display:flex;align-items:center;justify-content:center;font-size:13px;color:#6c63ff;font-weight:700}
+.hint-btn{background:none;border:none;color:#ffd166;cursor:pointer;font-size:14px;padding:8px 16px;display:block;margin:0 auto;font-weight:600}
+.hint-btn:hover{color:#ffdd88}
+.hint-box{background:rgba(255,209,102,0.08);border:1px solid rgba(255,209,102,0.2);border-radius:12px;padding:12px 16px;margin:8px 0;text-align:center;color:#ffd166;font-size:14px;line-height:1.5}
+.ref-card{background:#12122a;border-radius:14px;padding:14px;border:1px solid #2d2d5e;margin-top:14px}
+.ref-title{font-size:13px;color:#a0a0c8;margin-bottom:10px;font-weight:600}
+.ref-row{display:flex;align-items:center;gap:16px}
+.ref-notes{flex:1;font-size:12px;color:#5a5a8a;line-height:2}
+
+/* Nav bar */
+.nav-bar{position:absolute;bottom:0;left:0;right:0;padding:12px 18px;background:#0d0d1f;border-top:1px solid #1e1e3f;display:flex;align-items:center;justify-content:space-between;z-index:10}
+.nav-btn{background:#1e1e3f;border:1px solid #2d2d5e;color:#a0a0c8;padding:10px 20px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.2s}
+.nav-btn:hover:not(:disabled){background:#2d2d5f}
+.nav-btn.primary{background:#6c63ff;border-color:#6c63ff;color:#fff}
+.nav-btn.primary:hover{background:#5a52dd}
+.nav-btn:disabled{opacity:0.3;cursor:default}
+.dot-indicators{display:flex;gap:5px;align-items:center}
+.dot-ind{width:6px;height:6px;border-radius:3px;background:#2d2d5e;transition:all 0.3s}
+.dot-ind.active{background:#6c63ff;width:18px}
+
+/* Progress bar in header area */
+.prog-top{padding:8px 18px 0;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.prog-count{font-size:12px;color:#5a5a8a;min-width:32px;text-align:right}
+
+/* Quiz */
+.quiz-pad{padding:18px;display:flex;flex-direction:column;align-items:center}
+.quiz-q{font-size:18px;font-weight:700;color:#fff;margin-bottom:18px;text-align:center}
+.quiz-cell-card{background:#12122a;border-radius:20px;padding:22px;border:1px solid #2d2d5e;margin-bottom:18px;display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+.choose-lbl{font-size:11px;letter-spacing:1.2px;color:#5a5a8a;text-transform:uppercase;margin-bottom:6px;align-self:flex-start;width:100%;font-weight:600}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.option{background:#12122a;border:2px solid #2d2d5e;border-radius:14px;padding:14px 10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all 0.2s}
+.option:hover{background:#1a1a3a;border-color:#3d3d6e}
+.option.correct{border-color:#4caf8a;background:rgba(76,175,138,0.1)}
+.option.wrong{border-color:#ff5e5e;background:rgba(255,94,94,0.1)}
+.option-letter{font-size:32px;font-weight:900;color:#fff}
+.option.correct .option-letter{color:#4caf8a}
+.option.wrong .option-letter{color:#ff5e5e}
+.feedback{margin-top:12px;padding:10px 24px;border-radius:99px;font-size:14px;font-weight:700}
+.feedback.correct{background:rgba(76,175,138,0.15);border:1px solid #4caf8a;color:#4caf8a}
+.feedback.wrong{background:rgba(255,94,94,0.15);border:1px solid #ff5e5e;color:#ff5e5e}
+.score-badge{background:rgba(255,209,102,0.15);border:1px solid rgba(255,209,102,0.3);border-radius:99px;padding:5px 12px;font-size:12px;color:#ffd166;font-weight:700}
+
+/* Result */
+.result-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px}
+.result-emoji{font-size:72px;margin-bottom:14px}
+.result-title{font-size:26px;font-weight:700;margin-bottom:22px}
+.score-circle{width:140px;height:140px;border-radius:50%;border:3px solid #6c63ff;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(108,99,255,0.08);margin-bottom:22px}
+.score-pct{font-size:36px;font-weight:900;color:#6c63ff}
+.score-sub{font-size:12px;color:#5a5a8a;margin-top:2px}
+.result-stats{display:flex;gap:32px;margin-bottom:28px}
+.r-stat{text-align:center}
+.r-stat-val{font-size:22px;font-weight:700}
+.r-stat-lbl{font-size:12px;color:#5a5a8a;margin-top:2px}
+.action-btn{width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;margin-bottom:10px;transition:all 0.2s}
+.action-btn:hover{opacity:0.9;transform:translateY(-1px)}
+.action-btn.primary{background:#6c63ff;color:#fff}
+.action-btn.secondary{background:#1e1e3f;color:#a0a0c8}
+
+/* Alphabet */
+.alph-pad{padding:14px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#12122a;border-radius:12px;padding:4px;margin-bottom:14px;border:1px solid #2d2d5e}
+.tab{padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;color:#5a5a8a;border:none;background:none;transition:all 0.2s}
+.tab.active{background:#6c63ff;color:#fff}
+.alph-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding-bottom:20px}
+.alph-card{background:#12122a;border-radius:12px;padding:10px 6px;text-align:center;border:1px solid #2d2d5e;cursor:pointer;transition:all 0.2s}
+.alph-card:hover{background:#1a1a3a;border-color:#3d3d6e;transform:translateY(-1px)}
+.alph-letter{font-size:22px;font-weight:900;color:#6c63ff;margin-bottom:6px}
+.alph-sym{font-size:18px;color:#a0a0c8;margin-top:4px}
+
+/* Modal */
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100}
+.modal{background:#12122a;border-radius:20px;padding:28px 22px;border:1px solid #2d2d5e;width:100%;text-align:center;max-width:340px}
+.modal-letter{font-size:72px;font-weight:900;color:#6c63ff;line-height:1}
+.modal-sym{font-size:32px;color:#a0a0c8;margin:6px 0 14px}
+.modal-dots{background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.25);border-radius:99px;padding:6px 16px;font-size:14px;color:#6c63ff;font-weight:700;display:inline-block;margin:10px 0 8px}
+.modal-hint{font-size:14px;color:#a0a0c8;margin-bottom:20px;line-height:1.6}
+.modal-close{background:#1e1e3f;border:none;color:#a0a0c8;padding:10px 28px;border-radius:99px;cursor:pointer;font-size:14px;font-weight:600;transition:background 0.2s}
+.modal-close:hover{background:#2d2d5f}
+
+/* Translator */
+.trans-pad{padding:18px;padding-bottom:20px}
+.input-card{background:#12122a;border-radius:14px;padding:14px;border:1px solid rgba(108,99,255,0.3);margin-bottom:14px}
+.input-lbl{font-size:11px;letter-spacing:1.2px;color:#5a5a8a;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.trans-input{background:none;border:none;color:#fff;font-size:16px;width:100%;resize:none;min-height:60px;font-family:inherit;outline:none;line-height:1.5}
+.trans-input::placeholder{color:#5a5a8a}
+.char-count{font-size:11px;color:#5a5a8a;text-align:right;margin-top:4px}
+.example-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.3);border-radius:99px;padding:6px 14px;font-size:13px;color:#6c63ff;cursor:pointer;transition:all 0.2s;font-weight:600}
+.chip:hover{background:rgba(108,99,255,0.25)}
+.sym-row{background:#12122a;border-radius:12px;padding:14px;border:1px solid #2d2d5e;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:2px;min-height:52px;align-items:center}
+.cells-scroll{overflow-x:auto;margin-bottom:12px;-webkit-overflow-scrolling:touch}
+.cells-row{display:flex;gap:12px;padding:8px 0;width:max-content}
+.cell-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+.cell-item-lbl{font-size:13px;font-weight:700;color:#6c63ff}
+.detail-row{display:flex;align-items:center;background:#12122a;border-radius:10px;padding:10px 12px;margin-bottom:6px;border:1px solid #2d2d5e;gap:10px}
+.d-letter{font-size:16px;font-weight:700;color:#6c63ff;width:22px;flex-shrink:0}
+.d-sym{font-size:20px;color:#a0a0c8;width:26px;flex-shrink:0}
+.d-dots{display:flex;gap:4px;flex-shrink:0}
+.d-dot{width:20px;height:20px;border-radius:50%;background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.35);display:flex;align-items:center;justify-content:center;font-size:10px;color:#6c63ff;font-weight:700}
+.d-hint{font-size:12px;color:#5a5a8a;flex:1}
+
+/* Progress screen */
+.prog-pad{padding:18px;padding-bottom:20px}
+.p-level-card{background:#12122a;border-radius:16px;padding:16px;border:1px solid rgba(108,99,255,0.3);margin-bottom:14px}
+.achieve-row{display:flex;align-items:center;background:#12122a;border-radius:12px;padding:12px 14px;margin-bottom:8px;border:1px solid #2d2d5e;gap:12px;transition:border-color 0.2s}
+.achieve-row.unlocked{border-color:rgba(76,175,138,0.25)}
+.achieve-row.locked-ach{opacity:0.4}
+.ach-icon{font-size:26px;width:32px;text-align:center;flex-shrink:0}
+.ach-info{flex:1}
+.ach-title{font-size:14px;font-weight:600;color:#fff}
+.ach-desc{font-size:12px;color:#5a5a8a;margin-top:2px}
+.ach-check{width:26px;height:26px;border-radius:50%;background:rgba(76,175,138,0.15);border:1px solid #4caf8a;display:flex;align-items:center;justify-content:center;font-size:12px;color:#4caf8a;flex-shrink:0;font-weight:700}
+
+/* Completion */
+.completion{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center}
+.comp-emoji{font-size:80px;margin-bottom:18px}
+.comp-title{font-size:28px;font-weight:700;margin-bottom:8px}
+.comp-sub{font-size:15px;color:#a0a0c8;margin-bottom:22px;line-height:1.5}
+.xp-badge{background:rgba(108,99,255,0.15);border:1px solid #6c63ff;border-radius:99px;padding:10px 28px;font-size:18px;color:#6c63ff;font-weight:700;margin-bottom:28px}
+
+/* Splash/Landing */
+.splash{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;background:#0d0d1f}
+.splash-logo{font-size:64px;margin-bottom:20px}
+.splash-title{font-size:30px;font-weight:900;color:#fff;margin-bottom:8px}
+.splash-sub{font-size:16px;color:#a0a0c8;line-height:1.6;margin-bottom:32px;max-width:280px}
+.splash-features{display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:32px}
+.feature-row{display:flex;align-items:center;gap:12px;background:#12122a;border-radius:12px;padding:12px 14px;border:1px solid #2d2d5e;text-align:left}
+.feature-icon{font-size:22px;width:28px;flex-shrink:0}
+.feature-text{font-size:14px;color:#a0a0c8;font-weight:500}
+.start-btn{background:#6c63ff;color:#fff;border:none;border-radius:14px;padding:16px 40px;font-size:17px;font-weight:700;cursor:pointer;width:100%;transition:all 0.2s}
+.start-btn:hover{background:#5a52dd;transform:translateY(-2px)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SPLASH SCREEN -->
+<div class="screen active" id="screen-splash">
+  <div class="splash">
+    <div class="splash-logo">⠃⠗</div>
+    <div class="splash-title">BrailleLearn</div>
+    <div class="splash-sub">Learn Braille interactively — for children, adults, teachers, and everyone.</div>
+    <div class="splash-features">
+      <div class="feature-row"><div class="feature-icon">📖</div><div class="feature-text">6 progressive lessons — full alphabet & numbers</div></div>
+      <div class="feature-row"><div class="feature-icon">🎯</div><div class="feature-text">Interactive quizzes with XP and achievements</div></div>
+      <div class="feature-row"><div class="feature-icon">🔤</div><div class="feature-text">Real-time text to Braille translator</div></div>
+      <div class="feature-row"><div class="feature-icon">📊</div><div class="feature-text">Track your progress and unlock badges</div></div>
+    </div>
+    <button class="start-btn" onclick="goTo('home')">Start Learning →</button>
+  </div>
+</div>
+
+<!-- HOME SCREEN -->
+<div class="screen" id="screen-home">
+  <div class="scroll-area">
+    <div class="home-pad">
+      <div class="greeting">Good day! 👋</div>
+      <div class="tagline">Continue your Braille journey</div>
+      <div class="level-card">
+        <div class="level-row">
+          <div>
+            <div class="level-label">Level <span id="level-num">1</span></div>
+            <div class="xp-text"><span id="xp-total">0</span> XP total</div>
+          </div>
+          <div class="next-lvl"><span id="xp-next">200</span> XP to next level</div>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" id="level-bar" style="width:0%"></div></div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-val" id="streak-val" style="color:#ff9f43">0</div><div class="stat-lbl">Streak</div></div>
+        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-val" id="done-val" style="color:#4caf8a">0</div><div class="stat-lbl">Done</div></div>
+        <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val" id="lvl-val" style="color:#ffd166">1</div><div class="stat-lbl">Level</div></div>
+      </div>
+      <div class="quick-row">
+        <button class="quick-btn primary" onclick="goTo('translator')"><span class="quick-icon">🔤</span>Translator</button>
+        <button class="quick-btn" onclick="goTo('alphabet')"><span class="quick-icon">🅰️</span>Alphabet</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+        <div class="section-title">Lessons</div>
+        <button style="background:none;border:none;color:#6c63ff;font-size:13px;cursor:pointer;font-weight:600" onclick="goTo('progress')">View Progress →</button>
+      </div>
+      <div class="section-sub" id="lesson-progress-txt">0 of 6 completed</div>
+      <div id="lessons-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LESSON SCREEN -->
+<div class="screen" id="screen-lesson">
+  <div class="header" style="padding-bottom:0;border-bottom:none">
+    <button class="back-btn" onclick="goTo('home')">✕</button>
+    <div class="prog-bar" style="flex:1;height:8px"><div class="prog-fill" id="lesson-prog" style="width:0%"></div></div>
+    <div class="prog-count" id="lesson-count">1/5</div>
+  </div>
+  <div class="scroll-area">
+    <div class="lesson-pad">
+      <div style="text-align:center;font-size:14px;color:#a0a0c8;margin-bottom:14px;font-weight:600" id="lesson-screen-title"></div>
+      <div class="letter-display">
+        <div class="big-letter" id="lesson-letter">A</div>
+        <div class="braille-sym" id="lesson-sym">⠁</div>
+      </div>
+      <div class="cell-wrap" id="lesson-cell-wrap"></div>
+      <div class="dot-info">
+        <div class="dot-info-label">Active dots</div>
+        <div class="dot-pills" id="lesson-dot-pills"></div>
+      </div>
+      <button class="hint-btn" id="hint-btn" onclick="toggleHint()">💡 Show hint</button>
+      <div class="hint-box" id="hint-box" style="display:none"></div>
+      <div class="ref-card">
+        <div class="ref-title">Dot reference</div>
+        <div class="ref-row">
+          <div id="ref-cell"></div>
+          <div class="ref-notes">• Dots 1–3: Left column<br>• Dots 4–6: Right column<br>• Top to bottom order</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="nav-bar">
+    <button class="nav-btn" id="prev-btn" onclick="lessonPrev()">‹ Prev</button>
+    <div class="dot-indicators" id="lesson-dots-ind"></div>
+    <button class="nav-btn primary" id="next-btn" onclick="lessonNext()">Next ›</button>
+  </div>
+</div>
+
+<!-- LESSON COMPLETE -->
+<div class="screen" id="screen-complete">
+  <div class="completion">
+    <div class="comp-emoji">🎉</div>
+    <div class="comp-title">Lesson Complete!</div>
+    <div class="comp-sub" id="comp-sub">You learned 5 letters!</div>
+    <div class="xp-badge" id="comp-xp">+50 XP earned!</div>
+    <button class="action-btn primary" onclick="startQuiz()">Take the Quiz →</button>
+    <button class="action-btn secondary" onclick="goTo('home')">Back to Home</button>
+  </div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div class="screen" id="screen-quiz">
+  <div class="header" style="border-bottom:none;padding-bottom:0">
+    <button class="back-btn" onclick="goTo('home')">✕</button>
+    <div class="prog-bar" style="flex:1;height:8px"><div class="prog-fill" id="quiz-prog" style="width:0%"></div></div>
+    <div class="score-badge" id="quiz-score-badge">⭐ 0</div>
+  </div>
+  <div class="scroll-area">
+    <div class="quiz-pad">
+      <div class="quiz-q">Which letter is this?</div>
+      <div class="quiz-cell-card">
+        <div id="quiz-cell"></div>
+        <div class="dot-pills" id="quiz-dot-pills"></div>
+      </div>
+      <div class="choose-lbl">Tap the correct letter</div>
+      <div class="options-grid" id="options-grid"></div>
+      <div class="feedback" id="quiz-feedback" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ RESULT -->
+<div class="screen" id="screen-result">
+  <div class="result-screen">
+    <div class="result-emoji" id="res-emoji">🏆</div>
+    <div class="result-title" id="res-title">Excellent!</div>
+    <div class="score-circle">
+      <div class="score-pct" id="res-pct">100%</div>
+      <div class="score-sub" id="res-sub">5/5 correct</div>
+    </div>
+    <div class="result-stats">
+      <div class="r-stat"><div class="r-stat-val" id="res-correct" style="color:#4caf8a">5</div><div class="r-stat-lbl">Correct</div></div>
+      <div class="r-stat"><div class="r-stat-val" id="res-wrong" style="color:#ff5e5e">0</div><div class="r-stat-lbl">Wrong</div></div>
+      <div class="r-stat"><div class="r-stat-val" id="res-xp" style="color:#ffd166">+50</div><div class="r-stat-lbl">XP</div></div>
+    </div>
+    <button class="action-btn primary" onclick="retryQuiz()">Try Again</button>
+    <button class="action-btn secondary" onclick="goTo('home')">Back to Home</button>
+  </div>
+</div>
+
+<!-- ALPHABET SCREEN -->
+<div class="screen" id="screen-alphabet">
+  <div class="header">
+    <button class="back-btn" onclick="goTo('home')">‹</button>
+    <div class="header-title">Braille Reference</div>
+  </div>
+  <div class="scroll-area">
+    <div class="alph-pad">
+      <div class="tabs">
+        <button class="tab active" id="tab-letters" onclick="switchTab('letters')">Alphabet</button>
+        <button class="tab" id="tab-numbers" onclick="switchTab('numbers')">Numbers</button>
+      </div>
+      <div class="alph-grid" id="alph-grid"></div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="alph-modal" style="display:none" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-letter" id="modal-letter">A</div>
+      <div class="modal-sym" id="modal-sym">⠁</div>
+      <div id="modal-cell" style="display:flex;justify-content:center;margin:12px 0"></div>
+      <div class="modal-dots" id="modal-dots">Dots: 1</div>
+      <div class="modal-hint" id="modal-hint"></div>
+      <button class="modal-close" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSLATOR SCREEN -->
+<div class="screen" id="screen-translator">
+  <div class="header">
+    <button class="back-btn" onclick="goTo('home')">‹</button>
+    <div class="header-title">Braille Translator</div>
+  </div>
+  <div class="scroll-area">
+    <div class="trans-pad">
+      <div class="input-card">
+        <div class="input-lbl">Type your text</div>
+        <textarea class="trans-input" id="trans-input" placeholder="Start typing to see Braille..." maxlength="40" oninput="translateText()"></textarea>
+        <div class="char-count"><span id="trans-count">0</span>/40</div>
+      </div>
+      <div id="trans-examples">
+        <div class="input-lbl" style="margin-bottom:8px">Try these</div>
+        <div class="example-chips">
+          <span class="chip" onclick="setTrans('Hello')">Hello</span>
+          <span class="chip" onclick="setTrans('Braille')">Braille</span>
+          <span class="chip" onclick="setTrans('Love')">Love</span>
+          <span class="chip" onclick="setTrans('ABC')">ABC</span>
+          <span class="chip" onclick="setTrans('12345')">12345</span>
+        </div>
+      </div>
+      <div id="trans-output" style="display:none">
+        <div class="section-title" style="margin-bottom:8px">Braille symbols</div>
+        <div class="sym-row" id="sym-row"></div>
+        <div class="section-title" style="margin-bottom:8px">Visual cells</div>
+        <div class="cells-scroll"><div class="cells-row" id="cells-row"></div></div>
+        <div class="section-title" style="margin-bottom:8px">Letter details</div>
+        <div id="details-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS SCREEN -->
+<div class="screen" id="screen-progress">
+  <div class="header">
+    <button class="back-btn" onclick="goTo('home')">‹</button>
+    <div class="header-title">Your Progress</div>
+  </div>
+  <div class="scroll-area">
+    <div class="prog-pad">
+      <div class="p-level-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div>
+            <div style="font-size:22px;font-weight:700;color:#6c63ff">Level <span id="p-level">1</span></div>
+            <div style="font-size:14px;color:#a0a0c8;margin-top:2px">Braille Learner</div>
+          </div>
+          <div style="background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.3);border-radius:12px;padding:10px 16px;text-align:center">
+            <div style="font-size:20px;font-weight:700;color:#6c63ff" id="p-xp">0</div>
+            <div style="font-size:11px;color:#6c63ff;font-weight:600">XP</div>
+          </div>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" id="p-bar" style="width:0%"></div></div>
+        <div style="font-size:12px;color:#5a5a8a;margin-top:6px"><span id="p-next">200</span> XP to next level</div>
+      </div>
+      <div class="stats-row" style="margin-bottom:18px">
+        <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-val" id="p-streak" style="color:#ff9f43">0</div><div class="stat-lbl">Streak</div></div>
+        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-val" id="p-done" style="color:#4caf8a">0</div><div class="stat-lbl">Lessons</div></div>
+        <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-val" id="p-pct" style="color:#6c63ff">0%</div><div class="stat-lbl">Complete</div></div>
+      </div>
+      <div class="section-title" style="margin-bottom:10px">Achievements</div>
+      <div id="achievements-list"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const BRAILLE={
+  a:{dots:[1],sym:'⠁',hint:'One dot — top left position'},
+  b:{dots:[1,2],sym:'⠃',hint:'Two dots — left column top two'},
+  c:{dots:[1,4],sym:'⠉',hint:'Two dots — top row both columns'},
+  d:{dots:[1,4,5],sym:'⠙',hint:'Three dots — top row plus mid right'},
+  e:{dots:[1,5],sym:'⠑',hint:'Two dots — diagonal top-left to mid-right'},
+  f:{dots:[1,2,4],sym:'⠋',hint:'Three dots — left column top + top right'},
+  g:{dots:[1,2,4,5],sym:'⠛',hint:'Four dots — square at the top'},
+  h:{dots:[1,2,5],sym:'⠓',hint:'Three dots — left top two + mid right'},
+  i:{dots:[2,4],sym:'⠊',hint:'Two dots — middle row inner positions'},
+  j:{dots:[2,4,5],sym:'⠚',hint:'Three dots — mid left + mid-right pair'},
+  k:{dots:[1,3],sym:'⠅',hint:'Two dots — full left column top and bottom'},
+  l:{dots:[1,2,3],sym:'⠇',hint:'Three dots — entire left column'},
+  m:{dots:[1,3,4],sym:'⠍',hint:'Three dots — left column + top right'},
+  n:{dots:[1,3,4,5],sym:'⠝',hint:'Four dots — left column + right top two'},
+  o:{dots:[1,3,5],sym:'⠕',hint:'Three dots — left column + mid right'},
+  p:{dots:[1,2,3,4],sym:'⠏',hint:'Four dots — both columns top two + bot left'},
+  q:{dots:[1,2,3,4,5],sym:'⠟',hint:'Five dots — almost all filled'},
+  r:{dots:[1,2,3,5],sym:'⠗',hint:'Four dots — left column + mid right'},
+  s:{dots:[2,3,4],sym:'⠎',hint:'Three dots — inner square bottom-left'},
+  t:{dots:[2,3,4,5],sym:'⠞',hint:'Four dots — lower square pattern'},
+  u:{dots:[1,3,6],sym:'⠥',hint:'Three dots — left column + bottom right'},
+  v:{dots:[1,2,3,6],sym:'⠧',hint:'Four dots — left column + bottom right'},
+  w:{dots:[2,4,5,6],sym:'⠺',hint:'Four dots — right side heavy'},
+  x:{dots:[1,3,4,6],sym:'⠭',hint:'Four dots — cross/X pattern'},
+  y:{dots:[1,3,4,5,6],sym:'⠽',hint:'Five dots — almost full right side'},
+  z:{dots:[1,3,5,6],sym:'⠵',hint:'Four dots — left column + right bottom two'},
+  '1':{dots:[1],sym:'⠁',hint:'Same pattern as letter A'},
+  '2':{dots:[1,2],sym:'⠃',hint:'Same pattern as letter B'},
+  '3':{dots:[1,4],sym:'⠉',hint:'Same pattern as letter C'},
+  '4':{dots:[1,4,5],sym:'⠙',hint:'Same pattern as letter D'},
+  '5':{dots:[1,5],sym:'⠑',hint:'Same pattern as letter E'},
+  '6':{dots:[1,2,4],sym:'⠋',hint:'Same pattern as letter F'},
+  '7':{dots:[1,2,4,5],sym:'⠛',hint:'Same pattern as letter G'},
+  '8':{dots:[1,2,5],sym:'⠓',hint:'Same pattern as letter H'},
+  '9':{dots:[2,4],sym:'⠊',hint:'Same pattern as letter I'},
+  '0':{dots:[2,4,5],sym:'⠚',hint:'Same pattern as letter J'}
+};
+
+const LESSONS=[
+  {id:1,title:'First Letters',sub:'A, B, C, D, E',icon:'🌱',letters:['a','b','c','d','e'],xp:50,diff:'Beginner'},
+  {id:2,title:'Letters F–J',sub:'F, G, H, I, J',icon:'📖',letters:['f','g','h','i','j'],xp:50,diff:'Beginner'},
+  {id:3,title:'Letters K–O',sub:'K, L, M, N, O',icon:'✨',letters:['k','l','m','n','o'],xp:75,diff:'Intermediate'},
+  {id:4,title:'Letters P–U',sub:'P, Q, R, S, T, U',icon:'🚀',letters:['p','q','r','s','t','u'],xp:75,diff:'Intermediate'},
+  {id:5,title:'Letters V–Z',sub:'V, W, X, Y, Z',icon:'🏆',letters:['v','w','x','y','z'],xp:100,diff:'Advanced'},
+  {id:6,title:'Numbers 0–9',sub:'All digits',icon:'🔢',letters:['1','2','3','4','5','6','7','8','9','0'],xp:100,diff:'Intermediate'}
+];
+
+// Load saved state from localStorage
+function loadState(){
+  try{
+    const saved=localStorage.getItem('braillelearn_state');
+    if(saved)return JSON.parse(saved);
+  }catch(e){}
+  return {xp:0,streak:1,completed:[],scores:{},alphTab:'letters'};
+}
+
+function saveState(){
+  try{localStorage.setItem('braillelearn_state',JSON.stringify(state));}catch(e){}
+}
+
+let state=loadState();
+let lessonState={currentLesson:null,idx:0};
+let quizState={questions:[],idx:0,score:0,selected:null};
+
+function getLevel(xp){return Math.floor(xp/200)+1}
+function getLevelProg(xp){return((xp%200)/200)*100}
+
+function makeCell(dots,size=''){
+  const layout=[[1,4],[2,5],[3,6]];
+  let h=`<div class="braille-cell${size?' cell-'+size:''}">`;
+  layout.forEach(r=>r.forEach(d=>{h+=`<div class="dot${dots&&dots.includes(d)?' active':''}"></div>`}));
+  return h+'</div>';
+}
+
+function diffColor(d){return d==='Beginner'?'#4caf8a':d==='Intermediate'?'#ffd166':'#ff6b9d'}
+
+function renderLessons(){
+  document.getElementById('lessons-list').innerHTML=LESSONS.map((l,i)=>{
+    const done=state.completed.includes(l.id);
+    const locked=l.id>1&&!state.completed.includes(l.id-1);
+    const dc=diffColor(l.diff);
+    return`<div class="lesson-card${done?' completed':''}${locked?' locked':''}" onclick="${locked?'':('startLesson('+i+')')}">
+      <div class="lesson-ico${done?' done':''}">${done?'✓':l.icon}</div>
+      <div class="lesson-info">
+        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+          <span class="lesson-name">${l.title}</span>
+          <span class="diff-tag" style="background:${dc}22;color:${dc}">${l.diff}</span>
+        </div>
+        <div class="lesson-sub2">${l.sub}</div>
+        <div class="lesson-xp">+${l.xp} XP</div>
+      </div>
+      ${done?'<span class="badge-done">Done</span>':locked?'<span style="font-size:16px">🔒</span>':'<div class="badge-go">›</div>'}
+    </div>`;
+  }).join('');
+  document.getElementById('lesson-progress-txt').textContent=`${state.completed.length} of ${LESSONS.length} completed`;
+}
+
+function updateHomeStats(){
+  const lvl=getLevel(state.xp);
+  document.getElementById('level-num').textContent=lvl;
+  document.getElementById('xp-total').textContent=state.xp;
+  document.getElementById('xp-next').textContent=200-(state.xp%200);
+  document.getElementById('level-bar').style.width=getLevelProg(state.xp)+'%';
+  document.getElementById('streak-val').textContent=state.streak;
+  document.getElementById('done-val').textContent=state.completed.length;
+  document.getElementById('lvl-val').textContent=lvl;
+}
+
+function goTo(screen){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+screen).classList.add('active');
+  if(screen==='home'){updateHomeStats();renderLessons();}
+  if(screen==='alphabet'){renderAlphabet();}
+  if(screen==='progress'){renderProgress();}
+}
+
+// LESSON
+function startLesson(idx){
+  lessonState.currentLesson=LESSONS[idx];
+  lessonState.idx=0;
+  goTo('lesson');
+  renderLesson();
+}
+
+function renderLesson(){
+  const l=lessonState.currentLesson;
+  const items=l.letters;
+  const idx=lessonState.idx;
+  const key=items[idx];
+  const d=BRAILLE[key];
+  document.getElementById('lesson-screen-title').textContent=l.title;
+  document.getElementById('lesson-letter').textContent=key.toUpperCase();
+  document.getElementById('lesson-sym').textContent=d.sym;
+  document.getElementById('lesson-cell-wrap').innerHTML=makeCell(d.dots);
+  document.getElementById('lesson-dot-pills').innerHTML=d.dots.map(n=>`<div class="dot-pill">${n}</div>`).join('');
+  document.getElementById('hint-box').style.display='none';
+  document.getElementById('hint-box').textContent=d.hint;
+  document.getElementById('hint-btn').textContent='💡 Show hint';
+  document.getElementById('lesson-prog').style.width=(idx/items.length*100)+'%';
+  document.getElementById('lesson-count').textContent=`${idx+1}/${items.length}`;
+  document.getElementById('prev-btn').disabled=idx===0;
+  document.getElementById('next-btn').textContent=idx===items.length-1?'Finish ✓':'Next ›';
+  document.getElementById('lesson-dots-ind').innerHTML=items.map((_,i)=>`<div class="dot-ind${i===idx?' active':''}"></div>`).join('');
+  document.getElementById('ref-cell').innerHTML=makeCell([1,2,3,4,5,6],'sm');
+}
+
+function toggleHint(){
+  const box=document.getElementById('hint-box');
+  const btn=document.getElementById('hint-btn');
+  const hidden=box.style.display==='none';
+  box.style.display=hidden?'block':'none';
+  btn.textContent=hidden?'👁️ Hide hint':'💡 Show hint';
+}
+
+function lessonNext(){
+  const items=lessonState.currentLesson.letters;
+  if(lessonState.idx<items.length-1){lessonState.idx++;renderLesson();}
+  else completeLesson();
+}
+
+function lessonPrev(){
+  if(lessonState.idx>0){lessonState.idx--;renderLesson();}
+}
+
+function completeLesson(){
+  const l=lessonState.currentLesson;
+  if(!state.completed.includes(l.id)){state.completed.push(l.id);state.xp+=l.xp;saveState();}
+  document.getElementById('comp-sub').textContent=`You learned ${l.letters.length} ${l.id===6?'numbers':'letters'}!`;
+  document.getElementById('comp-xp').textContent=`+${l.xp} XP earned!`;
+  goTo('complete');
+}
+
+// QUIZ
+function startQuiz(){
+  const items=lessonState.currentLesson.letters;
+  const allKeys=Object.keys(BRAILLE);
+  quizState.questions=items.map(key=>{
+    const others=allKeys.filter(k=>k!==key).sort(()=>Math.random()-0.5).slice(0,3);
+    const opts=[...others.map(k=>({key:k,dots:BRAILLE[k].dots})),{key,dots:BRAILLE[key].dots}].sort(()=>Math.random()-0.5);
+    return{key,...BRAILLE[key],options:opts};
+  });
+  quizState.idx=0;quizState.score=0;quizState.selected=null;
+  goTo('quiz');renderQuiz();
+}
+
+function renderQuiz(){
+  const q=quizState.questions[quizState.idx];
+  document.getElementById('quiz-cell').innerHTML=makeCell(q.dots);
+  document.getElementById('quiz-dot-pills').innerHTML=q.dots.map(n=>`<div class="dot-pill">${n}</div>`).join('');
+  document.getElementById('quiz-prog').style.width=(quizState.idx/quizState.questions.length*100)+'%';
+  document.getElementById('quiz-score-badge').textContent='⭐ '+quizState.score;
+  document.getElementById('quiz-feedback').style.display='none';
+  quizState.selected=null;
+  document.getElementById('options-grid').innerHTML=q.options.map(opt=>`
+    <div class="option" id="opt-${opt.key}" onclick="answerQuiz('${opt.key}')">
+      <span class="option-letter">${opt.key.toUpperCase()}</span>
+      ${makeCell(opt.dots,'sm')}
+    </div>`).join('');
+}
+
+function answerQuiz(chosen){
+  if(quizState.selected!==null)return;
+  quizState.selected=chosen;
+  const q=quizState.questions[quizState.idx];
+  const correct=chosen===q.key;
+  if(correct)quizState.score++;
+  document.getElementById('opt-'+q.key).classList.add('correct');
+  if(!correct)document.getElementById('opt-'+chosen).classList.add('wrong');
+  const fb=document.getElementById('quiz-feedback');
+  fb.style.display='block';
+  fb.className='feedback '+(correct?'correct':'wrong');
+  fb.textContent=correct?'✓ Correct!':`✗ It's "${q.key.toUpperCase()}"`;
+  setTimeout(()=>{
+    if(quizState.idx<quizState.questions.length-1){quizState.idx++;renderQuiz();}
+    else showResult();
+  },1100);
+}
+
+function showResult(){
+  const total=quizState.questions.length;
+  const pct=Math.round(quizState.score/total*100);
+  const bonus=Math.round(pct/100*50);
+  state.xp+=bonus;
+  if(!state.scores[lessonState.currentLesson.id]||pct>state.scores[lessonState.currentLesson.id])
+    state.scores[lessonState.currentLesson.id]=pct;
+  saveState();
+  document.getElementById('res-emoji').textContent=pct>=80?'🏆':pct>=60?'✅':'💪';
+  document.getElementById('res-title').textContent=pct>=80?'Excellent!':pct>=60?'Good job!':'Keep practicing!';
+  document.getElementById('res-pct').textContent=pct+'%';
+  document.getElementById('res-sub').textContent=`${quizState.score}/${total} correct`;
+  document.getElementById('res-correct').textContent=quizState.score;
+  document.getElementById('res-wrong').textContent=total-quizState.score;
+  document.getElementById('res-xp').textContent='+'+bonus;
+  goTo('result');
+}
+
+function retryQuiz(){startQuiz();}
+
+// ALPHABET
+function renderAlphabet(){
+  const isLetters=state.alphTab==='letters';
+  const keys=isLetters?Object.keys(BRAILLE).filter(k=>isNaN(k)):['0','1','2','3','4','5','6','7','8','9'];
+  document.getElementById('alph-grid').innerHTML=keys.map(k=>`
+    <div class="alph-card" onclick="showAlphModal('${k}')">
+      <div class="alph-letter">${k.toUpperCase()}</div>
+      ${makeCell(BRAILLE[k].dots,'sm')}
+      <div class="alph-sym">${BRAILLE[k].sym}</div>
+    </div>`).join('');
+}
+
+function switchTab(tab){
+  state.alphTab=tab;
+  document.getElementById('tab-letters').className='tab'+(tab==='letters'?' active':'');
+  document.getElementById('tab-numbers').className='tab'+(tab==='numbers'?' active':'');
+  renderAlphabet();
+}
+
+function showAlphModal(k){
+  const d=BRAILLE[k];
+  document.getElementById('modal-letter').textContent=k.toUpperCase();
+  document.getElementById('modal-sym').textContent=d.sym;
+  document.getElementById('modal-cell').innerHTML=makeCell(d.dots);
+  document.getElementById('modal-dots').textContent='Dots: '+d.dots.join(', ');
+  document.getElementById('modal-hint').textContent=d.hint;
+  document.getElementById('alph-modal').style.display='flex';
+}
+
+function closeModal(){document.getElementById('alph-modal').style.display='none';}
+
+// TRANSLATOR
+function setTrans(val){
+  document.getElementById('trans-input').value=val;
+  translateText();
+}
+
+function translateText(){
+  const input=document.getElementById('trans-input').value;
+  document.getElementById('trans-count').textContent=input.length;
+  const out=document.getElementById('trans-output');
+  const ex=document.getElementById('trans-examples');
+  if(!input){out.style.display='none';ex.style.display='block';return;}
+  ex.style.display='none';out.style.display='block';
+  let syms='',cells='',details='';
+  input.toLowerCase().split('').forEach(c=>{
+    if(c===' '){syms+='<span style="font-size:28px;color:#5a5a8a">&nbsp;&nbsp;</span>';cells+='<div style="width:16px"></div>';return;}
+    const d=BRAILLE[c];
+    if(!d){syms+=`<span style="font-size:28px;color:#ff5e5e">${c}</span>`;return;}
+    syms+=`<span style="font-size:28px;color:#6c63ff">${d.sym}</span>`;
+    cells+=`<div class="cell-item">${makeCell(d.dots,'sm')}<div class="cell-item-lbl">${c.toUpperCase()}</div></div>`;
+    details+=`<div class="detail-row"><span class="d-letter">${c.toUpperCase()}</span><span class="d-sym">${d.sym}</span><div class="d-dots">${d.dots.map(n=>`<div class="d-dot">${n}</div>`).join('')}</div><span class="d-hint">${d.hint}</span></div>`;
+  });
+  document.getElementById('sym-row').innerHTML=syms;
+  document.getElementById('cells-row').innerHTML=cells;
+  document.getElementById('details-list').innerHTML=details;
+}
+
+// PROGRESS
+function renderProgress(){
+  const lvl=getLevel(state.xp);
+  document.getElementById('p-level').textContent=lvl;
+  document.getElementById('p-xp').textContent=state.xp;
+  document.getElementById('p-bar').style.width=getLevelProg(state.xp)+'%';
+  document.getElementById('p-next').textContent=200-(state.xp%200);
+  document.getElementById('p-streak').textContent=state.streak;
+  document.getElementById('p-done').textContent=state.completed.length;
+  document.getElementById('p-pct').textContent=Math.round(state.completed.length/LESSONS.length*100)+'%';
+  const achievements=[
+    {icon:'🌱',title:'First Steps',desc:'Complete your first lesson',unlocked:state.completed.length>=1},
+    {icon:'📖',title:'Bookworm',desc:'Complete 3 lessons',unlocked:state.completed.length>=3},
+    {icon:'🏆',title:'Champion',desc:'Complete all 6 lessons',unlocked:state.completed.length>=6},
+    {icon:'🔥',title:'On Fire',desc:'3-day streak',unlocked:state.streak>=3},
+    {icon:'💯',title:'Perfectionist',desc:'Score 100% on a quiz',unlocked:Object.values(state.scores).some(s=>s===100)},
+    {icon:'⚡',title:'Speed Learner',desc:'Earn 500 XP',unlocked:state.xp>=500},
+  ];
+  document.getElementById('achievements-list').innerHTML=achievements.map(a=>`
+    <div class="achieve-row ${a.unlocked?'unlocked':'locked-ach'}">
+      <div class="ach-icon">${a.unlocked?a.icon:'🔒'}</div>
+      <div class="ach-info"><div class="ach-title">${a.title}</div><div class="ach-desc">${a.desc}</div></div>
+      ${a.unlocked?'<div class="ach-check">✓</div>':''}
+    </div>`).join('');
+}
+
+// Init
+updateHomeStats();
+</script>
+</body>
+</html>
