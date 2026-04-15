@@ -510,6 +510,15 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
   .parent-grid,.resource-grid{grid-template-columns:1fr}
 }
 
+/* ── SUPPORT / FAQ ── */
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.faq-q{padding:14px 16px;font-size:14px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}
+.faq-q:hover{background:var(--card)}
+.faq-q span{font-size:18px;color:var(--p);font-weight:300;transition:transform .2s}
+.faq-q.open span{transform:rotate(45deg)}
+.faq-a{display:none;padding:0 16px 14px;font-size:13px;color:var(--t2);line-height:1.7}
+.faq-a.show{display:block}
+
 /* ── LANDING SECTIONS ── */
 .land-section{padding:80px 0;border-top:1px solid var(--border)}
 .land-section-inner{max-width:1000px;margin:0 auto;padding:0 40px}
@@ -808,6 +817,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <button class="ntab" id="ni-translator" onclick="goApp('translator')">Translator</button>
       <button class="ntab" id="ni-games" onclick="goApp('games')">🎮 Games</button>
       <button class="ntab" id="ni-progress" onclick="goApp('progress')">Progress</button>
+      <button class="ntab" id="ni-support" onclick="goApp('support')">Support</button>
     </div>
     <div class="nav-r">
       <div class="xp-chip" id="nav-xp">0 XP · Lv 1</div>
@@ -1089,12 +1099,19 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
           <div style="font-size:22px;font-weight:800;margin-bottom:10px">Games are for members</div>
           <div style="font-size:15px;color:var(--t2);margin-bottom:28px;line-height:1.6">Unlock all 4 games plus full lesson access for just £3.99/month</div>
           <a href="https://buy.stripe.com/cNi00j8cFeRnaHQa3p2wU00" target="_blank" class="btn btn-p" style="display:block;text-align:center;text-decoration:none;font-size:16px;padding:16px;margin-bottom:10px">Become a member →</a>
-          <button class="btn btn-o" style="width:100%" onclick="activateMember();goApp('games')">I've already paid</button>
+          <div style="font-size:12px;color:var(--t3);text-align:center">After payment you'll be redirected back and access unlocks automatically ✓</div>
         </div>
       </div>
 
       <!-- Game selector -->
       <div id="games-menu">
+        <div style="background:linear-gradient(135deg,rgba(123,110,246,.1),rgba(232,86,157,.06));border:1px solid rgba(123,110,246,.2);border-radius:16px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:16px">
+          <div style="font-size:36px">👨‍👩‍👧</div>
+          <div>
+            <div style="font-size:16px;font-weight:800;margin-bottom:4px">Play with your child! 💜</div>
+            <div style="font-size:14px;color:var(--t2);line-height:1.6">These games are designed to be played together. Sit with your child, read the Braille cells aloud, and celebrate every correct answer. Learning is most powerful when it's fun and shared.</div>
+          </div>
+        </div>
         <div class="games-grid">
           <div class="game-card" onclick="startGame('bubble')">
             <div class="gc-emoji">🫧</div>
@@ -1130,9 +1147,72 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       </div>
     </div>
 
+    <!-- SUPPORT & FEEDBACK -->
+    <div class="view" id="view-support">
+      <div class="vh"><div class="vhl">Help & feedback</div><div class="vht">Support & Contact</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+        <div>
+          <div style="font-size:15px;font-weight:800;margin-bottom:16px">📬 Contact us</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px">
+            <div style="font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:20px">Have a question, issue or idea? We'd love to hear from you. We usually reply within 1–2 working days.</div>
+            <a href="mailto:hello.braillelearn@gmail.com" style="display:flex;align-items:center;gap:12px;background:var(--card);border-radius:10px;padding:14px 16px;margin-bottom:12px;text-decoration:none">
+              <div style="font-size:22px">📧</div>
+              <div><div style="font-size:12px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Email us</div><div style="font-size:15px;font-weight:700;color:var(--p)">hello.braillelearn@gmail.com</div></div>
+            </a>
+            <div style="display:flex;align-items:center;gap:12px;background:var(--card);border-radius:10px;padding:14px 16px;margin-bottom:12px">
+              <div style="font-size:22px">💜</div>
+              <div><div style="font-size:12px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Membership support</div><div style="font-size:14px;color:var(--t2)">Issues with your membership? Email us and we'll sort it quickly.</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;background:var(--card);border-radius:10px;padding:14px 16px">
+              <div style="font-size:22px">⏱️</div>
+              <div><div style="font-size:12px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Response time</div><div style="font-size:14px;color:var(--t2)">We reply within 1–2 working days.</div></div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-weight:800;margin-bottom:14px">❓ Common questions</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does membership work? <span>+</span></div><div class="faq-a">Pay £3.99/month via Stripe. After payment you're redirected back and access unlocks automatically.</div></div>
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span>+</span></div><div class="faq-a">Yes! Cancel anytime through your Stripe payment confirmation email. No questions asked.</div></div>
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is it suitable for my blind child? <span>+</span></div><div class="faq-a">Yes — BrailleLearn was built for a blind child. Voice reads every letter, dot and tip aloud.</div></div>
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do teachers get free access? <span>+</span></div><div class="faq-a">Teachers create a free dashboard via Teacher Login. Once signed in, full access is granted automatically at no cost.</div></div>
+            <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Will it work on phone or tablet? <span>+</span></div><div class="faq-a">Yes — works on any device with a browser. No download needed.</div></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:15px;font-weight:800;margin-bottom:16px">💬 Leave feedback</div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px">
+            <div style="font-size:14px;color:var(--t2);margin-bottom:20px;line-height:1.6">Your feedback helps us improve BrailleLearn for blind children and their families. Every message is read personally.</div>
+            <label class="inp-lbl">Your name (optional)</label>
+            <input class="inp" type="text" id="fb-name" placeholder="e.g. Sarah" maxlength="40">
+            <label class="inp-lbl">Type of feedback</label>
+            <select class="inp" id="fb-type" style="cursor:pointer;background:var(--card)">
+              <option value="general">General feedback</option>
+              <option value="bug">Something isn't working</option>
+              <option value="feature">Feature request / idea</option>
+              <option value="membership">Membership question</option>
+              <option value="teacher">Teacher dashboard</option>
+              <option value="parent">Parent / accessibility</option>
+            </select>
+            <label class="inp-lbl">How would you rate BrailleLearn?</label>
+            <div style="display:flex;gap:8px;margin-bottom:14px" id="rating-stars">
+              <span class="star" onclick="setRating(1)" style="font-size:28px;cursor:pointer;transition:opacity .2s;opacity:.35">⭐</span>
+              <span class="star" onclick="setRating(2)" style="font-size:28px;cursor:pointer;transition:opacity .2s;opacity:.35">⭐</span>
+              <span class="star" onclick="setRating(3)" style="font-size:28px;cursor:pointer;transition:opacity .2s;opacity:.35">⭐</span>
+              <span class="star" onclick="setRating(4)" style="font-size:28px;cursor:pointer;transition:opacity .2s;opacity:.35">⭐</span>
+              <span class="star" onclick="setRating(5)" style="font-size:28px;cursor:pointer;transition:opacity .2s;opacity:.35">⭐</span>
+            </div>
+            <label class="inp-lbl">Your message</label>
+            <textarea class="inp" id="fb-message" placeholder="Tell us what you think, what's working well, or what we could improve…" style="height:110px;resize:none"></textarea>
+            <div id="fb-success" style="display:none;background:rgba(62,201,154,.1);border:1px solid rgba(62,201,154,.25);border-radius:10px;padding:12px 16px;font-size:14px;color:var(--g);margin-bottom:12px">✓ Thank you for your feedback! We really appreciate it. 💜</div>
+            <button class="btn btn-p" style="width:100%" onclick="submitFeedback()">Send feedback →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
-<div class="pg" id="pg-teacher-login" style="display:none">
+
+<!-- ═══ TEACHER LOGIN ═══ -->
   <div style="max-width:480px;margin:0 auto;padding:40px 20px;width:100%">
     <div class="tl-card">
       <div class="tl-icon">👩‍🏫</div>
@@ -1248,10 +1328,8 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div style="font-size:28px;font-weight:900;color:var(--p);margin-bottom:4px">£3.99<span style="font-size:14px;font-weight:400;color:var(--t2)">/month</span></div>
     <div style="font-size:12px;color:var(--t3);margin-bottom:20px">That's less than a cup of coffee ☕</div>
     <a href="https://buy.stripe.com/cNi00j8cFeRnaHQa3p2wU00" target="_blank" class="btn btn-p" style="display:block;text-align:center;text-decoration:none;font-size:16px;padding:16px" onclick="closeModal('modal-upgrade')">Become a member →</a>
-    <div style="margin-top:10px">
-      <button class="btn btn-o btn-sm" onclick="closeModal('modal-upgrade');activateMember()" style="font-size:12px;color:var(--t3)">I've already paid</button>
-    </div>
-    <button class="btn btn-o" style="width:100%;margin-top:8px" onclick="closeModal('modal-upgrade')">Maybe later</button>
+    <div style="font-size:12px;color:var(--t3);text-align:center;margin-top:10px">After payment you'll be redirected back and access unlocks automatically ✓</div>
+    <button class="btn btn-o" style="width:100%;margin-top:10px" onclick="closeModal('modal-upgrade')">Maybe later</button>
   </div>
 </div>
 
@@ -1364,6 +1442,49 @@ function isTeacherLoggedIn(){return typeof TC!=='undefined'&&TC!==null&&sessionS
 function isAccessAllowed(){return isMember()||isTeacherLoggedIn();}
 function activateMember(){S.member=true;svS();rDash();}
 
+// ═══════════════════════════════════════
+// MEMBER CODES — give these out after Stripe payment
+// Change these to whatever codes you want!
+// ═══════════════════════════════════════
+const MEMBER_CODES=['BRL2024','BRAILLE99','LEARN24','ACCESS01','MEMBER01',
+  'RYAN2024','BLIND01','TEACH01','SCHOOL1','OPEN2024','BRAILLE1','BL2025'];
+
+function redeemCode(inputId){
+  const inp=document.getElementById(inputId);
+  if(!inp)return;
+  const val=inp.value.trim().toUpperCase();
+  // find corresponding error element
+  const errId=inputId==='game-code-inp'?'game-code-err':
+               inputId==='modal-code-inp'?'modal-code-err':
+               inputId==='trans-code-inp'?'trans-code-err':
+               inputId==='dots-code-inp'?'dots-code-err':'modal-code-err';
+  const err=document.getElementById(errId);
+  const used=JSON.parse(localStorage.getItem('bl_used_codes')||'[]');
+  if(!MEMBER_CODES.includes(val)){
+    if(err){err.style.display='block';err.textContent='Invalid code. Please check and try again.';}
+    return;
+  }
+  if(used.includes(val)){
+    if(err){err.style.display='block';err.textContent='This code has already been used on this device.';}
+    return;
+  }
+  used.push(val);
+  localStorage.setItem('bl_used_codes',JSON.stringify(used));
+  S.member=true;svS();
+  if(err)err.style.display='none';
+  closeModal('modal-upgrade');
+  spk('Access unlocked! Welcome to BrailleLearn!');
+  setTimeout(()=>{alert('🎉 Welcome! Full access is now unlocked.');rDash();goApp('dashboard');},100);
+}
+
+// ═══════════════════════════════════════
+// TRANSLATOR ATTEMPT LIMITS
+// ═══════════════════════════════════════
+function getTransAttempts(){return parseInt(localStorage.getItem('bl_trans_attempts')||'0');}
+function incTransAttempts(){localStorage.setItem('bl_trans_attempts',getTransAttempts()+1);}
+const FREE_TRANS_LIMIT=3;
+const FREE_DOTS_LIMIT=3;
+
 function lv(x){return Math.floor(x/200)+1}
 function lp(x){return((x%200)/200)*100}
 
@@ -1416,7 +1537,7 @@ function goApp(v){
 }
 
 function showView(v){
-  ['dashboard','lesson','complete','quiz','result','alphabet','translator','progress','games'].forEach(x=>{
+  ['dashboard','lesson','complete','quiz','result','alphabet','translator','progress','games','support'].forEach(x=>{
     const e=document.getElementById('view-'+x);
     if(e)e.className='view'+(x===v?' on':'');
   });
@@ -1730,15 +1851,31 @@ function tapClearDots(){
   document.getElementById('tap-match-dots').textContent='Tap dots above to identify';
 }
 
+function getDotAttempts(){return parseInt(localStorage.getItem('bl_dot_attempts')||'0');}
+function incDotAttempts(){localStorage.setItem('bl_dot_attempts',getDotAttempts()+1);}
+
 function tapAddLetter(){
   if(!tapDots.length)return;
+  // check limit for non-members
+  if(!isAccessAllowed()&&getDotAttempts()>=FREE_DOTS_LIMIT){
+    document.getElementById('tap-result').innerHTML='🔒';
+    document.getElementById('tap-cells').innerHTML=`
+      <div style="background:linear-gradient(135deg,rgba(123,110,246,.1),rgba(232,86,157,.06));border:1px solid rgba(123,110,246,.25);border-radius:14px;padding:20px;text-align:center;width:100%">
+        <div style="font-size:24px;margin-bottom:8px">💜</div>
+        <div style="font-size:15px;font-weight:800;margin-bottom:6px">Free limit reached</div>
+        <div style="font-size:13px;color:var(--t2);margin-bottom:14px">You've used your ${FREE_DOTS_LIMIT} free Braille reads. Become a member for unlimited access.</div>
+        <a href="https://buy.stripe.com/cNi00j8cFeRnaHQa3p2wU00" target="_blank" class="btn btn-p btn-sm" style="display:inline-block;text-decoration:none;margin-bottom:8px">Become a member →</a>
+        <div style="font-size:11px;color:var(--t3);margin-top:4px">Access unlocks automatically after payment ✓</div>
+      </div>`;
+    return;
+  }
   const letterMatch=Object.entries(BR).find(([k,v])=>!isNaN(k)?false:v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d)));
   const numMatch=Object.entries(BR).find(([k,v])=>isNaN(k)?false:v.dots.length===tapDots.length&&v.dots.every(d=>tapDots.includes(d)));
   const match=letterMatch||numMatch;
   if(!match){alert('No Braille letter matches these dots. Please check the dots and try again.');return;}
-  // Use letter version for word building
   const useMatch=letterMatch||numMatch;
   tapWord.push({char:useMatch[0],dots:[...tapDots],sym:useMatch[1].sym});
+  if(!isAccessAllowed())incDotAttempts();
   renderTapResult();
   tapClearDots();
   spk(isNaN(useMatch[0])?'Letter '+useMatch[0].toUpperCase():'Number '+useMatch[0]);
@@ -1883,6 +2020,27 @@ function doTrans(){
     document.getElementById('cells-out').innerHTML='';
     document.getElementById('det-list').innerHTML='';
     return;
+  }
+  // check attempt limit for non-members
+  if(!isAccessAllowed()){
+    const attempts=getTransAttempts();
+    if(attempts>=FREE_TRANS_LIMIT){
+      document.getElementById('sym-out').textContent='🔒';
+      document.getElementById('cells-out').innerHTML='';
+      document.getElementById('det-list').innerHTML=`
+        <div style="background:linear-gradient(135deg,rgba(123,110,246,.1),rgba(232,86,157,.06));border:1px solid rgba(123,110,246,.25);border-radius:14px;padding:20px;text-align:center">
+          <div style="font-size:28px;margin-bottom:10px">💜</div>
+          <div style="font-size:16px;font-weight:800;margin-bottom:6px">Free limit reached</div>
+          <div style="font-size:14px;color:var(--t2);margin-bottom:16px;line-height:1.6">You've used your ${FREE_TRANS_LIMIT} free translations. Become a member for unlimited access.</div>
+          <div id="trans-code-err" style="display:none"></div>
+          <a href="https://buy.stripe.com/cNi00j8cFeRnaHQa3p2wU00" target="_blank" class="btn btn-p" style="display:inline-block;text-decoration:none;margin-bottom:10px">Become a member →</a>
+          <div style="font-size:12px;color:var(--t3);margin-top:6px">Access unlocks automatically after payment ✓</div>
+        </div>`;
+      return;
+    }
+    incTransAttempts();
+    const left=FREE_TRANS_LIMIT-getTransAttempts();
+    if(left>=0) document.getElementById('tp-cnt').textContent=inp.length+` (${left} free translation${left!==1?'s':''} left)`;
   }
   let sy='',ce='',de='';
   inp.toLowerCase().split('').forEach(c=>{
@@ -2512,6 +2670,37 @@ function submitEnquiry(){
 }
 
 // ═══════════════════════════════════════
+// SUPPORT & FEEDBACK
+// ═══════════════════════════════════════
+let fbRating=0;
+function toggleFaq(el){
+  el.classList.toggle('open');
+  const ans=el.nextElementSibling;
+  ans.classList.toggle('show');
+}
+function setRating(n){
+  fbRating=n;
+  document.querySelectorAll('.star').forEach((s,i)=>{
+    s.style.opacity=i<n?'1':'0.35';
+  });
+}
+function submitFeedback(){
+  const name=document.getElementById('fb-name').value.trim()||'Anonymous';
+  const type=document.getElementById('fb-type').value;
+  const msg=document.getElementById('fb-message').value.trim();
+  if(!msg){alert('Please write a message before sending.');return;}
+  const rating=fbRating?`${fbRating}/5 stars`:'No rating given';
+  const subject=encodeURIComponent(`BrailleLearn Feedback — ${type}`);
+  const body=encodeURIComponent(`From: ${name}\nRating: ${rating}\nType: ${type}\n\nMessage:\n${msg}`);
+  window.location.href=`mailto:hello.braillelearn@gmail.com?subject=${subject}&body=${body}`;
+  document.getElementById('fb-success').style.display='block';
+  document.getElementById('fb-message').value='';
+  document.getElementById('fb-name').value='';
+  fbRating=0;
+  document.querySelectorAll('.star').forEach(s=>s.style.opacity='0.35');
+}
+
+// ═══════════════════════════════════════
 // HERO ANIMATION
 // ═══════════════════════════════════════
 const hKeys=Object.keys(BR).filter(k=>isNaN(k));let hi=0;
@@ -2524,6 +2713,29 @@ function cycleHero(){
 }
 cycleHero();
 setInterval(cycleHero,2800);
+
+// ═══════════════════════════════════════
+// AUTO UNLOCK — detects Stripe redirect
+// ═══════════════════════════════════════
+(function checkStripeReturn(){
+  const params=new URLSearchParams(window.location.search);
+  if(params.get('unlocked')==='true'||params.get('payment')==='success'){
+    S.member=true;svS();
+    // clean URL
+    window.history.replaceState({},'',window.location.pathname);
+    // show welcome
+    setTimeout(()=>{
+      document.querySelectorAll('.pg').forEach(p=>{p.classList.remove('on');p.style.display='none';});
+      const app=document.getElementById('pg-app');
+      app.style.display='flex';app.classList.add('on');
+      showView('dashboard');
+      setTimeout(()=>{
+        alert('🎉 Welcome to BrailleLearn! Your membership is now active — full access unlocked!');
+        spk('Welcome! Your membership is now active. Enjoy full access to BrailleLearn!');
+      },500);
+    },300);
+  }
+})();
 </script>
 </body>
 </html>
