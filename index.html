@@ -399,6 +399,37 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .modal-p{font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6}
 .modal-btns{display:flex;gap:10px;margin-top:18px}
 
+/* ── PARENTS SECTION ── */
+.parent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
+.parent-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:26px;transition:all .2s;display:flex;flex-direction:column;gap:12px}
+.parent-card:hover{background:var(--card);transform:translateY(-3px);border-color:var(--border2)}
+.pc-emoji{font-size:36px}
+.pc-title{font-size:17px;font-weight:800;letter-spacing:-.3px;color:var(--t1)}
+.pc-body{font-size:14px;color:var(--t2);line-height:1.7;flex:1}
+.pc-tag{display:inline-block;background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.2);border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--p);letter-spacing:.5px;text-transform:uppercase;align-self:flex-start}
+
+.did-you-know{background:linear-gradient(135deg,rgba(245,200,66,.08),rgba(123,110,246,.06));border:1px solid rgba(245,200,66,.2);border-radius:18px;padding:28px 32px}
+.dyk-inner{display:flex;gap:20px;align-items:flex-start}
+.dyk-icon{font-size:32px;flex-shrink:0}
+.dyk-title{font-size:15px;font-weight:800;color:var(--y);margin-bottom:8px}
+.dyk-text{font-size:14px;color:var(--t2);line-height:1.7}
+
+.resource-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.resource-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 16px;text-decoration:none;transition:all .2s;display:flex;flex-direction:column;gap:8px}
+.resource-card:hover{background:var(--card);border-color:var(--border2);transform:translateY(-2px)}
+.rc-icon{font-size:28px}
+.rc-title{font-size:15px;font-weight:800;color:var(--t1)}
+.rc-desc{font-size:13px;color:var(--t2);line-height:1.55;flex:1}
+.rc-link{font-size:12px;font-weight:700;color:var(--p)}
+
+@media(max-width:900px){
+  .parent-grid{grid-template-columns:1fr 1fr}
+  .resource-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .parent-grid,.resource-grid{grid-template-columns:1fr}
+}
+
 /* ── LANDING SECTIONS ── */
 .land-section{padding:80px 0;border-top:1px solid var(--border)}
 .land-section-inner{max-width:1000px;margin:0 auto;padding:0 40px}
@@ -499,6 +530,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
   <nav class="land-nav">
     <div class="brand">Braille<b>Learn</b></div>
     <div class="land-nav-r">
+      <a href="https://gofund.me/9ec31ffb4" target="_blank" class="nbtn" style="background:linear-gradient(135deg,rgba(123,47,247,.15),rgba(232,86,157,.15));border-color:rgba(123,110,246,.3);color:var(--p2);text-decoration:none">💜 Support us</a>
       <button class="nbtn teacher" onclick="showPg('pg-teacher-login')">👩‍🏫 Teacher login</button>
       <button class="nbtn fill" onclick="goApp('dashboard')">Start learning →</button>
     </div>
@@ -531,6 +563,106 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     </div>
   </div>
 
+  <!-- PARENTS SECTION -->
+  <div class="land-section">
+    <div class="land-section-inner">
+      <div style="text-align:center;margin-bottom:48px">
+        <div class="sec-lbl">For parents & carers</div>
+        <div class="sec-title" style="margin-bottom:12px">Supporting your blind child<br>to learn Braille</div>
+        <p style="font-size:16px;color:var(--t2);line-height:1.75;max-width:560px;margin:0 auto">Learning Braille is a journey. Here are some expert-backed tips to help you support your child at home and make the most of BrailleLearn together.</p>
+      </div>
+
+      <div class="parent-grid">
+
+        <div class="parent-card">
+          <div class="pc-emoji">🤲</div>
+          <div class="pc-title">Make it tactile</div>
+          <div class="pc-body">Let your child feel raised dots in everyday life — buttons on appliances, textured surfaces, embossed cards. The more they connect touch to meaning, the faster Braille clicks. Use the dot tapper together to explore patterns.</div>
+          <div class="pc-tag">Learning at home</div>
+        </div>
+
+        <div class="parent-card">
+          <div class="pc-emoji">🔊</div>
+          <div class="pc-title">Use voice together</div>
+          <div class="pc-body">BrailleLearn reads every letter, dot pattern and memory tip aloud. Sit with your child and listen together. Hearing the letter name alongside touching the dots builds a strong memory connection in the brain.</div>
+          <div class="pc-tag">Using BrailleLearn</div>
+        </div>
+
+        <div class="parent-card">
+          <div class="pc-emoji">⏱️</div>
+          <div class="pc-title">Little and often</div>
+          <div class="pc-body">10–15 minutes a day beats one long session a week. Short daily practice keeps Braille patterns fresh in memory. Use BrailleLearn's streak tracker to build a daily habit — even just one letter a day makes a difference.</div>
+          <div class="pc-tag">Study habits</div>
+        </div>
+
+        <div class="parent-card">
+          <div class="pc-emoji">🎯</div>
+          <div class="pc-title">Celebrate small wins</div>
+          <div class="pc-body">Every letter learned is a huge achievement. Use BrailleLearn's XP and achievements to celebrate milestones together. Print out their progress, share it with family — blind children thrive on encouragement and recognition.</div>
+          <div class="pc-tag">Motivation</div>
+        </div>
+
+        <div class="parent-card">
+          <div class="pc-emoji">📖</div>
+          <div class="pc-title">Real Braille materials</div>
+          <div class="pc-body">Once your child knows some letters, get real Braille books and materials from the RNIB (rnib.org.uk). Feeling professionally embossed Braille alongside learning digitally gives them the full experience of real-world Braille.</div>
+          <div class="pc-tag">Resources</div>
+        </div>
+
+        <div class="parent-card">
+          <div class="pc-emoji">🏫</div>
+          <div class="pc-title">Work with school</div>
+          <div class="pc-body">Share BrailleLearn with your child's teacher — it has a built-in teacher dashboard so teachers can track progress individually. The more consistent the learning between home and school, the faster your child will progress.</div>
+          <div class="pc-tag">School support</div>
+        </div>
+
+      </div>
+
+      <!-- Did you know strip -->
+      <div class="did-you-know">
+        <div class="dyk-inner">
+          <div class="dyk-icon">💡</div>
+          <div>
+            <div class="dyk-title">Did you know?</div>
+            <div class="dyk-text">Braille was invented in 1824 by Louis Braille, who was blind himself from the age of 3. He was just 15 years old when he created the system. Today, Braille is used by millions of people worldwide and is available in nearly every language.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Useful links -->
+      <div style="margin-top:48px">
+        <div class="sec-lbl" style="margin-bottom:16px">Useful resources for parents</div>
+        <div class="resource-grid">
+          <a href="https://www.rnib.org.uk" target="_blank" class="resource-card">
+            <div class="rc-icon">🏛️</div>
+            <div class="rc-title">RNIB</div>
+            <div class="rc-desc">Royal National Institute of Blind People — books, guidance and support for families</div>
+            <div class="rc-link">rnib.org.uk →</div>
+          </a>
+          <a href="https://www.guidedogs.org.uk" target="_blank" class="resource-card">
+            <div class="rc-icon">🐕</div>
+            <div class="rc-title">Guide Dogs</div>
+            <div class="rc-desc">Support for blind and partially sighted people of all ages including children</div>
+            <div class="rc-link">guidedogs.org.uk →</div>
+          </a>
+          <a href="https://www.victa.org.uk" target="_blank" class="resource-card">
+            <div class="rc-icon">👨‍👩‍👧</div>
+            <div class="rc-title">VICTA</div>
+            <div class="rc-desc">Visually Impaired Children Taking Action — activities and support for families</div>
+            <div class="rc-link">victa.org.uk →</div>
+          </a>
+          <a href="https://www.lookingaftereyes.co.uk" target="_blank" class="resource-card">
+            <div class="rc-icon">👁️</div>
+            <div class="rc-title">SeeAbility</div>
+            <div class="rc-desc">Specialist support and education for children with sight loss in the UK</div>
+            <div class="rc-link">seeability.org →</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- SUPPORT SECTION -->
   <div class="land-section support-section">
     <div class="land-section-inner">
@@ -544,7 +676,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
           <div class="support-stat"><div class="ss-val">26+</div><div class="ss-lbl">Letters & numbers</div></div>
           <div class="support-stat"><div class="ss-val">∞</div><div class="ss-lbl">Children it can reach</div></div>
         </div>
-        <a href="YOUR_GOFUNDME_LINK_HERE" target="_blank" class="support-btn">
+        <a href="https://gofund.me/9ec31ffb4" target="_blank" class="support-btn">
           <span style="font-size:20px">💜</span>
           <div>
             <div style="font-size:16px;font-weight:800">Support BrailleLearn</div>
@@ -564,7 +696,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <div style="font-size:13px;color:var(--t3)">Built with 💜 for blind children and their families · braillelearn.co.uk</div>
       <div style="display:flex;gap:16px">
         <a href="mailto:hello@braillelearn.co.uk" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">Contact us</a>
-        <a href="YOUR_GOFUNDME_LINK_HERE" target="_blank" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">Support us</a>
+        <a href="https://gofund.me/9ec31ffb4" target="_blank" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">Support us</a>
       </div>
     </div>
   </div>
