@@ -399,6 +399,62 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .modal-p{font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6}
 .modal-btns{display:flex;gap:10px;margin-top:18px}
 
+/* ── GAMES ── */
+.games-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:32px}
+.game-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;cursor:pointer;transition:all .25s;text-align:center}
+.game-card:hover{background:var(--card);border-color:var(--p);transform:translateY(-4px);box-shadow:0 12px 40px rgba(123,110,246,.15)}
+.gc-emoji{font-size:48px;margin-bottom:14px}
+.gc-title{font-size:20px;font-weight:800;letter-spacing:-.3px;margin-bottom:8px}
+.gc-desc{font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:12px}
+.gc-tag{display:inline-block;background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.2);border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--p);letter-spacing:.5px;text-transform:uppercase}
+
+/* game ui shared */
+.game-hd{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 22px;margin-bottom:24px}
+.game-score{font-family:var(--fh,var(--ff));font-size:22px;font-weight:800;color:var(--p)}
+.game-lives{font-size:20px;letter-spacing:3px}
+.game-timer{font-size:18px;font-weight:700;color:var(--y)}
+.game-over{text-align:center;padding:48px 24px;background:var(--surface);border:1px solid var(--border);border-radius:20px}
+
+/* bubble pop */
+.bubble-arena{position:relative;height:420px;background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:16px}
+.bubble{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .1s;border:3px solid rgba(123,110,246,.4);background:rgba(123,110,246,.12)}
+.bubble:hover{transform:scale(1.08)}
+.bubble.correct{background:rgba(62,201,154,.3);border-color:var(--g)}
+.bubble.wrong{background:rgba(240,90,106,.3);border-color:var(--r)}
+.target-letter{font-size:80px;font-weight:900;color:var(--p);text-align:center;margin-bottom:12px}
+
+/* memory match */
+.memory-grid{display:grid;gap:10px;margin-bottom:16px}
+.mem-card{background:var(--card);border:2px solid var(--border2);border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;min-height:80px}
+.mem-card:hover{border-color:var(--p)}
+.mem-card.flipped{background:var(--surface);border-color:var(--p)}
+.mem-card.matched{background:rgba(62,201,154,.1);border-color:var(--g);cursor:default}
+.mem-card.wrong-flip{background:rgba(240,90,106,.1);border-color:var(--r)}
+.mem-letter{font-size:32px;font-weight:900;color:var(--p)}
+.mem-back{font-size:22px;color:var(--t3)}
+
+/* speed round */
+.speed-cell{display:flex;justify-content:center;margin-bottom:24px}
+.speed-opts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.speed-opt{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:16px 10px;cursor:pointer;text-align:center;font-size:28px;font-weight:900;color:var(--t1);transition:all .2s}
+.speed-opt:hover{background:var(--card2);border-color:var(--border2)}
+.speed-opt.correct{border-color:var(--g);background:rgba(62,201,154,.1);color:var(--g)}
+.speed-opt.wrong{border-color:var(--r);background:rgba(240,90,106,.1);color:var(--r)}
+
+/* word builder */
+.word-hint{font-size:48px;text-align:center;margin-bottom:8px}
+.word-target{font-size:22px;font-weight:800;text-align:center;margin-bottom:24px;color:var(--t2);letter-spacing:3px}
+.word-slots{display:flex;gap:10px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
+.word-slot{width:64px;height:90px;border:2px dashed var(--border2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:var(--p);background:var(--card);transition:all .2s}
+.word-slot.filled{border-color:var(--p);background:rgba(123,110,246,.08)}
+.word-slot.correct-slot{border-color:var(--g);background:rgba(62,201,154,.1)}
+.word-choices{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.word-choice{cursor:pointer;border:2px solid var(--border2);border-radius:12px;padding:10px;background:var(--card);transition:all .2s}
+.word-choice:hover{border-color:var(--p);background:rgba(123,110,246,.08)}
+.word-choice.used{opacity:.3;cursor:default}
+
+@media(max-width:600px){.games-grid{grid-template-columns:1fr}.speed-opts{grid-template-columns:repeat(2,1fr)}}
+
 /* ── MEMBERSHIP ── */
 .member-badge{background:linear-gradient(135deg,rgba(123,110,246,.15),rgba(232,86,157,.1));border:1px solid rgba(123,110,246,.3);border-radius:10px;padding:10px 18px;font-size:14px;font-weight:700;color:var(--p2);display:inline-block}
 .upgrade-banner{background:linear-gradient(135deg,rgba(123,110,246,.1),rgba(232,86,157,.06));border:1px solid rgba(123,110,246,.25);border-radius:14px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -552,7 +608,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 <!-- ═══ LANDING ═══ -->
 <div class="pg on" id="pg-land" style="display:block">
   <nav class="land-nav">
-    <div class="brand">Braille<b>Learn</b></div>
+    <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer">Braille<b>Learn</b></div>
     <div class="land-nav-r">
       <button class="nbtn teacher" onclick="showPg('pg-teacher-login')">👩‍🏫 Teacher login</button>
       <button class="nbtn fill" onclick="goApp('dashboard')">Start learning →</button>
@@ -560,7 +616,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
   </nav>
   <div class="hero-wrap">
     <div>
-      <div class="h-tag">Free · No download · Works everywhere</div>
+      <div class="h-tag">Helping blind children learn Braille</div>
       <h1 class="h-title">Learn <span>Braille</span><br>the fun way.</h1>
       <p class="h-desc">Interactive lessons, instant quizzes, and a real-time translator. For children, adults, teachers, and anyone curious about Braille.</p>
       <div class="h-btns">
@@ -618,10 +674,11 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
           <div class="pc-features">
             <div class="pcf">✅ All 6 lessons (A–Z + numbers)</div>
             <div class="pcf">✅ Full quiz system</div>
-            <div class="pcf">✅ Progress tracking</div>
-            <div class="pcf">✅ XP, levels & achievements</div>
+            <div class="pcf">✅ 4 learning games 🎮</div>
+            <div class="pcf">✅ Dot tapper (Braille → text)</div>
+            <div class="pcf">✅ Progress tracking & XP</div>
+            <div class="pcf">✅ Achievements & streaks</div>
             <div class="pcf">✅ Memory tips for every letter</div>
-            <div class="pcf">✅ Voice on every screen</div>
             <div class="pcf">✅ Cancel anytime</div>
           </div>
           <a href="https://buy.stripe.com/cNi00j8cFeRnaHQa3p2wU00" target="_blank" class="btn btn-p" style="width:100%;font-size:15px;display:block;text-align:center;text-decoration:none;padding:14px 28px">Become a member →</a>
@@ -744,11 +801,12 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 <!-- ═══ APP ═══ -->
 <div class="pg" id="pg-app" style="display:flex;flex-direction:column;min-height:100vh">
   <nav class="app-nav">
-    <div class="nav-brand" onclick="goApp('dashboard')">Braille<b>Learn</b></div>
+    <div class="nav-brand" onclick="showPg('pg-land')" title="Back to home page" style="cursor:pointer">Braille<b>Learn</b></div>
     <div class="nav-tabs">
       <button class="ntab" id="ni-dashboard" onclick="goApp('dashboard')">Dashboard</button>
       <button class="ntab" id="ni-alphabet" onclick="goApp('alphabet')">Alphabet</button>
       <button class="ntab" id="ni-translator" onclick="goApp('translator')">Translator</button>
+      <button class="ntab" id="ni-games" onclick="goApp('games')">🎮 Games</button>
       <button class="ntab" id="ni-progress" onclick="goApp('progress')">Progress</button>
     </div>
     <div class="nav-r">
@@ -1020,10 +1078,60 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       </div>
     </div>
 
+    <!-- GAMES -->
+    <div class="view" id="view-games">
+      <div class="vh"><div class="vhl">Learn through play</div><div class="vht">Braille Games</div></div>
+
+      <!-- Membership gate -->
+      <div id="games-gate" style="display:none">
+        <div style="text-align:center;background:var(--surface);border:1px solid rgba(123,110,246,.25);border-radius:20px;padding:48px 32px;max-width:480px;margin:0 auto">
+          <div style="font-size:56px;margin-bottom:16px">🎮</div>
+          <div style="font-size:22px;font-weight:800;margin-bottom:10px">Games are for members</div>
+          <div style="font-size:15px;color:var(--t2);margin-bottom:28px;line-height:1.6">Unlock all 4 games plus full lesson access for just £3.99/month</div>
+          <a href="https://buy.stripe.com/cNi00j8cFeRnaHQa3p2wU00" target="_blank" class="btn btn-p" style="display:block;text-align:center;text-decoration:none;font-size:16px;padding:16px;margin-bottom:10px">Become a member →</a>
+          <button class="btn btn-o" style="width:100%" onclick="activateMember();goApp('games')">I've already paid</button>
+        </div>
+      </div>
+
+      <!-- Game selector -->
+      <div id="games-menu">
+        <div class="games-grid">
+          <div class="game-card" onclick="startGame('bubble')">
+            <div class="gc-emoji">🫧</div>
+            <div class="gc-title">Bubble Pop</div>
+            <div class="gc-desc">Bubbles float up — tap the one showing the correct Braille letter!</div>
+            <div class="gc-tag">Reaction · All ages</div>
+          </div>
+          <div class="game-card" onclick="startGame('memory')">
+            <div class="gc-emoji">🃏</div>
+            <div class="gc-title">Memory Match</div>
+            <div class="gc-desc">Flip cards to match letters with their Braille patterns.</div>
+            <div class="gc-tag">Memory · Ages 5+</div>
+          </div>
+          <div class="game-card" onclick="startGame('speed')">
+            <div class="gc-emoji">⚡</div>
+            <div class="gc-title">Speed Round</div>
+            <div class="gc-desc">Braille cells flash on screen — name them as fast as you can!</div>
+            <div class="gc-tag">Speed · Ages 8+</div>
+          </div>
+          <div class="game-card" onclick="startGame('word')">
+            <div class="gc-emoji">📝</div>
+            <div class="gc-title">Word Builder</div>
+            <div class="gc-desc">Tap Braille cells in the right order to spell simple words.</div>
+            <div class="gc-tag">Spelling · All ages</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAME AREA -->
+      <div id="game-area" style="display:none">
+        <button onclick="exitGame()" style="background:none;border:none;color:var(--p);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:20px;font-family:var(--ff)">← Back to games</button>
+        <div id="game-container"></div>
+      </div>
+    </div>
+
   </div>
 </div>
-
-<!-- ═══ TEACHER LOGIN ═══ -->
 <div class="pg" id="pg-teacher-login" style="display:none">
   <div style="max-width:480px;margin:0 auto;padding:40px 20px;width:100%">
     <div class="tl-card">
@@ -1308,7 +1416,7 @@ function goApp(v){
 }
 
 function showView(v){
-  ['dashboard','lesson','complete','quiz','result','alphabet','translator','progress'].forEach(x=>{
+  ['dashboard','lesson','complete','quiz','result','alphabet','translator','progress','games'].forEach(x=>{
     const e=document.getElementById('view-'+x);
     if(e)e.className='view'+(x===v?' on':'');
   });
@@ -1318,6 +1426,7 @@ function showView(v){
   if(v==='alphabet')rAlph();
   if(v==='progress')rProg();
   if(v==='translator')initTranslatorTabs();
+  if(v==='games')showView_games();
   updNav();
   window.scrollTo(0,0);
 }
@@ -2087,7 +2196,302 @@ function confirmPin(){
 function openUpgrade(){openModal('modal-upgrade');}
 
 // ═══════════════════════════════════════
-// SCHOOL ENQUIRY FORM
+// GAMES
+// ═══════════════════════════════════════
+const WORDS=[
+  {word:'cat',emoji:'🐱'},{word:'dog',emoji:'🐶'},{word:'sun',emoji:'☀️'},
+  {word:'hat',emoji:'🎩'},{word:'cup',emoji:'☕'},{word:'bed',emoji:'🛏️'},
+  {word:'run',emoji:'🏃'},{word:'map',emoji:'🗺️'},{word:'hen',emoji:'🐔'},
+  {word:'fox',emoji:'🦊'},{word:'pig',emoji:'🐷'},{word:'pen',emoji:'✏️'}
+];
+
+let gameInterval=null;
+let gameTimeout=null;
+let gameState={};
+
+function showView_games(){
+  if(!isAccessAllowed()){
+    document.getElementById('games-gate').style.display='block';
+    document.getElementById('games-menu').style.display='none';
+    document.getElementById('game-area').style.display='none';
+  } else {
+    document.getElementById('games-gate').style.display='none';
+    document.getElementById('games-menu').style.display='block';
+    document.getElementById('game-area').style.display='none';
+  }
+}
+
+function startGame(type){
+  document.getElementById('games-menu').style.display='none';
+  document.getElementById('game-area').style.display='block';
+  clearInterval(gameInterval);clearTimeout(gameTimeout);
+  if(type==='bubble')initBubble();
+  else if(type==='memory')initMemory();
+  else if(type==='speed')initSpeed();
+  else if(type==='word')initWord();
+}
+
+function exitGame(){
+  clearInterval(gameInterval);clearTimeout(gameTimeout);
+  document.getElementById('game-area').style.display='none';
+  document.getElementById('games-menu').style.display='block';
+  document.getElementById('game-container').innerHTML='';
+}
+
+function gameOverScreen(score,total,msg){
+  clearInterval(gameInterval);clearTimeout(gameTimeout);
+  document.getElementById('game-container').innerHTML=`
+    <div class="game-over">
+      <div style="font-size:64px;margin-bottom:16px">${score===total?'🏆':score>=total*.7?'⭐':'💪'}</div>
+      <div style="font-size:28px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px">${msg}</div>
+      <div style="font-size:18px;color:var(--p);font-weight:700;margin-bottom:6px">Score: ${score} / ${total}</div>
+      <div style="font-size:14px;color:var(--t2);margin-bottom:28px">${score===total?'Perfect score! Amazing! 🎉':score>=total*.7?'Great job! Keep practising!':'Keep going — you\'re learning!'}</div>
+      <div style="display:flex;gap:12px;justify-content:center">
+        <button class="btn btn-p" onclick="document.querySelector('[onclick*=startGame]').click();exitGame();setTimeout(()=>{},50)">Play again</button>
+        <button class="btn btn-o" onclick="exitGame()">Back to games</button>
+      </div>
+    </div>`;
+  S.xp+=score*2;svS();spk(score===total?'Perfect score! Amazing!':'Good try! Keep practising!');
+}
+
+// ── GAME 1: BUBBLE POP ──
+function initBubble(){
+  const letters=Object.keys(BR).filter(k=>isNaN(k)).slice(0,10);
+  gameState={score:0,lives:3,total:10,round:0,letters,target:null,bubbles:[]};
+  renderBubble();
+}
+
+function renderBubble(){
+  const gs=gameState;
+  if(gs.round>=gs.total){gameOverScreen(gs.score,gs.total,'Bubble Pop done!');return;}
+  gs.target=gs.letters[gs.round%gs.letters.length];
+  // pick 4 random letters including target
+  const pool=[gs.target,...Object.keys(BR).filter(k=>isNaN(k)&&k!==gs.target).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  spk('Pop the bubble for letter '+gs.target.toUpperCase());
+  document.getElementById('game-container').innerHTML=`
+    <div class="game-hd">
+      <div><div style="font-size:11px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Score</div><div class="game-score">${gs.score}</div></div>
+      <div style="text-align:center"><div style="font-size:13px;color:var(--t2);margin-bottom:4px">Round ${gs.round+1} of ${gs.total}</div><div class="game-lives">${'❤️'.repeat(gs.lives)}</div></div>
+      <div style="text-align:right"><div style="font-size:11px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Find</div><div class="target-letter" style="font-size:48px;margin:0">${gs.target.toUpperCase()}</div></div>
+    </div>
+    <div class="bubble-arena" id="bubble-arena">
+      ${pool.map((l,i)=>`
+        <div class="bubble" id="bub-${l}" onclick="popBubble('${l}')"
+          style="width:90px;height:90px;left:${10+i*22}%;bottom:10px;animation:floatUp ${2.5+i*.4}s ease-in-out infinite alternate">
+          ${mkCell(BR[l].dots,'sm')}
+          <div style="font-size:11px;font-weight:800;color:var(--p2);margin-top:4px">${l.toUpperCase()}</div>
+        </div>`).join('')}
+    </div>
+    <style>@keyframes floatUp{0%{transform:translateY(0) scale(1)}100%{transform:translateY(-${120+Math.random()*100}px) scale(1.05)}}</style>`;
+}
+
+function popBubble(letter){
+  const gs=gameState;
+  const el=document.getElementById('bub-'+letter);
+  if(!el)return;
+  if(letter===gs.target){
+    el.classList.add('correct');
+    gs.score++;
+    playDotSound(true);
+    spk('Correct! '+letter.toUpperCase());
+    gs.round++;
+    setTimeout(renderBubble,700);
+  } else {
+    el.classList.add('wrong');
+    gs.lives--;
+    playDotSound(false);
+    spk('Try again!');
+    setTimeout(()=>{el.classList.remove('wrong');},500);
+    if(gs.lives<=0){setTimeout(()=>gameOverScreen(gs.score,gs.total,'Bubble Pop done!'),600);}
+  }
+}
+
+// ── GAME 2: MEMORY MATCH ──
+function initMemory(){
+  const letters=['a','b','c','d','e','f','g','h'].slice(0,6);
+  // pairs: letter card + braille card
+  const cards=[...letters.map(l=>({id:'L'+l,type:'letter',val:l})),...letters.map(l=>({id:'B'+l,type:'braille',val:l}))].sort(()=>Math.random()-.5);
+  gameState={cards,flipped:[],matched:[],moves:0,score:0};
+  renderMemory();
+}
+
+function renderMemory(){
+  const gs=gameState;
+  const cols=Math.ceil(Math.sqrt(gs.cards.length));
+  document.getElementById('game-container').innerHTML=`
+    <div class="game-hd">
+      <div><div style="font-size:12px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Matches</div><div class="game-score">${gs.matched.length/2} / ${gs.cards.length/2}</div></div>
+      <div style="font-size:15px;color:var(--t2);font-weight:600">Flip cards to match letters with Braille</div>
+      <div><div style="font-size:12px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Moves</div><div class="game-score" style="color:var(--y)">${gs.moves}</div></div>
+    </div>
+    <div class="memory-grid" style="grid-template-columns:repeat(${cols},1fr)">
+      ${gs.cards.map(c=>{
+        const isFlipped=gs.flipped.includes(c.id)||gs.matched.includes(c.id);
+        const isMatched=gs.matched.includes(c.id);
+        return`<div class="mem-card${isFlipped?' flipped':''}${isMatched?' matched':''}" id="mc-${c.id}" onclick="flipCard('${c.id}')">
+          ${isFlipped?(c.type==='letter'?`<span class="mem-letter">${c.val.toUpperCase()}</span>`:`<div style="display:flex;align-items:center;justify-content:center">${mkCell(BR[c.val].dots,'sm')}</div>`):'<span class="mem-back">?</span>'}
+        </div>`;
+      }).join('')}
+    </div>
+    ${gs.matched.length===gs.cards.length?`<div style="text-align:center;margin-top:16px"><button class="btn btn-p" onclick="gameOverScreen(${gs.cards.length/2},${gs.cards.length/2},'Memory Match complete!')">See results →</button></div>`:''}`;
+}
+
+function flipCard(id){
+  const gs=gameState;
+  if(gs.flipped.length>=2||gs.flipped.includes(id)||gs.matched.includes(id))return;
+  gs.flipped.push(id);
+  renderMemory();
+  if(gs.flipped.length===2){
+    gs.moves++;
+    const [a,b]=gs.flipped.map(i=>gs.cards.find(c=>c.id===i));
+    if(a.val===b.val&&a.type!==b.type){
+      gs.matched.push(a.id,b.id);
+      gs.score++;
+      gs.flipped=[];
+      playDotSound(true);
+      spk('Match! Letter '+a.val.toUpperCase());
+      setTimeout(renderMemory,400);
+    } else {
+      playDotSound(false);
+      setTimeout(()=>{gs.flipped=[];renderMemory();},900);
+    }
+  }
+}
+
+// ── GAME 3: SPEED ROUND ──
+function initSpeed(){
+  const letters=Object.keys(BR).filter(k=>isNaN(k));
+  gameState={score:0,wrong:0,total:10,round:0,letters,timeLeft:5,answered:false};
+  renderSpeed();
+}
+
+function renderSpeed(){
+  const gs=gameState;
+  if(gs.round>=gs.total){gameOverScreen(gs.score,gs.total,'Speed Round done!');return;}
+  clearInterval(gameInterval);
+  const key=gs.letters[Math.floor(Math.random()*gs.letters.length)];
+  const opts=[key,...gs.letters.filter(k=>k!==key).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  gs.timeLeft=5;gs.answered=false;gs.currentKey=key;
+  spk(`${BR[key].dots.length} ${BR[key].dots.length===1?'dot':'dots'}. Dot ${BR[key].dots.join(', ')}. Which letter?`,.9);
+  document.getElementById('game-container').innerHTML=`
+    <div class="game-hd">
+      <div><div style="font-size:11px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Score</div><div class="game-score">${gs.score}</div></div>
+      <div style="text-align:center"><div style="font-size:13px;color:var(--t2);margin-bottom:4px">Question ${gs.round+1} of ${gs.total}</div></div>
+      <div style="text-align:right"><div style="font-size:11px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Time</div><div class="game-timer" id="speed-timer">5</div></div>
+    </div>
+    <div class="speed-cell">${mkCell(BR[key].dots,'lg')}</div>
+    <div class="opts-lbl" style="text-align:center;margin-bottom:12px">Which letter is this?</div>
+    <div class="speed-opts">
+      ${opts.map(o=>`<div class="speed-opt" id="sp-${o}" onclick="answerSpeed('${o}')">${o.toUpperCase()}</div>`).join('')}
+    </div>`;
+  gameInterval=setInterval(()=>{
+    gs.timeLeft--;
+    const el=document.getElementById('speed-timer');
+    if(el)el.textContent=gs.timeLeft;
+    if(el)el.style.color=gs.timeLeft<=2?'var(--r)':'var(--y)';
+    if(gs.timeLeft<=0){
+      clearInterval(gameInterval);
+      if(!gs.answered){
+        const el2=document.getElementById('sp-'+gs.currentKey);
+        if(el2)el2.classList.add('correct');
+        gs.round++;
+        spk('Time up! It was '+gs.currentKey.toUpperCase());
+        setTimeout(renderSpeed,1000);
+      }
+    }
+  },1000);
+}
+
+function answerSpeed(letter){
+  const gs=gameState;
+  if(gs.answered)return;
+  gs.answered=true;
+  clearInterval(gameInterval);
+  const el=document.getElementById('sp-'+letter);
+  if(letter===gs.currentKey){
+    el.classList.add('correct');
+    gs.score++;
+    playDotSound(true);
+    spk('Correct! '+letter.toUpperCase());
+  } else {
+    el.classList.add('wrong');
+    const correct=document.getElementById('sp-'+gs.currentKey);
+    if(correct)correct.classList.add('correct');
+    playDotSound(false);
+    spk('Wrong! It was '+gs.currentKey.toUpperCase());
+  }
+  gs.round++;
+  setTimeout(renderSpeed,1000);
+}
+
+// ── GAME 4: WORD BUILDER ──
+function initWord(){
+  const w=WORDS[Math.floor(Math.random()*WORDS.length)];
+  gameState={word:w,entered:[],score:0,round:0,total:5};
+  renderWord();
+}
+
+function renderWord(){
+  const gs=gameState;
+  if(gs.round>=gs.total){gameOverScreen(gs.score,gs.total,'Word Builder done!');return;}
+  const w=WORDS[Math.floor(Math.random()*WORDS.length)];
+  gs.currentWord=w;gs.entered=[];
+  // shuffle the letters as choices
+  const choices=w.word.split('').sort(()=>Math.random()-.5);
+  gs.choices=choices;
+  spk('Spell the word: '+w.word);
+  renderWordUI();
+}
+
+function renderWordUI(){
+  const gs=gameState;
+  const w=gs.currentWord;
+  document.getElementById('game-container').innerHTML=`
+    <div class="game-hd">
+      <div><div style="font-size:11px;color:var(--t3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Score</div><div class="game-score">${gs.score}</div></div>
+      <div style="font-size:14px;color:var(--t2);font-weight:600">Word ${gs.round+1} of ${gs.total}</div>
+      <button class="btn btn-o btn-sm" onclick="spk('Spell the word: '+gameState.currentWord.word)">🔊 Hear word</button>
+    </div>
+    <div class="word-hint">${w.emoji}</div>
+    <div class="word-target">${w.word.toUpperCase().split('').map((_,i)=>gs.entered[i]?gs.entered[i].toUpperCase():'_').join(' ')}</div>
+    <div class="word-slots">
+      ${w.word.split('').map((_,i)=>`
+        <div class="word-slot${gs.entered[i]?' filled':''}">
+          ${gs.entered[i]?mkCell(BR[gs.entered[i]].dots,'sm'):''}
+        </div>`).join('')}
+    </div>
+    <div style="font-size:13px;color:var(--t3);text-align:center;margin-bottom:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase">Tap the letters in order</div>
+    <div class="word-choices">
+      ${gs.choices.map((l,i)=>`
+        <div class="word-choice${gs.entered.includes(l)&&gs.entered.indexOf(l)===gs.choices.indexOf(l)?' used':''}" id="wc-${i}" onclick="pickWordLetter('${l}',${i})">
+          ${mkCell(BR[l].dots,'sm')}
+          <div style="text-align:center;font-size:14px;font-weight:800;color:var(--p);margin-top:6px">${l.toUpperCase()}</div>
+        </div>`).join('')}
+    </div>
+    ${gs.entered.length>0?`<div style="text-align:center;margin-top:14px"><button class="btn btn-o btn-sm" onclick="gameState.entered=[];renderWordUI()">↩ Reset</button></div>`:''}`;
+}
+
+function pickWordLetter(letter,idx){
+  const gs=gameState;
+  const pos=gs.entered.length;
+  if(pos>=gs.currentWord.word.length)return;
+  const el=document.getElementById('wc-'+idx);
+  if(el&&el.classList.contains('used'))return;
+  gs.entered.push(letter);
+  playDotSound(true);
+  spk('Letter '+letter.toUpperCase());
+  if(gs.entered.length===gs.currentWord.word.length){
+    const correct=gs.entered.join('')===gs.currentWord.word;
+    if(correct){gs.score++;spk('Correct! You spelled '+gs.currentWord.word+'!');}
+    else{spk('Not quite! The word was '+gs.currentWord.word+'.');}
+    gs.round++;
+    setTimeout(renderWord,1200);
+  } else {
+    renderWordUI();
+  }
+}
+
+
 // ═══════════════════════════════════════
 function submitEnquiry(){
   const name=document.getElementById('ef-name').value.trim();
