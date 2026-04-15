@@ -829,26 +829,35 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 
     <!-- DASHBOARD -->
     <div class="view on" id="view-dashboard">
-      <div class="lev-bar">
-        <div><div class="lb-level">Level <span id="lv-num">1</span></div><div class="lb-xp"><span id="xp-tot">0</span> XP earned</div></div>
-        <div style="flex:1"><div class="pbar"><div class="pfill" id="lv-bar" style="width:0%"></div></div><div class="lb-next" id="xp-nxt">200 XP to next level</div></div>
-      </div>
-      <div class="stats-row">
-        <div class="sc"><div class="sc-ico">🔥</div><div><div class="sc-val" id="st-streak" style="color:var(--o)">1</div><div class="sc-lbl">Day streak</div></div></div>
-        <div class="sc"><div class="sc-ico">📚</div><div><div class="sc-val" id="st-done" style="color:var(--g)">0</div><div class="sc-lbl">Lessons done</div></div></div>
-        <div class="sc"><div class="sc-ico">🎯</div><div><div class="sc-val" id="st-quiz" style="color:var(--y)">0</div><div class="sc-lbl">Quizzes taken</div></div></div>
-        <div class="sc"><div class="sc-ico">⭐</div><div><div class="sc-val" id="st-lv" style="color:var(--p2)">1</div><div class="sc-lbl">Current level</div></div></div>
-      </div>
-      <div class="qa-row">
-        <div class="qa hi" onclick="goApp('translator')"><div class="qa-ico">🔤</div><div><div class="qa-t">Braille Translator</div><div class="qa-s">Type any text to see it in Braille instantly</div></div></div>
-        <div class="qa" onclick="goApp('alphabet')"><div class="qa-ico">🅰️</div><div><div class="qa-t">Alphabet Reference</div><div class="qa-s">Browse the full A–Z and number guide</div></div></div>
-      </div>
+
+      <!-- LESSONS FIRST -->
       <div id="member-banner" style="margin-bottom:16px"></div>
       <div class="les-hd">
         <div class="les-hd-t" id="les-prog">0 of 6 lessons completed</div>
         <button class="nbtn" style="padding:6px 14px;font-size:12px" onclick="goApp('progress')">View progress →</button>
       </div>
-      <div class="lg" id="les-grid"></div>
+      <div class="lg" id="les-grid" style="margin-bottom:28px"></div>
+
+      <!-- QUICK ACCESS -->
+      <div class="qa-row" style="margin-bottom:20px">
+        <div class="qa hi" onclick="goApp('translator')"><div class="qa-ico">🔤</div><div><div class="qa-t">Braille Translator</div><div class="qa-s">Type any text to see it in Braille instantly</div></div></div>
+        <div class="qa" onclick="goApp('alphabet')"><div class="qa-ico">🅰️</div><div><div class="qa-t">Alphabet Reference</div><div class="qa-s">Browse the full A–Z and number guide</div></div></div>
+      </div>
+
+      <!-- STATS — shown after clicking Start Learning -->
+      <div id="stats-section" style="display:none">
+        <div class="lev-bar">
+          <div><div class="lb-level">Level <span id="lv-num">1</span></div><div class="lb-xp"><span id="xp-tot">0</span> XP earned</div></div>
+          <div style="flex:1"><div class="pbar"><div class="pfill" id="lv-bar" style="width:0%"></div></div><div class="lb-next" id="xp-nxt">200 XP to next level</div></div>
+        </div>
+        <div class="stats-row">
+          <div class="sc"><div class="sc-ico">🔥</div><div><div class="sc-val" id="st-streak" style="color:var(--o)">1</div><div class="sc-lbl">Day streak</div></div></div>
+          <div class="sc"><div class="sc-ico">📚</div><div><div class="sc-val" id="st-done" style="color:var(--g)">0</div><div class="sc-lbl">Lessons done</div></div></div>
+          <div class="sc"><div class="sc-ico">🎯</div><div><div class="sc-val" id="st-quiz" style="color:var(--y)">0</div><div class="sc-lbl">Quizzes taken</div></div></div>
+          <div class="sc"><div class="sc-ico">⭐</div><div><div class="sc-val" id="st-lv" style="color:var(--p2)">1</div><div class="sc-lbl">Current level</div></div></div>
+        </div>
+      </div>
+
     </div>
 
     <!-- LESSON -->
@@ -1576,6 +1585,10 @@ function rDash(){
   document.getElementById('st-lv').textContent=l;
   document.getElementById('les-prog').textContent=S.done.length+' of '+LES.length+' lessons completed';
 
+  // show stats section only if user has started learning (has XP or done a lesson)
+  const statsEl=document.getElementById('stats-section');
+  if(statsEl) statsEl.style.display=(S.xp>0||S.done.length>0||S.qt>0)?'block':'none';
+
   // show member badge or upgrade banner
   const memberEl=document.getElementById('member-banner');
   if(memberEl){
@@ -1618,7 +1631,13 @@ function rDash(){
 // ═══════════════════════════════════════
 // LESSONS
 // ═══════════════════════════════════════
-function stLes(i){LS.l=LES[i];LS.i=0;showView('lesson');rLes();}
+function stLes(i){
+  LS.l=LES[i];LS.i=0;
+  // reveal stats from now on
+  const statsEl=document.getElementById('stats-section');
+  if(statsEl)statsEl.style.display='block';
+  showView('lesson');rLes();
+}
 function rLes(){
   const l=LS.l,i=LS.i,k=l.l[i],d=BR[k];
   document.getElementById('les-letter').textContent=k.toUpperCase();
