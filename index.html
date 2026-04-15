@@ -625,7 +625,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
   </nav>
   <div class="hero-wrap">
     <div>
-      <div class="h-tag">Helping blind children learn Braille</div>
+      <div class="h-tag">Helping families support their blind children</div>
       <h1 class="h-title">Learn <span>Braille</span><br>the fun way.</h1>
       <p class="h-desc">Interactive lessons, instant quizzes, and a real-time translator. For children, adults, teachers, and anyone curious about Braille.</p>
       <div class="h-btns">
@@ -976,15 +976,20 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
         <div class="trans-wrap">
           <div class="tp">
             <div class="tp-lbl">Your text</div>
-            <textarea class="tp-ta" id="tp-ta" placeholder="Type anything here…" maxlength="60" oninput="doTrans()"></textarea>
-            <div class="tp-foot"><span class="tp-cnt"><span id="tp-cnt">0</span>/60</span><button class="tp-clr" onclick="clrTrans()">Clear</button></div>
-            <div class="chips">
-              <span class="chip" onclick="setTrans('Hello')">Hello</span>
-              <span class="chip" onclick="setTrans('Braille')">Braille</span>
-              <span class="chip" onclick="setTrans('I love you')">I love you</span>
-              <span class="chip" onclick="setTrans('ABC')">ABC</span>
-              <span class="chip" onclick="setTrans('12345')">12345</span>
-              <span class="chip" onclick="setTrans('Good morning')">Good morning</span>
+            <textarea class="tp-ta" id="tp-ta" placeholder="Type anything here…" maxlength="60" oninput="previewTrans()"></textarea>
+            <div class="tp-foot">
+              <span class="tp-cnt"><span id="tp-cnt">0</span>/60</span>
+              <span id="trans-attempts-left" style="font-size:12px;color:var(--y);font-weight:600"></span>
+              <button class="tp-clr" onclick="clrTrans()">Clear</button>
+            </div>
+            <button class="btn btn-p" style="width:100%;margin-top:12px" onclick="doTrans()">Translate →</button>
+            <div class="chips" style="margin-top:12px">
+              <span class="chip" onclick="setTrans('Hello');doTrans()">Hello</span>
+              <span class="chip" onclick="setTrans('Braille');doTrans()">Braille</span>
+              <span class="chip" onclick="setTrans('I love you');doTrans()">I love you</span>
+              <span class="chip" onclick="setTrans('ABC');doTrans()">ABC</span>
+              <span class="chip" onclick="setTrans('12345');doTrans()">12345</span>
+              <span class="chip" onclick="setTrans('Good morning');doTrans()">Good morning</span>
             </div>
           </div>
           <div class="tp">
@@ -1439,7 +1444,7 @@ let S=ldS(),LS={l:null,i:0},QS={q:[],i:0,sc:0,sel:null},muted=false;
 
 function isMember(){return S.member===true;}
 function isTeacherLoggedIn(){return typeof TC!=='undefined'&&TC!==null&&sessionStorage.getItem('bl_teacher_session')==='1';}
-function isAccessAllowed(){return isMember()||isTeacherLoggedIn();}
+function isAccessAllowed(){return isMember();}
 function activateMember(){S.member=true;svS();rDash();}
 
 // ═══════════════════════════════════════
@@ -1575,8 +1580,7 @@ function rDash(){
   const memberEl=document.getElementById('member-banner');
   if(memberEl){
     if(isAccessAllowed()){
-      const label=isTeacherLoggedIn()&&!isMember()?'👩‍🏫 Teacher — Full access granted':'💜 Member — Full access unlocked';
-      memberEl.innerHTML=`<div class="member-badge">${label}</div>`;
+      memberEl.innerHTML=`<div class="member-badge">💜 Member — Full access unlocked</div>`;
     } else {
       memberEl.innerHTML=`<div class="upgrade-banner">
         <div class="ub-left">
@@ -2010,8 +2014,21 @@ Be warm and encouraging — this is a parent trying to connect with their child'
 
 // ═══════════════════════════════════════
 let transTimer=null;
-function setTrans(v){document.getElementById('tp-ta').value=v;doTrans();}
-function clrTrans(){document.getElementById('tp-ta').value='';doTrans();}
+function setTrans(v){document.getElementById('tp-ta').value=v;previewTrans();}
+function clrTrans(){document.getElementById('tp-ta').value='';previewTrans();}
+
+// just update char count on typing, no attempt used yet
+function previewTrans(){
+  const inp=document.getElementById('tp-ta').value;
+  document.getElementById('tp-cnt').textContent=inp.length;
+  if(!inp){
+    document.getElementById('sym-out').textContent='—';
+    document.getElementById('cells-out').innerHTML='';
+    document.getElementById('det-list').innerHTML='';
+    document.getElementById('trans-attempts-left').textContent='';
+  }
+}
+
 function doTrans(){
   const inp=document.getElementById('tp-ta').value;
   document.getElementById('tp-cnt').textContent=inp.length;
@@ -2019,9 +2036,10 @@ function doTrans(){
     document.getElementById('sym-out').textContent='—';
     document.getElementById('cells-out').innerHTML='';
     document.getElementById('det-list').innerHTML='';
+    document.getElementById('trans-attempts-left').textContent='';
     return;
   }
-  // check attempt limit for non-members
+  // check attempt limit for non-members — count per translate click
   if(!isAccessAllowed()){
     const attempts=getTransAttempts();
     if(attempts>=FREE_TRANS_LIMIT){
@@ -2032,7 +2050,6 @@ function doTrans(){
           <div style="font-size:28px;margin-bottom:10px">💜</div>
           <div style="font-size:16px;font-weight:800;margin-bottom:6px">Free limit reached</div>
           <div style="font-size:14px;color:var(--t2);margin-bottom:16px;line-height:1.6">You've used your ${FREE_TRANS_LIMIT} free translations. Become a member for unlimited access.</div>
-          <div id="trans-code-err" style="display:none"></div>
           <a href="https://buy.stripe.com/cNi00j8cFeRnaHQa3p2wU00" target="_blank" class="btn btn-p" style="display:inline-block;text-decoration:none;margin-bottom:10px">Become a member →</a>
           <div style="font-size:12px;color:var(--t3);margin-top:6px">Access unlocks automatically after payment ✓</div>
         </div>`;
@@ -2040,7 +2057,7 @@ function doTrans(){
     }
     incTransAttempts();
     const left=FREE_TRANS_LIMIT-getTransAttempts();
-    if(left>=0) document.getElementById('tp-cnt').textContent=inp.length+` (${left} free translation${left!==1?'s':''} left)`;
+    document.getElementById('trans-attempts-left').textContent=left>0?`${left} free translation${left!==1?'s':''} left`:'Last free translation used';
   }
   let sy='',ce='',de='';
   inp.toLowerCase().split('').forEach(c=>{
@@ -2053,14 +2070,7 @@ function doTrans(){
   document.getElementById('sym-out').textContent=sy||'—';
   document.getElementById('cells-out').innerHTML=ce;
   document.getElementById('det-list').innerHTML=de;
-  if(!muted&&inp.length>0){
-    clearTimeout(transTimer);
-    transTimer=setTimeout(()=>{
-      const last=inp[inp.length-1].toLowerCase();
-      if(last===' '){spk('space');return;}
-      const d=BR[last];if(d)spkLetter(last,d.dots);
-    },400);
-  }
+  if(!muted&&inp.length>0){spk(inp);}
 }
 
 // ═══════════════════════════════════════
