@@ -1506,8 +1506,6 @@ function redeemCode(inputId){
 // ═══════════════════════════════════════
 function getTransAttempts(){return parseInt(localStorage.getItem('bl_trans_attempts')||'0');}
 function incTransAttempts(){localStorage.setItem('bl_trans_attempts',getTransAttempts()+1);}
-const FREE_TRANS_LIMIT=3;
-const FREE_DOTS_LIMIT=3;
 
 function lv(x){return Math.floor(x/200)+1}
 function lp(x){return((x%200)/200)*100}
