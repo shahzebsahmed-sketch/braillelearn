@@ -100,7 +100,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .voice-btn{background:var(--card);border:1px solid var(--border);color:var(--t2);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--ff);transition:all .2s}
 .voice-btn:hover{border-color:var(--p);color:var(--t1)}
 
-.app-body{flex:1;padding:40px;max-width:1000px;margin:0 auto;width:100%}
+.app-body{padding:40px;max-width:1000px;margin:0 auto;width:100%;padding-bottom:60px}
 .view{display:none}
 .view.on{display:block}
 
@@ -838,7 +838,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 </div>
 
 <!-- ═══ APP ═══ -->
-<div class="pg" id="pg-app" style="display:flex;flex-direction:column;min-height:100vh">
+<div class="pg" id="pg-app" style="display:none">
   <nav class="app-nav">
     <div class="nav-brand" onclick="showPg('pg-land')" title="Back to home page" style="cursor:pointer">Braille<b>Learn</b></div>
     <div class="nav-tabs">
@@ -1582,18 +1582,12 @@ function mkCell(dots,sz='',numbered=false){
 // NAVIGATION
 // ═══════════════════════════════════════
 function showPg(id){
-  // hide all pages
   document.querySelectorAll('.pg').forEach(p=>{
     p.classList.remove('on');
     p.style.display='none';
   });
-  // show the target page
   const target=document.getElementById(id);
-  if(id==='pg-app'){
-    target.style.display='flex';
-  } else {
-    target.style.display='block';
-  }
+  target.style.display='block';
   target.classList.add('on');
   window.scrollTo(0,0);
 }
@@ -1604,7 +1598,7 @@ function goApp(v){
     p.style.display='none';
   });
   const app=document.getElementById('pg-app');
-  app.style.display='flex';
+  app.style.display='block';
   app.classList.add('on');
   showView(v);
 }
