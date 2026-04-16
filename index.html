@@ -664,14 +664,14 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div class="land-section-inner">
       <div style="text-align:center;margin-bottom:48px">
         <div class="sec-lbl">Simple pricing</div>
-        <div class="sec-title" style="margin-bottom:12px">Start free, unlock everything</div>
-        <p style="font-size:16px;color:var(--t2);max-width:480px;margin:0 auto;line-height:1.7">Try BrailleLearn completely free. When you're ready, unlock all lessons for less than a cup of coffee a month.</p>
+        <div class="sec-title" style="margin-bottom:12px">🎉 Free for everyone until June 2026</div>
+        <p style="font-size:16px;color:var(--t2);max-width:520px;margin:0 auto;line-height:1.7">We're in our free launch period — <strong style="color:var(--t1)">everything is completely free until 16th June 2026</strong>. After that, a membership plan will be available for full access.</p>
       </div>
       <div class="pricing-grid">
         <div class="price-card">
-          <div class="pc-tier">Free</div>
+          <div class="pc-tier">Always Free</div>
           <div class="pc-price">£0<span>/forever</span></div>
-          <div class="pc-desc">Perfect to get started and see if BrailleLearn is right for you.</div>
+          <div class="pc-desc">First 2 lessons, translator and alphabet reference — always free, no card needed.</div>
           <div class="pc-features">
             <div class="pcf">✅ First 2 lessons (A–J)</div>
             <div class="pcf">✅ Braille translator (text → Braille)</div>
@@ -679,15 +679,15 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
             <div class="pcf dim">❌ Lessons 3–6 (K–Z + numbers)</div>
             <div class="pcf dim">❌ Dot tapper (Braille → text)</div>
             <div class="pcf dim">❌ Progress tracking & XP</div>
-            <div class="pcf dim">❌ Achievements & streaks</div>
+            <div class="pcf dim">❌ Games & achievements</div>
           </div>
           <button class="btn btn-o" style="width:100%;font-size:15px" onclick="goApp('dashboard')">Start for free</button>
         </div>
         <div class="price-card featured">
-          <div class="price-popular">Most popular</div>
-          <div class="pc-tier" style="color:var(--p)">Member</div>
-          <div class="pc-price" style="color:var(--p)">£3.99<span>/month</span></div>
-          <div class="pc-desc">Full access to everything. Help support a blind child's education at the same time.</div>
+          <div class="price-popular">🎉 Free until June 2026!</div>
+          <div class="pc-tier" style="color:var(--g)">Launch Access</div>
+          <div class="pc-price" style="color:var(--g)">£0<span style="text-decoration:line-through;color:var(--t3);margin-left:6px">£3.99/mo</span></div>
+          <div class="pc-desc">Everything unlocked completely free during our launch period. No card needed.</div>
           <div class="pc-features">
             <div class="pcf">✅ All 6 lessons (A–Z + numbers)</div>
             <div class="pcf">✅ Full quiz system</div>
@@ -696,10 +696,10 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
             <div class="pcf">✅ Progress tracking & XP</div>
             <div class="pcf">✅ Achievements & streaks</div>
             <div class="pcf">✅ Memory tips for every letter</div>
-            <div class="pcf">✅ Cancel anytime</div>
+            <div class="pcf">✅ Free until 16th June 2026</div>
           </div>
-          <a href="https://buy.stripe.com/cNi00j8cFeRnaHQa3p2wU00" target="_blank" class="btn btn-p" style="width:100%;font-size:15px;display:block;text-align:center;text-decoration:none;padding:14px 28px">Become a member →</a>
-          <div style="font-size:12px;color:var(--t3);text-align:center;margin-top:10px">Secure payment via Stripe · Cancel anytime</div>
+          <button class="btn btn-p" style="width:100%;font-size:15px" onclick="goApp('dashboard')">Get full access free →</button>
+          <div style="font-size:12px;color:var(--t3);text-align:center;margin-top:10px">No card needed · Free during launch period</div>
         </div>
       </div>
     </div>
@@ -1441,7 +1441,9 @@ const BR={
 };
 
 const STRIPE_LINK='https://buy.stripe.com/cNi00j8cFeRnaHQa3p2wU00';
-const FREE_LESSONS=[1,2]; // lessons 1 and 2 are free
+const FREE_UNTIL=new Date('2026-06-16'); // Free for everyone until 16th June 2026
+const FREE_TRANS_LIMIT=3;
+const FREE_DOTS_LIMIT=3;
 
 const LES=[
   {id:1,t:'First Letters',s:'A, B, C, D, E',i:'🌱',l:['a','b','c','d','e'],xp:50,d:'Beginner',c:'var(--g)',free:true},
@@ -1460,8 +1462,8 @@ function svS(){try{localStorage.setItem('bl4',JSON.stringify(S));}catch(e){}}
 let S=ldS(),LS={l:null,i:0},QS={q:[],i:0,sc:0,sel:null},muted=false;
 
 function isMember(){return S.member===true;}
-function isTeacherLoggedIn(){return typeof TC!=='undefined'&&TC!==null&&sessionStorage.getItem('bl_teacher_session')==='1';}
-function isAccessAllowed(){return isMember();}
+function isInFreePeriod(){return new Date()<FREE_UNTIL;}
+function isAccessAllowed(){return isMember()||isInFreePeriod();}
 function activateMember(){S.member=true;svS();rDash();}
 
 // ═══════════════════════════════════════
@@ -1600,8 +1602,16 @@ function rDash(){
   // show member badge or upgrade banner
   const memberEl=document.getElementById('member-banner');
   if(memberEl){
-    if(isAccessAllowed()){
+    if(isMember()){
       memberEl.innerHTML=`<div class="member-badge">💜 Member — Full access unlocked</div>`;
+    } else if(isInFreePeriod()){
+      const daysLeft=Math.ceil((FREE_UNTIL-new Date())/(1000*60*60*24));
+      memberEl.innerHTML=`<div class="upgrade-banner" style="background:linear-gradient(135deg,rgba(62,201,154,.1),rgba(62,201,154,.04));border-color:rgba(62,201,154,.25)">
+        <div class="ub-left">
+          <div class="ub-title" style="color:var(--g)">🎉 Free launch period — Full access for everyone!</div>
+          <div class="ub-sub">Enjoy everything free for ${daysLeft} more day${daysLeft!==1?'s':''} · Membership starts 16th June 2026</div>
+        </div>
+      </div>`;
     } else {
       memberEl.innerHTML=`<div class="upgrade-banner">
         <div class="ub-left">
