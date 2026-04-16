@@ -318,6 +318,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 ════════════════════════════════ */
 /* login page */
 #pg-teacher-login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px}
+#pg-teacher{background:var(--bg);min-height:100vh}
 .tl-wrap{width:100%;max-width:480px}
 .tl-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:36px;margin-bottom:14px}
 .tl-icon{font-size:48px;margin-bottom:14px;text-align:center}
@@ -334,7 +335,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .t-badge{background:rgba(62,201,154,.12);border:1px solid rgba(62,201,154,.25);color:var(--g);font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;letter-spacing:.5px;margin-right:auto}
 .t-nav-r{display:flex;align-items:center;gap:8px}
 
-.t-body{max-width:1000px;margin:0 auto;padding:36px 40px}
+.t-body{max-width:1000px;margin:0 auto;padding:32px 40px;width:100%;box-sizing:border-box}
 
 /* overview stats */
 .t-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
@@ -528,8 +529,8 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .faq-a.show{display:block}
 
 /* ── LANDING SECTIONS ── */
-.land-section{padding:80px 0;border-top:1px solid var(--border)}
-.land-section-inner{max-width:1000px;margin:0 auto;padding:0 40px}
+#pg-land .land-section{padding:80px 0;border-top:1px solid var(--border)}
+#pg-land .land-section-inner{max-width:1000px;margin:0 auto;padding:0 40px}
 .land-2col{display:grid;grid-template-columns:1fr 320px;gap:60px;align-items:start;margin-bottom:60px}
 
 /* school benefits */
@@ -571,7 +572,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
   .school-price-card{position:static}
   .ef-row{grid-template-columns:1fr}
   .support-stats{gap:28px}
-  .land-section-inner{padding:0 20px}
+  #pg-land .land-section-inner{padding:0 20px}
 }
 
 /* ── MEMORY TIP ── */
@@ -656,6 +657,27 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <div class="fc"><div class="fc-ico">🎯</div><div class="fc-t">Quizzes & Feedback</div><div class="fc-d">Multiple-choice quizzes after every lesson with voice and visual feedback.</div></div>
       <div class="fc"><div class="fc-ico">🔤</div><div class="fc-t">Braille Translator</div><div class="fc-d">Type any word and instantly see it translated into Braille dots.</div></div>
       <div class="fc"><div class="fc-ico">👩‍🏫</div><div class="fc-t">Teacher Dashboard</div><div class="fc-d">Track each student individually, add notes, and monitor progress.</div></div>
+    </div>
+  </div>
+
+  <!-- RATINGS SECTION -->
+  <div class="land-section" style="padding-top:64px;padding-bottom:64px;background:var(--card)">
+    <div class="land-section-inner">
+      <div style="text-align:center;margin-bottom:36px">
+        <div class="sec-lbl">Ratings & reviews</div>
+        <div class="sec-title" style="margin-bottom:12px">What people are saying</div>
+      </div>
+      <!-- Overall rating display -->
+      <div id="landing-rating-display" style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:40px">
+        <div id="landing-stars" style="font-size:40px;letter-spacing:4px">⭐⭐⭐⭐⭐</div>
+        <div id="landing-score" style="font-size:28px;font-weight:900;color:var(--p);letter-spacing:-1px">—</div>
+        <div id="landing-count" style="font-size:14px;color:var(--t2)">Be the first to rate BrailleLearn!</div>
+      </div>
+      <!-- Recent reviews from localStorage -->
+      <div id="landing-reviews" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px"></div>
+      <div style="text-align:center">
+        <button class="btn btn-p" onclick="goApp('dashboard');setTimeout(()=>showRatingPrompt(true),400)">Try it and leave a review →</button>
+      </div>
     </div>
   </div>
 
@@ -829,6 +851,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     </div>
     <div class="nav-r">
       <div class="xp-chip" id="nav-xp">0 XP · Lv 1</div>
+      <button class="voice-btn" onclick="showRatingPrompt(true)" title="Rate BrailleLearn">⭐ Rate us</button>
       <button class="voice-btn" id="vbtn" onclick="toggleMute()">🔊 Voice on</button>
       <button class="voice-btn" onclick="showPg('pg-teacher-login')">👩‍🏫 Teacher</button>
     </div>
@@ -1330,6 +1353,34 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
   </div>
 </div>
 
+<!-- RATING MODAL -->
+<div class="modal-bg" id="modal-rating" style="display:none" onclick="if(event.target===this)closeModal('modal-rating')">
+  <div class="modal" style="max-width:420px;text-align:center">
+    <div style="font-size:48px;margin-bottom:12px">⭐</div>
+    <div class="modal-h" style="text-align:center;font-size:20px">Enjoying BrailleLearn?</div>
+    <div class="modal-p" style="text-align:center">Your rating helps other families find us. Takes 5 seconds!</div>
+    <div style="display:flex;justify-content:center;gap:10px;margin:20px 0" id="modal-stars">
+      <span class="rate-star" data-val="1" onclick="selectRating(1)" style="font-size:40px;cursor:pointer;transition:transform .15s;opacity:.35">⭐</span>
+      <span class="rate-star" data-val="2" onclick="selectRating(2)" style="font-size:40px;cursor:pointer;transition:transform .15s;opacity:.35">⭐</span>
+      <span class="rate-star" data-val="3" onclick="selectRating(3)" style="font-size:40px;cursor:pointer;transition:transform .15s;opacity:.35">⭐</span>
+      <span class="rate-star" data-val="4" onclick="selectRating(4)" style="font-size:40px;cursor:pointer;transition:transform .15s;opacity:.35">⭐</span>
+      <span class="rate-star" data-val="5" onclick="selectRating(5)" style="font-size:40px;cursor:pointer;transition:transform .15s;opacity:.35">⭐</span>
+    </div>
+    <div id="rating-label" style="font-size:15px;font-weight:700;color:var(--p);min-height:24px;margin-bottom:14px"></div>
+    <div id="rating-name-row" style="display:none;margin-bottom:14px">
+      <label class="inp-lbl">Your name (optional)</label>
+      <input class="inp" type="text" id="rating-name" placeholder="e.g. Sarah" maxlength="30">
+      <label class="inp-lbl">A short review (optional)</label>
+      <textarea class="inp" id="rating-review" placeholder="What did you think?" style="height:72px;resize:none;margin-bottom:0"></textarea>
+    </div>
+    <div id="rating-success" style="display:none;background:rgba(62,201,154,.1);border:1px solid rgba(62,201,154,.25);border-radius:10px;padding:12px;font-size:14px;color:var(--g);margin-bottom:14px">
+      ✓ Thank you for your rating! 💜
+    </div>
+    <button class="btn btn-p" style="width:100%" id="rating-submit-btn" onclick="submitRating()" disabled>Submit rating</button>
+    <button class="btn btn-o btn-sm" style="width:100%;margin-top:8px" onclick="closeModal('modal-rating');localStorage.setItem('bl_rating_dismissed','1')">Maybe later</button>
+  </div>
+</div>
+
 <!-- UPGRADE MODAL -->
 <div class="modal-bg" id="modal-upgrade" style="display:none" onclick="if(event.target===this)closeModal('modal-upgrade')">
   <div class="modal" style="max-width:480px;text-align:center">
@@ -1688,6 +1739,10 @@ function compLes(){
   document.getElementById('comp-sub').textContent=`You learned ${l.l.length} ${l.id===6?'numbers':'letters'}!`;
   document.getElementById('comp-xp').textContent=`+${l.xp} XP earned`;
   showView('complete');spk('Lesson complete! Great work!');
+  // show rating prompt after first completed lesson, with delay
+  if(S.done.length===1&&!localStorage.getItem('bl_rated')&&!localStorage.getItem('bl_rating_dismissed')){
+    setTimeout(()=>showRatingPrompt(),2500);
+  }
 }
 
 // ═══════════════════════════════════════
@@ -2746,6 +2801,93 @@ function submitFeedback(){
 }
 
 // ═══════════════════════════════════════
+// STAR RATING SYSTEM
+// ═══════════════════════════════════════
+let currentRating=0;
+const RATING_LABELS=['','😞 Poor','😐 Fair','🙂 Good','😊 Great','🤩 Amazing!'];
+
+function selectRating(val){
+  currentRating=val;
+  document.querySelectorAll('.rate-star').forEach((s,i)=>{
+    s.style.opacity=i<val?'1':'0.35';
+    s.style.transform=i<val?'scale(1.15)':'scale(1)';
+  });
+  document.getElementById('rating-label').textContent=RATING_LABELS[val];
+  document.getElementById('rating-name-row').style.display='block';
+  document.getElementById('rating-submit-btn').disabled=false;
+}
+
+function submitRating(){
+  if(!currentRating)return;
+  const name=document.getElementById('rating-name').value.trim()||'Anonymous';
+  const review=document.getElementById('rating-review').value.trim();
+  // save to localStorage (shared across same browser)
+  const ratings=JSON.parse(localStorage.getItem('bl_ratings')||'[]');
+  ratings.push({rating:currentRating,name,review,at:Date.now()});
+  localStorage.setItem('bl_ratings',JSON.stringify(ratings));
+  localStorage.setItem('bl_rated','1');
+  document.getElementById('rating-success').style.display='block';
+  document.getElementById('rating-name-row').style.display='none';
+  document.getElementById('rating-submit-btn').style.display='none';
+  spk('Thank you for your rating!');
+  setTimeout(()=>closeModal('modal-rating'),1800);
+  // refresh landing page display
+  renderLandingRatings();
+}
+
+function showRatingPrompt(force=false){
+  // don't show if already rated or dismissed (unless forced)
+  if(!force&&(localStorage.getItem('bl_rated')||localStorage.getItem('bl_rating_dismissed')))return;
+  currentRating=0;
+  document.querySelectorAll('.rate-star').forEach(s=>{s.style.opacity='0.35';s.style.transform='scale(1)';});
+  document.getElementById('rating-label').textContent='';
+  document.getElementById('rating-name-row').style.display='none';
+  document.getElementById('rating-success').style.display='none';
+  document.getElementById('rating-submit-btn').style.display='block';
+  document.getElementById('rating-submit-btn').disabled=true;
+  document.getElementById('rating-name').value='';
+  document.getElementById('rating-review').value='';
+  openModal('modal-rating');
+}
+
+function renderLandingRatings(){
+  const ratings=JSON.parse(localStorage.getItem('bl_ratings')||'[]');
+  const scoreEl=document.getElementById('landing-score');
+  const starsEl=document.getElementById('landing-stars');
+  const countEl=document.getElementById('landing-count');
+  const reviewsEl=document.getElementById('landing-reviews');
+  if(!scoreEl)return;
+  if(!ratings.length){
+    scoreEl.textContent='—';
+    starsEl.textContent='⭐⭐⭐⭐⭐';
+    starsEl.style.opacity='.25';
+    countEl.textContent='Be the first to rate BrailleLearn!';
+    if(reviewsEl)reviewsEl.innerHTML='';
+    return;
+  }
+  const avg=(ratings.reduce((a,r)=>a+r.rating,0)/ratings.length);
+  const rounded=Math.round(avg*10)/10;
+  scoreEl.textContent=rounded.toFixed(1)+' / 5';
+  starsEl.style.opacity='1';
+  // render stars proportionally
+  const full=Math.floor(avg);
+  const half=avg-full>=0.5?1:0;
+  starsEl.textContent='⭐'.repeat(full)+(half?'½':'')+'☆'.repeat(5-full-half);
+  countEl.textContent=`${ratings.length} rating${ratings.length!==1?'s':''}`;
+  // show up to 3 most recent reviews that have text
+  if(reviewsEl){
+    const withText=ratings.filter(r=>r.review).slice(-3).reverse();
+    reviewsEl.style.display=withText.length?'grid':'none';
+    reviewsEl.innerHTML=withText.map(r=>`
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px">
+        <div style="font-size:18px;margin-bottom:8px">${'⭐'.repeat(r.rating)}</div>
+        <div style="font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:12px;font-style:italic">"${r.review}"</div>
+        <div style="font-size:12px;font-weight:700;color:var(--t3)">${r.name} · ${new Date(r.at).toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</div>
+      </div>`).join('');
+  }
+}
+
+// ═══════════════════════════════════════
 // HERO ANIMATION
 // ═══════════════════════════════════════
 const hKeys=Object.keys(BR).filter(k=>isNaN(k));let hi=0;
@@ -2758,6 +2900,8 @@ function cycleHero(){
 }
 cycleHero();
 setInterval(cycleHero,2800);
+// init ratings display on landing page
+renderLandingRatings();
 
 // ═══════════════════════════════════════
 // AUTO UNLOCK — detects Stripe redirect
