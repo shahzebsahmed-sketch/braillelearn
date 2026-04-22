@@ -2798,146 +2798,159 @@ function submitFeedback(){
 // ═══════════════════════════════════════
 // SHARED RATINGS SYSTEM (JSONBin.io)
 // ═══════════════════════════════════════
-const JSONBIN_BIN_ID   = '69e8bba1856a6821895e8c63';
-const JSONBIN_API_KEY  = '$2a$10$sPMKsXy.iflhVtXtsr7k2uDgXw1Qtiw/mnbZoeKPEvJTTOVwuDxx6';
-const JSONBIN_URL      = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+const JSONBIN_BIN_ID  = '69e8bba1856a6821895e8c63';
+const JSONBIN_API_KEY = '$2a$10$sPMKsXy.iflhVtXtsr7k2uDgXw1Qtiw/mnbZoeKPEvJTTOVwuDxx6';
+const JSONBIN_URL     = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+const CACHE_KEY       = 'bl_ratings_v2';
 
-let cachedRatings=[];
+let cachedRatings = JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');
 
 async function fetchRatings(){
   try{
-    const r=await fetch(JSONBIN_URL+'/latest',{
-      headers:{'X-Master-Key':JSONBIN_API_KEY,'X-Bin-Meta':false}
+    const r = await fetch(JSONBIN_URL+'/latest', {
+      method:'GET',
+      headers:{
+        'X-Master-Key': JSONBIN_API_KEY,
+        'X-Bin-Meta': 'false'
+      }
     });
-    const d=await r.json();
-    cachedRatings=d.ratings||[];
-    // cache locally
-    localStorage.setItem('bl_ratings_cache',JSON.stringify(cachedRatings));
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const d = await r.json();
+    // JSONBin wraps in {record:{ratings:[]}} or just {ratings:[]}
+    const arr = d.record ? d.record.ratings : (d.ratings||[]);
+    cachedRatings = Array.isArray(arr) ? arr : [];
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cachedRatings));
   }catch(e){
-    // fallback to local cache if offline
-    cachedRatings=JSON.parse(localStorage.getItem('bl_ratings_cache')||'[]');
+    // use cached version silently
+    cachedRatings = JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');
   }
   renderLandingRatings();
 }
 
 async function saveRatingToCloud(entry){
+  // first get latest data
+  let current = [];
   try{
-    // fetch latest first to avoid overwriting
-    const r=await fetch(JSONBIN_URL+'/latest',{
-      headers:{'X-Master-Key':JSONBIN_API_KEY,'X-Bin-Meta':false}
+    const r = await fetch(JSONBIN_URL+'/latest', {
+      headers:{'X-Master-Key': JSONBIN_API_KEY, 'X-Bin-Meta': 'false'}
     });
-    const d=await r.json();
-    const ratings=[...(d.ratings||[]),entry];
-    // save back
-    await fetch(JSONBIN_URL,{
-      method:'PUT',
-      headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_API_KEY},
-      body:JSON.stringify({ratings})
+    if(r.ok){
+      const d = await r.json();
+      const arr = d.record ? d.record.ratings : (d.ratings||[]);
+      current = Array.isArray(arr) ? arr : [];
+    }
+  }catch(e){}
+
+  // add new entry
+  current.push(entry);
+
+  // save back
+  try{
+    const r = await fetch(JSONBIN_URL, {
+      method: 'PUT',
+      headers:{
+        'Content-Type': 'application/json',
+        'X-Master-Key': JSONBIN_API_KEY
+      },
+      body: JSON.stringify({ratings: current})
     });
-    cachedRatings=ratings;
-    // cache locally too
-    localStorage.setItem('bl_ratings_cache',JSON.stringify(ratings));
+    if(!r.ok)throw new Error('Save failed '+r.status);
+    cachedRatings = current;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cachedRatings));
     return true;
   }catch(e){
-    // save locally if offline
-    const local=JSON.parse(localStorage.getItem('bl_ratings_cache')||'[]');
-    local.push(entry);
-    localStorage.setItem('bl_ratings_cache',JSON.stringify(local));
-    cachedRatings=local;
+    // save locally as fallback
+    cachedRatings = current;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cachedRatings));
     return false;
   }
 }
 
-let currentRating=0;
-const RATING_LABELS=['','😞 Poor','😐 Fair','🙂 Good','😊 Great','🤩 Amazing!'];
+let currentRating = 0;
+const RATING_LABELS = ['','😞 Poor','😐 Fair','🙂 Good','😊 Great','🤩 Amazing!'];
 
 function selectRating(val){
-  currentRating=val;
+  currentRating = val;
   document.querySelectorAll('.rate-star').forEach((s,i)=>{
-    s.style.opacity=i<val?'1':'0.35';
-    s.style.transform=i<val?'scale(1.15)':'scale(1)';
+    s.style.opacity = i<val ? '1' : '0.35';
+    s.style.transform = i<val ? 'scale(1.15)' : 'scale(1)';
   });
-  document.getElementById('rating-label').textContent=RATING_LABELS[val];
-  document.getElementById('rating-name-row').style.display='block';
-  document.getElementById('rating-submit-btn').disabled=false;
+  document.getElementById('rating-label').textContent = RATING_LABELS[val];
+  document.getElementById('rating-name-row').style.display = 'block';
+  document.getElementById('rating-submit-btn').disabled = false;
 }
 
 async function submitRating(){
   if(!currentRating)return;
-  const btn=document.getElementById('rating-submit-btn');
-  btn.disabled=true;
-  btn.textContent='Saving…';
-  const name=document.getElementById('rating-name').value.trim()||'Anonymous';
-  const review=document.getElementById('rating-review').value.trim();
-  const entry={rating:currentRating,name,review,at:Date.now()};
-  await saveRatingToCloud(entry);
+  const btn = document.getElementById('rating-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving…';
+  const name   = document.getElementById('rating-name').value.trim()||'Anonymous';
+  const review = document.getElementById('rating-review').value.trim();
+  const entry  = {rating:currentRating, name, review, at:Date.now()};
+  const ok = await saveRatingToCloud(entry);
   localStorage.setItem('bl_rated','1');
-  document.getElementById('rating-success').style.display='block';
-  document.getElementById('rating-name-row').style.display='none';
-  btn.style.display='none';
+  document.getElementById('rating-success').style.display = 'block';
+  document.getElementById('rating-success').textContent   = ok
+    ? '✓ Thank you! Your rating is now live for everyone to see 💜'
+    : '✓ Rating saved! It will appear when you next visit.';
+  document.getElementById('rating-name-row').style.display = 'none';
+  btn.style.display = 'none';
   spk('Thank you for your rating!');
   renderLandingRatings();
-  setTimeout(()=>closeModal('modal-rating'),1800);
+  setTimeout(()=>closeModal('modal-rating'), 2200);
 }
 
 function showRatingPrompt(force=false){
   if(!force&&(localStorage.getItem('bl_rated')||localStorage.getItem('bl_rating_dismissed')))return;
-  currentRating=0;
+  currentRating = 0;
   document.querySelectorAll('.rate-star').forEach(s=>{s.style.opacity='0.35';s.style.transform='scale(1)';});
-  document.getElementById('rating-label').textContent='';
-  document.getElementById('rating-name-row').style.display='none';
-  document.getElementById('rating-success').style.display='none';
-  document.getElementById('rating-submit-btn').style.display='block';
-  document.getElementById('rating-submit-btn').disabled=true;
-  document.getElementById('rating-submit-btn').textContent='Submit rating';
-  document.getElementById('rating-name').value='';
-  document.getElementById('rating-review').value='';
+  document.getElementById('rating-label').textContent = '';
+  document.getElementById('rating-name-row').style.display = 'none';
+  document.getElementById('rating-success').style.display = 'none';
+  document.getElementById('rating-submit-btn').style.display = 'block';
+  document.getElementById('rating-submit-btn').disabled = true;
+  document.getElementById('rating-submit-btn').textContent = 'Submit rating';
+  document.getElementById('rating-name').value = '';
+  document.getElementById('rating-review').value = '';
   openModal('modal-rating');
 }
 
 function renderLandingRatings(){
-  const ratings=cachedRatings||[];
-  const scoreEl=document.getElementById('landing-score');
-  const starsEl=document.getElementById('landing-stars');
-  const countEl=document.getElementById('landing-count');
-  const reviewsEl=document.getElementById('landing-reviews');
-  if(!scoreEl||!starsEl||!countEl)return;
+  const ratings = cachedRatings||[];
+  const scoreEl   = document.getElementById('landing-score');
+  const starsEl   = document.getElementById('landing-stars');
+  const countEl   = document.getElementById('landing-count');
+  const reviewsEl = document.getElementById('landing-reviews');
+  if(!scoreEl||!starsEl||!countEl) return;
 
   if(!ratings.length){
-    scoreEl.textContent='';
-    starsEl.innerHTML='<span style="font-size:32px;opacity:.3">⭐⭐⭐⭐⭐</span>';
-    countEl.textContent='Be the first to rate BrailleLearn!';
+    scoreEl.textContent = '';
+    starsEl.innerHTML   = '<span style="font-size:32px;opacity:.3">⭐⭐⭐⭐⭐</span>';
+    countEl.textContent = 'Be the first to rate BrailleLearn!';
     if(reviewsEl){reviewsEl.innerHTML='';reviewsEl.style.display='none';}
     return;
   }
 
-  const avg=ratings.reduce((a,r)=>a+r.rating,0)/ratings.length;
-  const rounded=Math.round(avg*10)/10;
+  const avg     = ratings.reduce((a,r)=>a+r.rating,0)/ratings.length;
+  const rounded = Math.round(avg*10)/10;
 
-  // score
-  scoreEl.textContent=rounded.toFixed(1)+' / 5';
+  scoreEl.textContent = rounded.toFixed(1)+' / 5';
+  starsEl.innerHTML   = '<span style="font-size:32px">'+'⭐'.repeat(Math.round(avg))+'</span>';
+  countEl.innerHTML   = `<strong style="color:var(--t1)">${ratings.length}</strong> ${ratings.length===1?'person':'people'} rated BrailleLearn &nbsp;·&nbsp; Average <strong style="color:var(--p)">${rounded.toFixed(1)} ★</strong>`;
 
-  // stars
-  const fullStars=Math.round(avg);
-  starsEl.innerHTML='<span style="font-size:32px">'+'⭐'.repeat(fullStars)+'</span>';
-
-  // count — always visible
-  countEl.innerHTML=`<strong style="color:var(--t1)">${ratings.length}</strong> ${ratings.length===1?'person has':'people have'} rated BrailleLearn · Average <strong style="color:var(--p)">${rounded.toFixed(1)} ★</strong>`;
-
-  // reviews with text
   if(reviewsEl){
-    const withText=ratings.filter(r=>r.review&&r.review.trim()).reverse().slice(0,3);
+    const withText = ratings.filter(r=>r.review&&r.review.trim().length>2).reverse().slice(0,3);
     if(withText.length){
-      reviewsEl.style.display='grid';
-      reviewsEl.innerHTML=withText.map(r=>`
+      reviewsEl.style.display = 'grid';
+      reviewsEl.innerHTML = withText.map(r=>`
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px">
           <div style="font-size:18px;margin-bottom:8px">${'⭐'.repeat(r.rating)}</div>
           <div style="font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:12px;font-style:italic">"${r.review}"</div>
           <div style="font-size:12px;font-weight:700;color:var(--t3)">${r.name||'Anonymous'} · ${new Date(r.at).toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</div>
         </div>`).join('');
     } else {
-      reviewsEl.style.display='none';
-      reviewsEl.innerHTML='';
+      reviewsEl.style.display = 'none';
     }
   }
 }
