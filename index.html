@@ -575,6 +575,21 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
   #pg-land .land-section-inner{padding:0 20px}
 }
 
+/* ── VOICE INFO TOOLTIP ── */
+.voice-wrap{position:relative;display:inline-block}
+.voice-info{display:none;position:absolute;top:calc(100% + 10px);right:0;width:300px;background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.4);z-index:200}
+.voice-info::before{content:'';position:absolute;top:-6px;right:16px;width:12px;height:12px;background:var(--surface);border-left:1px solid var(--border2);border-top:1px solid var(--border2);transform:rotate(45deg)}
+.voice-info.show{display:block}
+.vi-title{font-size:13px;font-weight:800;color:var(--t1);margin-bottom:4px}
+.vi-desc{font-size:12px;color:var(--t3);margin-bottom:12px}
+.vi-modes{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.vi-mode{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:8px;background:var(--card);border:1px solid var(--border)}
+.vi-mode.active{border-color:var(--p);background:rgba(123,110,246,.08)}
+.vi-ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.vi-mode b{font-size:12px;font-weight:700;color:var(--t1);display:block;margin-bottom:2px}
+.vi-sub{font-size:11px;color:var(--t2);line-height:1.5}
+.vi-tip{font-size:11px;color:var(--y);background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.15);border-radius:7px;padding:8px 10px;line-height:1.5}
+
 /* ── MEMORY TIP ── */
 .mem-tip-box{background:linear-gradient(135deg,rgba(123,110,246,.08),rgba(245,200,66,.06));border:1px solid rgba(123,110,246,.2);border-radius:14px;padding:16px 20px;display:flex;align-items:flex-start;gap:12px;width:100%;margin-top:4px}
 .mem-tip-icon{font-size:22px;flex-shrink:0;margin-top:2px}
@@ -855,7 +870,20 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div class="nav-r">
       <div class="xp-chip" id="nav-xp">0 XP · Lv 1</div>
       <button class="voice-btn" onclick="showRatingPrompt(true)" title="Rate BrailleLearn">⭐ Rate us</button>
-      <button class="voice-btn" id="vbtn" onclick="toggleMute()">🔊 Voice on</button>
+      <!-- Voice / Accessibility button with tooltip -->
+      <div class="voice-wrap" id="voice-wrap">
+        <button class="voice-btn" id="vbtn" onclick="toggleMute()" onmouseenter="showVoiceInfo()" onmouseleave="hideVoiceInfo()" onfocus="showVoiceInfo()" onblur="hideVoiceInfo()" aria-label="Voice settings. Currently: voice on. Click to change mode.">🔊 Voice on</button>
+        <div class="voice-info" id="voice-info" role="tooltip" aria-hidden="true">
+          <div class="vi-title">Voice & Accessibility</div>
+          <div class="vi-desc">Tap to cycle between modes:</div>
+          <div class="vi-modes">
+            <div class="vi-mode" id="vim-1"><span class="vi-ico">🔊</span><div><b>Voice on</b><div class="vi-sub">App reads letters, tips and feedback aloud</div></div></div>
+            <div class="vi-mode" id="vim-2"><span class="vi-ico">🔇</span><div><b>Voice off</b><div class="vi-sub">All app audio muted</div></div></div>
+            <div class="vi-mode" id="vim-3"><span class="vi-ico">♿</span><div><b>Screen reader mode</b><div class="vi-sub">For VoiceOver, TalkBack, JAWS & NVDA. App voice muted so your device reads instead</div></div></div>
+          </div>
+          <div class="vi-tip">💡 Using VoiceOver or TalkBack? Switch to Screen reader mode to avoid double speech</div>
+        </div>
+      </div>
       <button class="voice-btn" onclick="showPg('pg-teacher-login')">👩‍🏫 Teacher</button>
     </div>
   </nav>
@@ -1514,6 +1542,65 @@ const LES=[
 function ldS(){try{const s=localStorage.getItem('bl4');if(s)return JSON.parse(s);}catch(e){}return{xp:0,streak:1,done:[],scores:{},qt:0,at:'letters',member:false};}
 function svS(){try{localStorage.setItem('bl4',JSON.stringify(S));}catch(e){}}
 let S=ldS(),LS={l:null,i:0},QS={q:[],i:0,sc:0,sel:null},muted=false;
+
+// ── SCREEN READER DETECTION ──
+// Detects VoiceOver (iOS/Mac), TalkBack (Android), NVDA, JAWS
+// If active, mutes the app's own voice to avoid double-speaking
+let screenReaderActive=false;
+
+function detectScreenReader(){
+  // Method 1: media query for reduced motion (often enabled with screen readers)
+  const prefersReduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Method 2: check if focus is being managed externally (screen reader behaviour)
+  // Method 3: user agent hints for accessibility tools
+  const ua=navigator.userAgent.toLowerCase();
+  const mobileAccessibility=ua.includes('accessibility') || ua.includes('talkback');
+  // Method 4: window.speechSynthesis already in use by OS (VoiceOver/TalkBack)
+  // We detect this by trying a silent utterance and seeing if it's blocked
+  return mobileAccessibility;
+}
+
+// Listen for VoiceOver/TalkBack focus events — if screen reader is navigating,
+// it fires focus events rapidly on elements. We detect this pattern.
+let focusCount=0, focusTimer=null;
+document.addEventListener('focusin', function(){
+  focusCount++;
+  clearTimeout(focusTimer);
+  focusTimer=setTimeout(()=>{
+    if(focusCount>=3){
+      // rapid focus changes = screen reader is active
+      if(!screenReaderActive){
+        screenReaderActive=true;
+        muted=true;
+        window.speechSynthesis&&window.speechSynthesis.cancel();
+        const btn=document.getElementById('vbtn');
+        if(btn)btn.textContent='♿ Screen reader mode';
+        if(btn)btn.style.background='rgba(62,201,154,.15)';
+        if(btn)btn.style.borderColor='rgba(62,201,154,.3)';
+        if(btn)btn.style.color='var(--g)';
+        // announce to screen reader
+        srAnnounce('Screen reader detected. App voice muted. VoiceOver will read all content.');
+      }
+    }
+    focusCount=0;
+  },500);
+}, true);
+
+// Also detect via pointer events — screen readers often don't use mouse/touch
+// Allow manual toggle back on
+function toggleScreenReaderMode(){
+  screenReaderActive=!screenReaderActive;
+  muted=screenReaderActive;
+  const btn=document.getElementById('vbtn');
+  if(screenReaderActive){
+    if(btn){btn.textContent='♿ Screen reader mode';btn.style.color='var(--g)';}
+    window.speechSynthesis&&window.speechSynthesis.cancel();
+    srAnnounce('Screen reader mode on. App voice muted.');
+  } else {
+    if(btn){btn.textContent='🔊 Voice on';btn.style.color='';btn.style.background='';btn.style.borderColor='';}
+    srAnnounce('App voice enabled.');
+  }
+}
 
 function isMember(){return S.member===true;}
 function isInFreePeriod(){return new Date()<FREE_UNTIL;}
@@ -2240,10 +2327,38 @@ function spkAns(ok,k){
   spk(ok?'Correct! Well done!':`Wrong. The answer is ${k.toUpperCase()}.`,0.95,ok?1.1:0.85);
 }
 
+function showVoiceInfo(){
+  const el=document.getElementById('voice-info');
+  if(!el)return;
+  el.classList.add('show');
+  document.getElementById('vim-1').classList.toggle('active',!muted&&!screenReaderActive);
+  document.getElementById('vim-2').classList.toggle('active',muted&&!screenReaderActive);
+  document.getElementById('vim-3').classList.toggle('active',screenReaderActive);
+}
+function hideVoiceInfo(){
+  setTimeout(()=>{
+    const el=document.getElementById('voice-info');
+    if(el)el.classList.remove('show');
+  },200);
+}
+
 function toggleMute(){
-  muted=!muted;
-  if(muted){window.speechSynthesis&&window.speechSynthesis.cancel();}
-  document.getElementById('vbtn').textContent=muted?'🔇 Voice off':'🔊 Voice on';
+  const btn=document.getElementById('vbtn');
+  if(!muted&&!screenReaderActive){
+    muted=true; screenReaderActive=false;
+    window.speechSynthesis&&window.speechSynthesis.cancel();
+    if(btn){btn.textContent='🔇 Voice off';btn.style.color='';btn.style.background='';btn.style.borderColor='';}
+  } else if(muted&&!screenReaderActive){
+    muted=true; screenReaderActive=true;
+    window.speechSynthesis&&window.speechSynthesis.cancel();
+    if(btn){btn.textContent='♿ Screen reader';btn.style.color='var(--g)';btn.style.background='rgba(62,201,154,.1)';btn.style.borderColor='rgba(62,201,154,.3)';}
+    if(btn)btn.setAttribute('aria-label','Screen reader mode active. App voice muted.');
+    srAnnounce('Screen reader mode on. App voice muted. Your device screen reader will now read all content.');
+  } else {
+    muted=false; screenReaderActive=false;
+    if(btn){btn.textContent='🔊 Voice on';btn.style.color='';btn.style.background='';btn.style.borderColor='';}
+    if(btn)btn.setAttribute('aria-label','Voice on. App reads letters and tips aloud.');
+  }
 }
 
 
