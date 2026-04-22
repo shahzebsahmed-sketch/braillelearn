@@ -1590,6 +1590,7 @@ function showPg(id){
   target.style.display='block';
   target.classList.add('on');
   window.scrollTo(0,0);
+  if(id==='pg-land')renderLandingRatings();
 }
 
 function goApp(v){
@@ -2810,8 +2811,10 @@ async function fetchRatings(){
     });
     const d=await r.json();
     cachedRatings=d.ratings||[];
+    // cache locally
+    localStorage.setItem('bl_ratings_cache',JSON.stringify(cachedRatings));
   }catch(e){
-    // fallback to localStorage if offline
+    // fallback to local cache if offline
     cachedRatings=JSON.parse(localStorage.getItem('bl_ratings_cache')||'[]');
   }
   renderLandingRatings();
@@ -2893,33 +2896,49 @@ function showRatingPrompt(force=false){
 }
 
 function renderLandingRatings(){
-  const ratings=cachedRatings;
+  const ratings=cachedRatings||[];
   const scoreEl=document.getElementById('landing-score');
   const starsEl=document.getElementById('landing-stars');
   const countEl=document.getElementById('landing-count');
   const reviewsEl=document.getElementById('landing-reviews');
-  if(!scoreEl)return;
+  if(!scoreEl||!starsEl||!countEl)return;
+
   if(!ratings.length){
-    scoreEl.textContent='—';
-    starsEl.innerHTML='<span style="opacity:.25">⭐⭐⭐⭐⭐</span>';
+    scoreEl.textContent='';
+    starsEl.innerHTML='<span style="font-size:32px;opacity:.3">⭐⭐⭐⭐⭐</span>';
     countEl.textContent='Be the first to rate BrailleLearn!';
-    if(reviewsEl)reviewsEl.innerHTML='';
+    if(reviewsEl){reviewsEl.innerHTML='';reviewsEl.style.display='none';}
     return;
   }
+
   const avg=ratings.reduce((a,r)=>a+r.rating,0)/ratings.length;
   const rounded=Math.round(avg*10)/10;
+
+  // score
   scoreEl.textContent=rounded.toFixed(1)+' / 5';
-  starsEl.innerHTML='⭐'.repeat(Math.round(avg));
-  countEl.textContent=`${ratings.length} rating${ratings.length!==1?'s':''} · Average ${rounded.toFixed(1)} stars`;
+
+  // stars
+  const fullStars=Math.round(avg);
+  starsEl.innerHTML='<span style="font-size:32px">'+'⭐'.repeat(fullStars)+'</span>';
+
+  // count — always visible
+  countEl.innerHTML=`<strong style="color:var(--t1)">${ratings.length}</strong> ${ratings.length===1?'person has':'people have'} rated BrailleLearn · Average <strong style="color:var(--p)">${rounded.toFixed(1)} ★</strong>`;
+
+  // reviews with text
   if(reviewsEl){
-    const withText=ratings.filter(r=>r.review).slice(-6).reverse().slice(0,3);
-    reviewsEl.style.display=withText.length?'grid':'none';
-    reviewsEl.innerHTML=withText.map(r=>`
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px">
-        <div style="font-size:18px;margin-bottom:8px">${'⭐'.repeat(r.rating)}</div>
-        <div style="font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:12px;font-style:italic">"${r.review}"</div>
-        <div style="font-size:12px;font-weight:700;color:var(--t3)">${r.name} · ${new Date(r.at).toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</div>
-      </div>`).join('');
+    const withText=ratings.filter(r=>r.review&&r.review.trim()).reverse().slice(0,3);
+    if(withText.length){
+      reviewsEl.style.display='grid';
+      reviewsEl.innerHTML=withText.map(r=>`
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px">
+          <div style="font-size:18px;margin-bottom:8px">${'⭐'.repeat(r.rating)}</div>
+          <div style="font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:12px;font-style:italic">"${r.review}"</div>
+          <div style="font-size:12px;font-weight:700;color:var(--t3)">${r.name||'Anonymous'} · ${new Date(r.at).toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</div>
+        </div>`).join('');
+    } else {
+      reviewsEl.style.display='none';
+      reviewsEl.innerHTML='';
+    }
   }
 }
 
