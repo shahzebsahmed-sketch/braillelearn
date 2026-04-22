@@ -2795,8 +2795,56 @@ function submitFeedback(){
 }
 
 // ═══════════════════════════════════════
-// STAR RATING SYSTEM
+// SHARED RATINGS SYSTEM (JSONBin.io)
 // ═══════════════════════════════════════
+const JSONBIN_BIN_ID   = '69e8bba1856a6821895e8c63';
+const JSONBIN_API_KEY  = '$2a$10$sPMKsXy.iflhVtXtsr7k2uDgXw1Qtiw/mnbZoeKPEvJTTOVwuDxx6';
+const JSONBIN_URL      = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+
+let cachedRatings=[];
+
+async function fetchRatings(){
+  try{
+    const r=await fetch(JSONBIN_URL+'/latest',{
+      headers:{'X-Master-Key':JSONBIN_API_KEY,'X-Bin-Meta':false}
+    });
+    const d=await r.json();
+    cachedRatings=d.ratings||[];
+  }catch(e){
+    // fallback to localStorage if offline
+    cachedRatings=JSON.parse(localStorage.getItem('bl_ratings_cache')||'[]');
+  }
+  renderLandingRatings();
+}
+
+async function saveRatingToCloud(entry){
+  try{
+    // fetch latest first to avoid overwriting
+    const r=await fetch(JSONBIN_URL+'/latest',{
+      headers:{'X-Master-Key':JSONBIN_API_KEY,'X-Bin-Meta':false}
+    });
+    const d=await r.json();
+    const ratings=[...(d.ratings||[]),entry];
+    // save back
+    await fetch(JSONBIN_URL,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_API_KEY},
+      body:JSON.stringify({ratings})
+    });
+    cachedRatings=ratings;
+    // cache locally too
+    localStorage.setItem('bl_ratings_cache',JSON.stringify(ratings));
+    return true;
+  }catch(e){
+    // save locally if offline
+    const local=JSON.parse(localStorage.getItem('bl_ratings_cache')||'[]');
+    local.push(entry);
+    localStorage.setItem('bl_ratings_cache',JSON.stringify(local));
+    cachedRatings=local;
+    return false;
+  }
+}
+
 let currentRating=0;
 const RATING_LABELS=['','😞 Poor','😐 Fair','🙂 Good','😊 Great','🤩 Amazing!'];
 
@@ -2811,26 +2859,25 @@ function selectRating(val){
   document.getElementById('rating-submit-btn').disabled=false;
 }
 
-function submitRating(){
+async function submitRating(){
   if(!currentRating)return;
+  const btn=document.getElementById('rating-submit-btn');
+  btn.disabled=true;
+  btn.textContent='Saving…';
   const name=document.getElementById('rating-name').value.trim()||'Anonymous';
   const review=document.getElementById('rating-review').value.trim();
-  // save to localStorage (shared across same browser)
-  const ratings=JSON.parse(localStorage.getItem('bl_ratings')||'[]');
-  ratings.push({rating:currentRating,name,review,at:Date.now()});
-  localStorage.setItem('bl_ratings',JSON.stringify(ratings));
+  const entry={rating:currentRating,name,review,at:Date.now()};
+  await saveRatingToCloud(entry);
   localStorage.setItem('bl_rated','1');
   document.getElementById('rating-success').style.display='block';
   document.getElementById('rating-name-row').style.display='none';
-  document.getElementById('rating-submit-btn').style.display='none';
+  btn.style.display='none';
   spk('Thank you for your rating!');
-  setTimeout(()=>closeModal('modal-rating'),1800);
-  // refresh landing page display
   renderLandingRatings();
+  setTimeout(()=>closeModal('modal-rating'),1800);
 }
 
 function showRatingPrompt(force=false){
-  // don't show if already rated or dismissed (unless forced)
   if(!force&&(localStorage.getItem('bl_rated')||localStorage.getItem('bl_rating_dismissed')))return;
   currentRating=0;
   document.querySelectorAll('.rate-star').forEach(s=>{s.style.opacity='0.35';s.style.transform='scale(1)';});
@@ -2839,13 +2886,14 @@ function showRatingPrompt(force=false){
   document.getElementById('rating-success').style.display='none';
   document.getElementById('rating-submit-btn').style.display='block';
   document.getElementById('rating-submit-btn').disabled=true;
+  document.getElementById('rating-submit-btn').textContent='Submit rating';
   document.getElementById('rating-name').value='';
   document.getElementById('rating-review').value='';
   openModal('modal-rating');
 }
 
 function renderLandingRatings(){
-  const ratings=JSON.parse(localStorage.getItem('bl_ratings')||'[]');
+  const ratings=cachedRatings;
   const scoreEl=document.getElementById('landing-score');
   const starsEl=document.getElementById('landing-stars');
   const countEl=document.getElementById('landing-count');
@@ -2853,24 +2901,18 @@ function renderLandingRatings(){
   if(!scoreEl)return;
   if(!ratings.length){
     scoreEl.textContent='—';
-    starsEl.textContent='⭐⭐⭐⭐⭐';
-    starsEl.style.opacity='.25';
+    starsEl.innerHTML='<span style="opacity:.25">⭐⭐⭐⭐⭐</span>';
     countEl.textContent='Be the first to rate BrailleLearn!';
     if(reviewsEl)reviewsEl.innerHTML='';
     return;
   }
-  const avg=(ratings.reduce((a,r)=>a+r.rating,0)/ratings.length);
+  const avg=ratings.reduce((a,r)=>a+r.rating,0)/ratings.length;
   const rounded=Math.round(avg*10)/10;
   scoreEl.textContent=rounded.toFixed(1)+' / 5';
-  starsEl.style.opacity='1';
-  // render stars proportionally
-  const full=Math.floor(avg);
-  const half=avg-full>=0.5?1:0;
-  starsEl.textContent='⭐'.repeat(full)+(half?'½':'')+'☆'.repeat(5-full-half);
-  countEl.textContent=`${ratings.length} rating${ratings.length!==1?'s':''}`;
-  // show up to 3 most recent reviews that have text
+  starsEl.innerHTML='⭐'.repeat(Math.round(avg));
+  countEl.textContent=`${ratings.length} rating${ratings.length!==1?'s':''} · Average ${rounded.toFixed(1)} stars`;
   if(reviewsEl){
-    const withText=ratings.filter(r=>r.review).slice(-3).reverse();
+    const withText=ratings.filter(r=>r.review).slice(-6).reverse().slice(0,3);
     reviewsEl.style.display=withText.length?'grid':'none';
     reviewsEl.innerHTML=withText.map(r=>`
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px">
@@ -2880,6 +2922,7 @@ function renderLandingRatings(){
       </div>`).join('');
   }
 }
+
 
 // ═══════════════════════════════════════
 // HERO ANIMATION
@@ -2894,8 +2937,8 @@ function cycleHero(){
 }
 cycleHero();
 setInterval(cycleHero,2800);
-// init ratings display on landing page
-renderLandingRatings();
+// fetch shared ratings from cloud on load
+fetchRatings();
 
 // ═══════════════════════════════════════
 // AUTO UNLOCK — detects Stripe redirect
