@@ -622,6 +622,9 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 </style>
 </head>
 <body>
+<!-- Screen reader live announcer -->
+<div id="sr-announce" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden"></div>
+<div id="sr-assertive" aria-live="assertive" aria-atomic="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden"></div>
 
 <!-- ═══ LANDING ═══ -->
 <div class="pg on" id="pg-land" style="display:block">
@@ -839,7 +842,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 
 <!-- ═══ APP ═══ -->
 <div class="pg" id="pg-app" style="display:none">
-  <nav class="app-nav">
+  <nav class="app-nav" role="navigation" aria-label="Main navigation">
     <div class="nav-brand" onclick="showPg('pg-land')" title="Back to home page" style="cursor:pointer">Braille<b>Learn</b></div>
     <div class="nav-tabs">
       <button class="ntab" id="ni-dashboard" onclick="goApp('dashboard')">Dashboard</button>
@@ -856,7 +859,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <button class="voice-btn" onclick="showPg('pg-teacher-login')">👩‍🏫 Teacher</button>
     </div>
   </nav>
-  <div class="app-body">
+  <main class="app-body" aria-label="BrailleLearn content">
 
     <!-- DASHBOARD -->
     <div class="view on" id="view-dashboard">
@@ -1254,7 +1257,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       </div>
     </div>
 
-  </div>
+  </main>
 </div>
 
 <!-- ═══ TEACHER LOGIN ═══ -->
@@ -1564,15 +1567,21 @@ function lp(x){return((x%200)/200)*100}
 // ═══════════════════════════════════════
 // BRAILLE CELL RENDERER
 // ═══════════════════════════════════════
-function mkCell(dots,sz='',numbered=false){
+function mkCell(dots, sz='', numbered=false, letter=''){
   const lay=[[1,4],[2,5],[3,6]];
-  let h=`<div class="braille-cell${sz?' cell-'+sz:''}${numbered?' cell-num':''}">`;
+  const activeDots = dots ? dots.filter(d => [1,2,3,4,5,6].includes(d)) : [];
+  const ariaLabel = letter
+    ? `Braille cell for ${isNaN(letter)?'letter '+letter.toUpperCase():'number '+letter}. ${activeDots.length} dot${activeDots.length!==1?'s':''} active: dot${activeDots.length!==1?'s':''} ${activeDots.join(', ')}.`
+    : activeDots.length
+      ? `Braille cell. ${activeDots.length} dot${activeDots.length!==1?'s':''} active: dot${activeDots.length!==1?'s':''} ${activeDots.join(', ')}.`
+      : 'Empty Braille cell.';
+  let h=`<div class="braille-cell${sz?' cell-'+sz:''}${numbered?' cell-num':''}" role="img" aria-label="${ariaLabel}" tabindex="0">`;
   lay.forEach(r=>r.forEach(d=>{
     const a=dots&&dots.includes(d);
     if(numbered){
-      h+=`<div class="dot${a?' active':''}"><span class="dn">${d}</span></div>`;
+      h+=`<div class="dot${a?' active':''}" aria-hidden="true"><span class="dn">${d}</span></div>`;
     }else{
-      h+=`<div class="dot${a?' active':''}"></div>`;
+      h+=`<div class="dot${a?' active':''}" aria-hidden="true"></div>`;
     }
   }));
   return h+'</div>';
@@ -1704,7 +1713,7 @@ function rLes(){
   const l=LS.l,i=LS.i,k=l.l[i],d=BR[k];
   document.getElementById('les-letter').textContent=k.toUpperCase();
   document.getElementById('les-sym').textContent=d.sym;
-  document.getElementById('les-cell').innerHTML=mkCell(d.dots,'lg');
+  document.getElementById('les-cell').innerHTML=mkCell(d.dots,'lg',false,k);
   document.getElementById('les-dots').innerHTML=d.dots.map(n=>`<div class="dp">${n}</div>`).join('');
   document.getElementById('les-tip-text').innerHTML=`<div class="mem-tip-label">Memory tip</div>${d.tip||d.hint}`;
   document.getElementById('les-pfill').style.width=(i/l.l.length*100)+'%';
@@ -1715,6 +1724,8 @@ function rLes(){
   document.getElementById('btn-next').textContent=i===l.l.length-1?'Finish ✓':'Next →';
   document.getElementById('ref-cell').innerHTML=mkCell([1,2,3,4,5,6],'sm');
   spkLetter(k,d.dots);
+  // announce to screen reader
+  srAnnounce(`${isNaN(k)?'Letter '+k.toUpperCase():'Number '+k}. ${d.dots.length} dot${d.dots.length!==1?'s':''}, dot${d.dots.length!==1?'s':''} ${d.dots.join(', ')}. Memory tip: ${d.tip}`);
 }
 
 function speakCurrentLesson(){
@@ -2796,71 +2807,41 @@ function submitFeedback(){
 }
 
 // ═══════════════════════════════════════
-// SHARED RATINGS SYSTEM (JSONBin.io)
+// RATINGS — Supabase
 // ═══════════════════════════════════════
-const JSONBIN_BIN_ID  = '69e8bba1856a6821895e8c63';
-const JSONBIN_API_KEY = '$2a$10$sPMKsXy.iflhVtXtsr7k2uDgXw1Qtiw/mnbZoeKPEvJTTOVwuDxx6';
-const JSONBIN_URL     = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-const CACHE_KEY       = 'bl_ratings_v2';
+const SB_URL  = 'https://drgilufijcsdvotgwjdw.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyZ2lsdWZpamNzZHZvdGd3amR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NTU1NDYsImV4cCI6MjA5MjQzMTU0Nn0.IKyUI5NEaE4EgbozrivPXvAQj5He6_DQFNZjPdWX5oQ';
+const SB_HDRS = {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
+const CACHE_KEY = 'bl_ratings_v3';
 
 let cachedRatings = JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');
 
 async function fetchRatings(){
   try{
-    const r = await fetch(JSONBIN_URL+'/latest', {
-      method:'GET',
-      headers:{
-        'X-Master-Key': JSONBIN_API_KEY,
-        'X-Bin-Meta': 'false'
-      }
-    });
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    const d = await r.json();
-    // JSONBin wraps in {record:{ratings:[]}} or just {ratings:[]}
-    const arr = d.record ? d.record.ratings : (d.ratings||[]);
-    cachedRatings = Array.isArray(arr) ? arr : [];
+    const r = await fetch(SB_URL+'/rest/v1/ratings?select=*&order=created_at.desc', {headers:SB_HDRS});
+    if(!r.ok) throw new Error(r.status);
+    const data = await r.json();
+    cachedRatings = data.map(d=>({name:d.name, rating:d.rating, review:d.review, at: new Date(d.created_at).getTime()}));
     localStorage.setItem(CACHE_KEY, JSON.stringify(cachedRatings));
-  }catch(e){
-    // use cached version silently
+  } catch(e){
     cachedRatings = JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');
   }
   renderLandingRatings();
 }
 
 async function saveRatingToCloud(entry){
-  // first get latest data
-  let current = [];
   try{
-    const r = await fetch(JSONBIN_URL+'/latest', {
-      headers:{'X-Master-Key': JSONBIN_API_KEY, 'X-Bin-Meta': 'false'}
+    const r = await fetch(SB_URL+'/rest/v1/ratings', {
+      method:'POST',
+      headers:{...SB_HDRS, 'Prefer':'return=minimal'},
+      body: JSON.stringify({name:entry.name, rating:entry.rating, review:entry.review})
     });
-    if(r.ok){
-      const d = await r.json();
-      const arr = d.record ? d.record.ratings : (d.ratings||[]);
-      current = Array.isArray(arr) ? arr : [];
-    }
-  }catch(e){}
-
-  // add new entry
-  current.push(entry);
-
-  // save back
-  try{
-    const r = await fetch(JSONBIN_URL, {
-      method: 'PUT',
-      headers:{
-        'Content-Type': 'application/json',
-        'X-Master-Key': JSONBIN_API_KEY
-      },
-      body: JSON.stringify({ratings: current})
-    });
-    if(!r.ok)throw new Error('Save failed '+r.status);
-    cachedRatings = current;
+    if(!r.ok) throw new Error(r.status);
+    cachedRatings = [{...entry, at:Date.now()}, ...cachedRatings];
     localStorage.setItem(CACHE_KEY, JSON.stringify(cachedRatings));
     return true;
-  }catch(e){
-    // save locally as fallback
-    cachedRatings = current;
+  } catch(e){
+    cachedRatings = [{...entry, at:Date.now()}, ...cachedRatings];
     localStorage.setItem(CACHE_KEY, JSON.stringify(cachedRatings));
     return false;
   }
@@ -2872,8 +2853,8 @@ const RATING_LABELS = ['','😞 Poor','😐 Fair','🙂 Good','😊 Great','🤩
 function selectRating(val){
   currentRating = val;
   document.querySelectorAll('.rate-star').forEach((s,i)=>{
-    s.style.opacity = i<val ? '1' : '0.35';
-    s.style.transform = i<val ? 'scale(1.15)' : 'scale(1)';
+    s.style.opacity = i<val?'1':'0.35';
+    s.style.transform = i<val?'scale(1.15)':'scale(1)';
   });
   document.getElementById('rating-label').textContent = RATING_LABELS[val];
   document.getElementById('rating-name-row').style.display = 'block';
@@ -2881,19 +2862,16 @@ function selectRating(val){
 }
 
 async function submitRating(){
-  if(!currentRating)return;
+  if(!currentRating) return;
   const btn = document.getElementById('rating-submit-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Saving…';
+  btn.disabled = true; btn.textContent = '⏳ Saving…';
   const name   = document.getElementById('rating-name').value.trim()||'Anonymous';
   const review = document.getElementById('rating-review').value.trim();
-  const entry  = {rating:currentRating, name, review, at:Date.now()};
-  const ok = await saveRatingToCloud(entry);
+  const ok = await saveRatingToCloud({name, rating:currentRating, review});
   localStorage.setItem('bl_rated','1');
-  document.getElementById('rating-success').style.display = 'block';
-  document.getElementById('rating-success').textContent   = ok
-    ? '✓ Thank you! Your rating is now live for everyone to see 💜'
-    : '✓ Rating saved! It will appear when you next visit.';
+  const msg = document.getElementById('rating-success');
+  msg.style.display = 'block';
+  msg.textContent = ok ? '✓ Thank you! Your rating is live for everyone to see 💜' : '✓ Saved! It will appear shortly.';
   document.getElementById('rating-name-row').style.display = 'none';
   btn.style.display = 'none';
   spk('Thank you for your rating!');
@@ -2902,7 +2880,7 @@ async function submitRating(){
 }
 
 function showRatingPrompt(force=false){
-  if(!force&&(localStorage.getItem('bl_rated')||localStorage.getItem('bl_rating_dismissed')))return;
+  if(!force&&(localStorage.getItem('bl_rated')||localStorage.getItem('bl_rating_dismissed'))) return;
   currentRating = 0;
   document.querySelectorAll('.rate-star').forEach(s=>{s.style.opacity='0.35';s.style.transform='scale(1)';});
   document.getElementById('rating-label').textContent = '';
@@ -2917,13 +2895,12 @@ function showRatingPrompt(force=false){
 }
 
 function renderLandingRatings(){
-  const ratings = cachedRatings||[];
+  const ratings   = cachedRatings||[];
   const scoreEl   = document.getElementById('landing-score');
   const starsEl   = document.getElementById('landing-stars');
   const countEl   = document.getElementById('landing-count');
   const reviewsEl = document.getElementById('landing-reviews');
   if(!scoreEl||!starsEl||!countEl) return;
-
   if(!ratings.length){
     scoreEl.textContent = '';
     starsEl.innerHTML   = '<span style="font-size:32px;opacity:.3">⭐⭐⭐⭐⭐</span>';
@@ -2931,16 +2908,13 @@ function renderLandingRatings(){
     if(reviewsEl){reviewsEl.innerHTML='';reviewsEl.style.display='none';}
     return;
   }
-
   const avg     = ratings.reduce((a,r)=>a+r.rating,0)/ratings.length;
   const rounded = Math.round(avg*10)/10;
-
   scoreEl.textContent = rounded.toFixed(1)+' / 5';
   starsEl.innerHTML   = '<span style="font-size:32px">'+'⭐'.repeat(Math.round(avg))+'</span>';
   countEl.innerHTML   = `<strong style="color:var(--t1)">${ratings.length}</strong> ${ratings.length===1?'person':'people'} rated BrailleLearn &nbsp;·&nbsp; Average <strong style="color:var(--p)">${rounded.toFixed(1)} ★</strong>`;
-
   if(reviewsEl){
-    const withText = ratings.filter(r=>r.review&&r.review.trim().length>2).reverse().slice(0,3);
+    const withText = ratings.filter(r=>r.review&&r.review.trim().length>2).slice(0,3);
     if(withText.length){
       reviewsEl.style.display = 'grid';
       reviewsEl.innerHTML = withText.map(r=>`
@@ -2957,7 +2931,30 @@ function renderLandingRatings(){
 
 
 // ═══════════════════════════════════════
-// HERO ANIMATION
+// SCREEN READER / VOICEOVER SUPPORT
+// ═══════════════════════════════════════
+function srAnnounce(msg, urgent=false){
+  const el=document.getElementById(urgent?'sr-assertive':'sr-announce');
+  if(!el)return;
+  el.textContent='';
+  setTimeout(()=>{el.textContent=msg;},50);
+}
+
+// keyboard navigation — arrow keys on lesson
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('view-lesson').classList.contains('on')){
+    if(e.key==='ArrowRight'||e.key==='ArrowDown') lesNext();
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp') lesPrev();
+    if(e.key===' '||e.key==='Enter') speakCurrentLesson();
+  }
+  if(document.getElementById('view-quiz').classList.contains('on')){
+    if(e.key>='1'&&e.key<='4'){
+      const opts=document.querySelectorAll('.speed-opt,.opt');
+      if(opts[parseInt(e.key)-1]) opts[parseInt(e.key)-1].click();
+    }
+  }
+});
+
 // ═══════════════════════════════════════
 const hKeys=Object.keys(BR).filter(k=>isNaN(k));let hi=0;
 function cycleHero(){
