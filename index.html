@@ -186,16 +186,16 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .ref-notes{font-size:12px;color:var(--t2);line-height:2.2}
 
 /* ── BRAILLE CELLS ── */
-.braille-cell{background:var(--card);border:2px solid var(--border2);border-radius:14px;padding:12px 10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.dot{width:24px;height:24px;border-radius:50%;background:var(--card2);transition:all .3s}
+.braille-cell{background:var(--card);border:2px solid var(--border2);border-radius:10px;padding:10px 12px;display:inline-grid;grid-template-columns:1fr 1fr;row-gap:3px;column-gap:12px;width:fit-content}
+.dot{width:18px;height:18px;border-radius:50%;background:var(--card2);transition:all .3s}
 .dot.active{background:var(--p);box-shadow:0 0 10px rgba(123,110,246,.45)}
-.cell-sm .dot{width:14px;height:14px}
-.cell-sm{padding:7px;gap:5px;border-radius:9px}
-.cell-lg .dot{width:34px;height:34px}
-.cell-lg{padding:16px 13px;gap:11px;border-radius:18px}
+.cell-sm .dot{width:10px;height:10px}
+.cell-sm{padding:6px 7px;row-gap:2px;column-gap:7px;border-radius:7px}
+.cell-lg .dot{width:24px;height:24px}
+.cell-lg{padding:14px 16px;row-gap:4px;column-gap:16px;border-radius:14px}
 /* numbered dots */
-.cell-num .dot{width:32px;height:32px;display:flex;align-items:center;justify-content:center}
-.cell-num{border-color:rgba(123,110,246,.2)}
+.cell-num .dot{width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+.cell-num{border-color:rgba(123,110,246,.2);row-gap:4px;column-gap:10px;padding:10px 8px}
 .dn{font-size:11px;font-weight:800;color:rgba(255,255,255,.3);pointer-events:none}
 .dot.active .dn{color:rgba(255,255,255,.9)}
 
