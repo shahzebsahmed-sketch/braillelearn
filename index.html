@@ -61,7 +61,11 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .land-nav{max-width:1200px;margin:0 auto;padding:22px 60px;display:flex;align-items:center;justify-content:space-between}
 .brand{font-size:20px;font-weight:800;letter-spacing:-.5px}
 .brand b{color:var(--p)}
-.land-nav-r{display:flex;gap:8px}
+.land-nav-r{display:flex;gap:8px;align-items:center}
+.land-nav-links{display:flex;gap:26px;align-items:center}
+.land-nav-links a{color:var(--t2);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s}
+.land-nav-links a:hover{color:var(--t1)}
+@media(max-width:800px){.land-nav-links{display:none}}
 .nbtn{background:none;border:1px solid var(--border2);color:var(--t2);padding:9px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:var(--ff);transition:all .2s}
 .nbtn:hover{background:var(--card);color:var(--t1)}
 .nbtn.fill{background:var(--p);color:#fff;border-color:var(--p)}
@@ -574,6 +578,11 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 <div class="pg on" id="pg-land" style="display:block">
   <nav class="land-nav">
     <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer">Braille<b>Learn</b></div>
+    <div class="land-nav-links">
+      <a href="/about.html">About</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/faq.html">FAQ</a>
+    </div>
     <div class="land-nav-r">
       <button class="nbtn fill" onclick="goApp('dashboard')">Start learning →</button>
     </div>
@@ -774,8 +783,12 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div class="land-section-inner" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
       <div class="brand" style="font-size:16px">Braille<b>Learn</b></div>
       <div style="font-size:13px;color:var(--t3)">Built with 💜 for blind children and their families · braillelearn.co.uk</div>
-      <div style="display:flex;gap:16px">
-        <a href="mailto:hello@braillelearn.co.uk" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">Contact us</a>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <a href="/about.html" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">About</a>
+        <a href="/contact.html" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">Contact</a>
+        <a href="/faq.html" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">FAQ</a>
+        <a href="/privacy.html" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">Privacy</a>
+        <a href="/terms.html" style="font-size:13px;color:var(--t3);text-decoration:none" onmouseover="this.style.color='var(--p)'" onmouseout="this.style.color='var(--t3)'">Terms</a>
       </div>
     </div>
   </div>
@@ -1402,39 +1415,11 @@ function isAccessAllowed(){return isMember();}
 function activateMember(){S.member=true;svS();rDash();}
 
 // ═══════════════════════════════════════
-// MEMBER CODES — give these out after Stripe payment
-// Change these to whatever codes you want!
+// NOTE: The old hardcoded MEMBER_CODES list and redeemCode() function
+// have been removed — they were visible to anyone viewing page source
+// and granted free full access with zero verification. Real, verified
+// access control is coming with the accounts/login project.
 // ═══════════════════════════════════════
-const MEMBER_CODES=['BRL2024','BRAILLE99','LEARN24','ACCESS01','MEMBER01',
-  'RYAN2024','BLIND01','TEACH01','SCHOOL1','OPEN2024','BRAILLE1','BL2025'];
-
-function redeemCode(inputId){
-  const inp=document.getElementById(inputId);
-  if(!inp)return;
-  const val=inp.value.trim().toUpperCase();
-  // find corresponding error element
-  const errId=inputId==='game-code-inp'?'game-code-err':
-               inputId==='modal-code-inp'?'modal-code-err':
-               inputId==='trans-code-inp'?'trans-code-err':
-               inputId==='dots-code-inp'?'dots-code-err':'modal-code-err';
-  const err=document.getElementById(errId);
-  const used=JSON.parse(localStorage.getItem('bl_used_codes')||'[]');
-  if(!MEMBER_CODES.includes(val)){
-    if(err){err.style.display='block';err.textContent='Invalid code. Please check and try again.';}
-    return;
-  }
-  if(used.includes(val)){
-    if(err){err.style.display='block';err.textContent='This code has already been used on this device.';}
-    return;
-  }
-  used.push(val);
-  localStorage.setItem('bl_used_codes',JSON.stringify(used));
-  S.member=true;svS();
-  if(err)err.style.display='none';
-  closeModal('modal-upgrade');
-  spk('Access unlocked! Welcome to BrailleLearn!');
-  setTimeout(()=>{alert('🎉 Welcome! Full access is now unlocked.');rDash();goApp('dashboard');},100);
-}
 
 // ═══════════════════════════════════════
 // TRANSLATOR ATTEMPT LIMITS
@@ -2497,10 +2482,20 @@ fetchRatings();
 // ═══════════════════════════════════════
 // ═══════════════════════════════════════
 // AUTO UNLOCK — detects Stripe redirect
+// IMPORTANT: This checks for a private confirmation token, not just
+// ?unlocked=true, because that alone let anyone type the URL and get
+// free access with no payment. Set your Stripe Payment Link's "after
+// payment" redirect to:
+// https://braillelearn.co.uk/?bl_confirm=g1_7r9jkU363PWxGyMzNUaRbBWs
+// This is still NOT true payment verification (a determined person
+// could still find this token by viewing page source) — real
+// verification requires a server-side Stripe webhook, which is the
+// planned fix as part of the accounts/login project.
 // ═══════════════════════════════════════
+const BL_CONFIRM_TOKEN='g1_7r9jkU363PWxGyMzNUaRbBWs';
 (function checkStripeReturn(){
   const params=new URLSearchParams(window.location.search);
-  if(params.get('unlocked')==='true'||params.get('payment')==='success'){
+  if(params.get('bl_confirm')===BL_CONFIRM_TOKEN){
     S.member=true;svS();
     // clean URL
     window.history.replaceState({},'',window.location.pathname);
