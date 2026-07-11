@@ -153,15 +153,22 @@ a{color:var(--p2)}
     </div>
   </div>
 
-  <div class="download-card">
+  <div class="download-card" id="worksheet-card">
     <div class="dc-icon">✏️</div>
-    <div class="dc-title">Download the practice worksheet</div>
-    <div class="dc-sub">8 pages · A4 · Blank tracing cells + name-practice page</div>
-    <a href="/guides/braille-practice-worksheet.pdf" download class="btn btn-p">⬇ Download practice worksheet — free</a>
-    <div class="dc-meta">
-      <span>✍️ Trace every letter A–Z</span>
-      <span>💜 "Write your name" practice page</span>
-      <span>🖨️ Print-ready</span>
+    <div class="dc-title">Braille Practice Worksheet</div>
+    <div class="dc-sub">8 pages · A4 · Blank tracing cells + "write your name" practice page</div>
+    <div id="worksheet-locked">
+      <p style="font-size:14px;color:var(--t2);max-width:440px;margin:0 auto 20px;line-height:1.7">This one's a Full Access perk — trace every letter A–Z with guided blank cells, plus a dedicated page to practise writing your own name in Braille.</p>
+      <a href="https://buy.stripe.com/7sYcN5eB34cJ3fo5N92wU02" target="_blank" class="btn btn-p">🔓 Unlock with Full Access — £14.99/yr →</a>
+      <div class="dc-meta">
+        <span>✍️ Trace every letter A–Z</span>
+        <span>💜 Plus all 6 lessons, quizzes & games</span>
+        <span>🔓 Access unlocks instantly</span>
+      </div>
+    </div>
+    <div id="worksheet-unlocked" style="display:none">
+      <p style="font-size:14px;color:var(--g);margin-bottom:20px">✓ You have Full Access — enjoy the worksheet!</p>
+      <a href="/guides/braille-practice-worksheet.pdf" download class="btn btn-p">⬇ Download practice worksheet</a>
     </div>
   </div>
 
@@ -181,7 +188,7 @@ a{color:var(--p2)}
   </ol>
 
   <h2>Want more than a chart?</h2>
-  <p>This printable is a quick reference, not a full teaching tool. For structured lessons that build up gradually, spoken memory tips for every letter, quizzes to check what's stuck, and games that make practice feel like play, BrailleLearn's interactive lessons are free to start.</p>
+  <p>This printable is a quick reference, not a full teaching tool. For structured lessons that build up gradually, spoken memory tips for every letter, quizzes to check what's stuck, and games that make practice feel like play, BrailleLearn's interactive lessons are free to start. Full Access members also get a <a href="/guides/braille-flashcards.html">printable flashcard & memory match deck</a> and a practice worksheet.</p>
 
   <div class="cta-box">
     <p>Ready to go beyond the chart?</p>
@@ -257,6 +264,17 @@ function selectChar(k){
 }
 
 renderExplorerGrid();
+
+// Check if this browser already has Full Access (same localStorage the main app uses)
+(function checkMembership(){
+  try{
+    const s = JSON.parse(localStorage.getItem('bl4')||'{}');
+    if(s.member===true){
+      document.getElementById('worksheet-locked').style.display='none';
+      document.getElementById('worksheet-unlocked').style.display='block';
+    }
+  }catch(e){}
+})();
 </script>
 
 </body>
