@@ -645,7 +645,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <!-- Recent reviews from localStorage -->
       <div id="landing-reviews" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px"></div>
       <div style="text-align:center">
-        <button class="btn btn-p" onclick="goApp('dashboard');setTimeout(()=>showRatingPrompt(true),400)">Try it and leave a review →</button>
+        <button class="btn btn-p" onclick="afterEnterAction=()=>setTimeout(()=>showRatingPrompt(true),400);goApp('dashboard')">Try it and leave a review →</button>
       </div>
     </div>
   </div>
@@ -1595,6 +1595,7 @@ function showPg(id){
 }
 
 var pendingView = null; // which view the visitor was trying to reach, set aside while the gate is shown
+var afterEnterAction = null; // optional callback to run only once genuinely past the gate (e.g. opening the rating prompt)
 
 function goApp(v){
   if(!hasEnteredApp()){
@@ -1611,6 +1612,11 @@ function goApp(v){
   app.style.display='block';
   app.classList.add('on');
   showView(v);
+  if(afterEnterAction){
+    const fn=afterEnterAction;
+    afterEnterAction=null;
+    fn();
+  }
 }
 
 function showView(v){
