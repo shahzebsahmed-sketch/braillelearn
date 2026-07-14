@@ -812,6 +812,23 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
   </div>
 </div>
 
+<!-- ═══ GATE — shown before anyone can access lessons/games/etc ═══ -->
+<div class="pg" id="pg-gate" style="display:none">
+  <nav class="land-nav">
+    <div class="brand" style="cursor:default">Braille<b>Learn</b></div>
+  </nav>
+  <div style="max-width:480px;margin:60px auto;padding:0 24px;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">🎉</div>
+    <h1 style="font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:12px">One step to get started</h1>
+    <p style="font-size:16px;color:var(--t2);line-height:1.7;margin-bottom:36px">Sign in with Google to save your progress across devices, or jump straight in with a 3-day free trial — no account needed.</p>
+
+    <button class="gsi-btn" style="width:100%;justify-content:center;padding:14px;font-size:15px;margin-bottom:12px" onclick="signInWithGoogle()">🔵 Sign in with Google</button>
+    <button class="btn btn-p" style="width:100%;font-size:15px" onclick="enterViaTrial()">🎁 Start my 3-day free trial</button>
+
+    <p style="font-size:12px;color:var(--t3);margin-top:20px;line-height:1.6">Either way, every lesson, quiz, game and tool is fully unlocked for 3 days. £14.99/year after that to keep your access.</p>
+  </div>
+</div>
+
 <!-- ═══ APP ═══ -->
 <div class="pg" id="pg-app" style="display:none">
   <nav class="app-nav" role="navigation" aria-label="Main navigation">
@@ -1370,7 +1387,7 @@ const LES=[
 function ldS(){try{const s=localStorage.getItem('bl4');if(s)return JSON.parse(s);}catch(e){}return{xp:0,streak:1,done:[],scores:{},qt:0,at:'letters',member:false};}
 function svS(){try{localStorage.setItem('bl4',JSON.stringify(S));}catch(e){}}
 let S=ldS(),LS={l:null,i:0},QS={q:[],i:0,sc:0,sel:null},muted=false;
-getTrialStart(); // start the 3-day trial clock from first visit, regardless of whether they open the app
+// Trial no longer auto-starts here — see pg-gate and startTrial() below
 
 // ── SCREEN READER DETECTION ──
 // Detects VoiceOver (iOS/Mac), TalkBack (Android), NVDA, JAWS
@@ -1488,22 +1505,37 @@ function isMember(){return S.member===true;}
 // everything unlocked for 3 days from their first visit, then the app
 // locks entirely until they upgrade. Tracked by first-visit timestamp,
 // not by account, so it works without login.
+// IMPORTANT: unlike the first version of this, the trial no longer starts
+// silently on page load — it only starts when the visitor explicitly
+// chooses "Start my free trial" or signs in with Google on the gate
+// screen (see pg-gate below). getTrialStart() is now read-only.
 // ═══════════════════════════════════════
 const TRIAL_MS = 3*24*60*60*1000;
 function getTrialStart(){
-  let t = localStorage.getItem('bl_trial_start');
-  if(!t){
-    t = Date.now();
-    localStorage.setItem('bl_trial_start', String(t));
+  const t = localStorage.getItem('bl_trial_start');
+  return t ? parseInt(t) : null;
+}
+function hasStartedTrial(){ return getTrialStart() !== null; }
+function startTrial(){
+  if(!hasStartedTrial()){
+    localStorage.setItem('bl_trial_start', String(Date.now()));
     trackEvent('trial_started');
   }
-  return parseInt(t);
 }
-function trialMsLeft(){ return Math.max(0, TRIAL_MS - (Date.now()-getTrialStart())); }
+function trialMsLeft(){
+  const start = getTrialStart();
+  if(start===null) return 0;
+  return Math.max(0, TRIAL_MS - (Date.now()-start));
+}
 function isTrialActive(){ return trialMsLeft() > 0; }
 function trialDaysLeft(){ return Math.max(1, Math.ceil(trialMsLeft()/(24*60*60*1000))); }
 
 function isAccessAllowed(){return isMember()||isTrialActive();}
+// True once the visitor has taken SOME action that lets them into the
+// app at all — signed in, started the trial, or already paid. Used by
+// the gate screen; distinct from isAccessAllowed(), which also governs
+// whether the trial has since expired.
+function hasEnteredApp(){ return isMember() || hasStartedTrial() || !!window.currentUser; }
 function activateMember(){S.member=true;svS();rDash();}
 
 // ═══════════════════════════════════════
@@ -1560,7 +1592,15 @@ function showPg(id){
   if(id==='pg-land')renderLandingRatings();
 }
 
+var pendingView = null; // which view the visitor was trying to reach, set aside while the gate is shown
+
 function goApp(v){
+  if(!hasEnteredApp()){
+    pendingView = v;
+    trackEvent('gate_shown');
+    showPg('pg-gate');
+    return;
+  }
   document.querySelectorAll('.pg').forEach(p=>{
     p.classList.remove('on');
     p.style.display='none';
@@ -1569,6 +1609,12 @@ function goApp(v){
   app.style.display='block';
   app.classList.add('on');
   showView(v);
+}
+
+// Called by the "Start my 3-day free trial" button on the gate screen
+function enterViaTrial(){
+  startTrial();
+  goApp(pendingView||'dashboard');
 }
 
 function showView(v){
@@ -2677,7 +2723,18 @@ const BL_CONFIRM_TOKEN='g1_7r9jkU363PWxGyMzNUaRbBWs';
   onAuthStateChanged(auth, (user) => {
     window.currentUser = user;
     if(typeof updateAuthUI === 'function') updateAuthUI(user);
-    if(typeof trackEvent === 'function' && user) trackEvent('login', {method:'google'});
+    if(user){
+      if(typeof trackEvent === 'function') trackEvent('login', {method:'google'});
+      // signing in also starts their trial, unless they're already a paying member
+      if(typeof startTrial === 'function' && typeof isMember === 'function' && !isMember()){
+        startTrial();
+      }
+      // if they were sitting on the gate screen, carry them through automatically
+      const gateEl = document.getElementById('pg-gate');
+      if(gateEl && gateEl.classList.contains('on') && typeof goApp === 'function'){
+        goApp(window.pendingView || 'dashboard');
+      }
+    }
   });
 
   // Exposed for the classic script's fetchRatings()/saveRatingToCloud()
