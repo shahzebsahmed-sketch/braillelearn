@@ -818,14 +818,13 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div class="brand" style="cursor:default">Braille<b>Learn</b></div>
   </nav>
   <div style="max-width:480px;margin:60px auto;padding:0 24px;text-align:center">
-    <div style="font-size:48px;margin-bottom:16px">🎉</div>
-    <h1 style="font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:12px">One step to get started</h1>
-    <p style="font-size:16px;color:var(--t2);line-height:1.7;margin-bottom:36px">Sign in with Google to save your progress across devices, or jump straight in with a 3-day free trial — no account needed.</p>
+    <div style="font-size:48px;margin-bottom:16px">🔒</div>
+    <h1 style="font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:12px">Sign in to get started</h1>
+    <p style="font-size:16px;color:var(--t2);line-height:1.7;margin-bottom:36px">Sign in with Google to unlock your 3-day free trial — every lesson, quiz, game and tool included.</p>
 
-    <button class="gsi-btn" style="width:100%;justify-content:center;padding:14px;font-size:15px;margin-bottom:12px" onclick="signInWithGoogle()">🔵 Sign in with Google</button>
-    <button class="btn btn-p" style="width:100%;font-size:15px" onclick="enterViaTrial()">🎁 Start my 3-day free trial</button>
+    <button class="gsi-btn" style="width:100%;justify-content:center;padding:14px;font-size:15px" onclick="signInWithGoogle()">🔵 Sign in with Google</button>
 
-    <p style="font-size:12px;color:var(--t3);margin-top:20px;line-height:1.6">Either way, every lesson, quiz, game and tool is fully unlocked for 3 days. £14.99/year after that to keep your access.</p>
+    <p style="font-size:12px;color:var(--t3);margin-top:20px;line-height:1.6">Free for 3 days, then £14.99/year to keep your access. No spam, ever.</p>
   </div>
 </div>
 
@@ -1531,11 +1530,14 @@ function isTrialActive(){ return trialMsLeft() > 0; }
 function trialDaysLeft(){ return Math.max(1, Math.ceil(trialMsLeft()/(24*60*60*1000))); }
 
 function isAccessAllowed(){return isMember()||isTrialActive();}
-// True once the visitor has taken SOME action that lets them into the
-// app at all — signed in, started the trial, or already paid. Used by
-// the gate screen; distinct from isAccessAllowed(), which also governs
-// whether the trial has since expired.
-function hasEnteredApp(){ return isMember() || hasStartedTrial() || !!window.currentUser; }
+// True once the visitor is allowed PAST THE GATE — strictly requires
+// either being signed in with Google right now, or being a paying member.
+// A previously-started trial timestamp alone is no longer enough to skip
+// sign-in (that would let someone bypass login just by having visited
+// before) — but the trial clock itself, once started, keeps counting
+// regardless of whether they're currently signed in, since isAccessAllowed()
+// below reads the persisted timestamp independently.
+function hasEnteredApp(){ return isMember() || !!window.currentUser; }
 function activateMember(){S.member=true;svS();rDash();}
 
 // ═══════════════════════════════════════
@@ -1609,12 +1611,6 @@ function goApp(v){
   app.style.display='block';
   app.classList.add('on');
   showView(v);
-}
-
-// Called by the "Start my 3-day free trial" button on the gate screen
-function enterViaTrial(){
-  startTrial();
-  goApp(pendingView||'dashboard');
 }
 
 function showView(v){
