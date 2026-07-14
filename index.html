@@ -118,6 +118,15 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .voice-btn{background:var(--card);border:1px solid var(--border);color:var(--t2);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--ff);transition:all .2s}
 .voice-btn:hover{border-color:var(--p);color:var(--t1)}
 
+/* ── GOOGLE SIGN-IN ── */
+.gsi-btn{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border2);color:var(--t2);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--ff);transition:all .2s}
+.gsi-btn:hover{background:var(--card2);color:var(--t1);border-color:var(--p)}
+.gsi-user{display:flex;align-items:center;gap:8px;background:rgba(123,110,246,.08);border:1px solid rgba(123,110,246,.2);border-radius:8px;padding:4px 10px 4px 4px}
+.gsi-avatar{width:22px;height:22px;border-radius:50%}
+.gsi-name{font-size:12px;font-weight:600;color:var(--t1);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gsi-signout{background:none;border:none;color:var(--t3);cursor:pointer;font-size:11px;text-decoration:underline;font-family:var(--ff);padding:0}
+.gsi-signout:hover{color:var(--r)}
+
 .app-body{padding:48px 60px;max-width:1200px;margin:0 auto;width:100%;padding-bottom:80px}
 .view{display:none}
 .view.on{display:block}
@@ -592,6 +601,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <a href="/guides/braille-alphabet-printable.html">Free Printables</a>
     </div>
     <div class="land-nav-r">
+      <div id="auth-area-land" style="display:flex;align-items:center;gap:8px"></div>
       <button class="nbtn fill" onclick="goApp('dashboard')">Start learning →</button>
     </div>
   </nav>
@@ -815,6 +825,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <button class="ntab" id="ni-support" onclick="goApp('support')">Support</button>
     </div>
     <div class="nav-r">
+      <div id="auth-area-app" style="display:flex;align-items:center;gap:8px"></div>
       <div class="xp-chip" id="nav-xp">0 XP · Lv 1</div>
       <button class="voice-btn" onclick="showRatingPrompt(true)" title="Rate BrailleLearn">⭐ Rate us</button>
       <!-- Voice / Accessibility button with tooltip -->
@@ -1578,6 +1589,28 @@ function showView(v){
 
 function updNav(){
   document.getElementById('nav-xp').textContent=S.xp+' XP · Lv '+lv(S.xp);
+}
+
+// ═══════════════════════════════════════
+// GOOGLE SIGN-IN UI
+// Called by the Firebase module script (near the end of </body>)
+// whenever the signed-in state changes.
+// ═══════════════════════════════════════
+function updateAuthUI(user){
+  const targets=['auth-area-land','auth-area-app'];
+  targets.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    if(user){
+      el.innerHTML=`<div class="gsi-user">
+        <img class="gsi-avatar" src="${user.photoURL||''}" alt="" onerror="this.style.display='none'">
+        <span class="gsi-name">${(user.displayName||user.email||'Signed in').split(' ')[0]}</span>
+        <button class="gsi-signout" onclick="signOutUser()">Sign out</button>
+      </div>`;
+    } else {
+      el.innerHTML=`<button class="gsi-btn" onclick="signInWithGoogle()">🔵 Sign in with Google</button>`;
+    }
+  });
 }
 
 // ═══════════════════════════════════════
@@ -2401,21 +2434,16 @@ function submitFeedback(){
 }
 
 // ═══════════════════════════════════════
-// RATINGS — Supabase
+// RATINGS — Firebase Firestore
 // ═══════════════════════════════════════
-const SB_URL  = 'https://drgilufijcsdvotgwjdw.supabase.co';
-const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyZ2lsdWZpamNzZHZvdGd3amR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NTU1NDYsImV4cCI6MjA5MjQzMTU0Nn0.IKyUI5NEaE4EgbozrivPXvAQj5He6_DQFNZjPdWX5oQ';
-const SB_HDRS = {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
 const CACHE_KEY = 'bl_ratings_v3';
 
 let cachedRatings = JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');
 
 async function fetchRatings(){
   try{
-    const r = await fetch(SB_URL+'/rest/v1/ratings?select=*&order=created_at.desc', {headers:SB_HDRS});
-    if(!r.ok) throw new Error(r.status);
-    const data = await r.json();
-    cachedRatings = data.map(d=>({name:d.name, rating:d.rating, review:d.review, at: new Date(d.created_at).getTime()}));
+    if(!window.fbGetRatings) throw new Error('firebase not ready');
+    cachedRatings = await window.fbGetRatings();
     localStorage.setItem(CACHE_KEY, JSON.stringify(cachedRatings));
   } catch(e){
     cachedRatings = JSON.parse(localStorage.getItem(CACHE_KEY)||'[]');
@@ -2425,12 +2453,8 @@ async function fetchRatings(){
 
 async function saveRatingToCloud(entry){
   try{
-    const r = await fetch(SB_URL+'/rest/v1/ratings', {
-      method:'POST',
-      headers:{...SB_HDRS, 'Prefer':'return=minimal'},
-      body: JSON.stringify({name:entry.name, rating:entry.rating, review:entry.review})
-    });
-    if(!r.ok) throw new Error(r.status);
+    if(!window.fbAddRating) throw new Error('firebase not ready');
+    await window.fbAddRating(entry);
     cachedRatings = [{...entry, at:Date.now()}, ...cachedRatings];
     localStorage.setItem(CACHE_KEY, JSON.stringify(cachedRatings));
     return true;
@@ -2483,7 +2507,7 @@ function showRatingPrompt(force=false){
   document.getElementById('rating-submit-btn').style.display = 'block';
   document.getElementById('rating-submit-btn').disabled = true;
   document.getElementById('rating-submit-btn').textContent = 'Submit rating';
-  document.getElementById('rating-name').value = '';
+  document.getElementById('rating-name').value = (window.currentUser && window.currentUser.displayName) ? window.currentUser.displayName : '';
   document.getElementById('rating-review').value = '';
   openModal('modal-rating');
 }
@@ -2560,8 +2584,10 @@ function cycleHero(){
 }
 cycleHero();
 setInterval(cycleHero,2800);
-// fetch shared ratings from cloud on load
-fetchRatings();
+// ratings are fetched once the Firebase module script below has initialised
+// (see the type="module" script near the top of </body> — it calls
+// fetchRatings() itself once ready, avoiding a race condition where this
+// classic script runs before the deferred Firebase module has loaded)
 
 // ═══════════════════════════════════════
 // PWA — Service Worker + Install Prompt
@@ -2600,5 +2626,93 @@ const BL_CONFIRM_TOKEN='g1_7r9jkU363PWxGyMzNUaRbBWs';
   }
 })();
 </script>
+
+<!-- ═══════════════════════════════════════
+     FIREBASE — Google Sign-In + Firestore ratings
+     Replaces the previous Supabase-based ratings storage.
+     type="module" scripts run after the page has finished parsing,
+     so by the time this executes, every function above (fetchRatings,
+     updateAuthUI, etc.) already exists as a global — this script calls
+     into them, not the other way round.
+═══════════════════════════════════════ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBiBkyx_Og74BLCOpGPWJ-XBseRJQHcSVs",
+    authDomain: "braille-learn.firebaseapp.com",
+    projectId: "braille-learn",
+    storageBucket: "braille-learn.firebasestorage.app",
+    messagingSenderId: "750840108734",
+    appId: "1:750840108734:web:2b06d9b21270e18d91f0ef",
+    measurementId: "G-KWNMDBSYWK"
+  };
+
+  const fbApp = initializeApp(firebaseConfig);
+  const auth = getAuth(fbApp);
+  const db = getFirestore(fbApp);
+  const googleProvider = new GoogleAuthProvider();
+
+  window.currentUser = null;
+
+  window.signInWithGoogle = function(){
+    signInWithPopup(auth, googleProvider).catch(err=>{
+      console.error('Google sign-in error:', err);
+      if(err && err.code !== 'auth/popup-closed-by-user'){
+        alert('Sign-in failed. Please try again.');
+      }
+    });
+  };
+
+  window.signOutUser = function(){
+    signOut(auth).catch(err=>console.error('Sign-out error:', err));
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    window.currentUser = user;
+    if(typeof updateAuthUI === 'function') updateAuthUI(user);
+    if(typeof trackEvent === 'function' && user) trackEvent('login', {method:'google'});
+  });
+
+  // Exposed for the classic script's fetchRatings()/saveRatingToCloud()
+  // to call — keeps this Firebase-specific code isolated to this module.
+  window.fbGetRatings = async function(){
+    const q = query(collection(db, 'ratings'), orderBy('createdAt','desc'), limit(50));
+    const snap = await getDocs(q);
+    const out = [];
+    snap.forEach(docSnap=>{
+      const d = docSnap.data();
+      out.push({
+        name: d.name || 'Anonymous',
+        rating: d.rating,
+        review: d.review || '',
+        at: d.createdAt && d.createdAt.toMillis ? d.createdAt.toMillis() : Date.now()
+      });
+    });
+    return out;
+  };
+
+  window.fbAddRating = async function(entry){
+    await addDoc(collection(db, 'ratings'), {
+      name: entry.name || 'Anonymous',
+      rating: entry.rating,
+      review: entry.review || '',
+      createdAt: serverTimestamp()
+    });
+    return true;
+  };
+
+  // Now that Firebase is ready, trigger the initial ratings load
+  // (the classic script deliberately does NOT call this itself,
+  // to avoid a race condition — see the comment near the old call site)
+  if(typeof fetchRatings === 'function') fetchRatings();
+</script>
+
 </body>
 </html>
