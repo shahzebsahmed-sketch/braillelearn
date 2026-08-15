@@ -817,14 +817,36 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
   <nav class="land-nav">
     <div class="brand" style="cursor:default">Braille<b>Learn</b></div>
   </nav>
-  <div style="max-width:480px;margin:60px auto;padding:0 24px;text-align:center">
+  <div style="max-width:400px;margin:50px auto;padding:0 24px;text-align:center">
     <div style="font-size:48px;margin-bottom:16px">🔒</div>
     <h1 style="font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:12px">Sign in to get started</h1>
-    <p style="font-size:16px;color:var(--t2);line-height:1.7;margin-bottom:36px">Sign in with Google to unlock your 3-day free trial — every lesson, quiz, game and tool included.</p>
+    <p style="font-size:16px;color:var(--t2);line-height:1.7;margin-bottom:28px">Sign in to unlock your 3-day free trial — every lesson, quiz, game and tool included.</p>
 
-    <button class="gsi-btn" style="width:100%;justify-content:center;padding:14px;font-size:15px" onclick="signInWithGoogle()">🔵 Sign in with Google</button>
+    <button class="gsi-btn" style="width:100%;justify-content:center;padding:14px;font-size:15px;margin-bottom:20px" onclick="signInWithGoogle()">🔵 Sign in with Google</button>
 
-    <p style="font-size:12px;color:var(--t3);margin-top:20px;line-height:1.6">Free for 3 days, then £14.99/year to keep your access. No spam, ever.</p>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <div style="flex:1;height:1px;background:var(--border2)"></div>
+      <span style="font-size:12px;color:var(--t3);font-weight:600">OR</span>
+      <div style="flex:1;height:1px;background:var(--border2)"></div>
+    </div>
+
+    <div style="text-align:left">
+      <label class="inp-lbl">Email</label>
+      <input class="inp" type="email" id="gate-email" placeholder="you@example.com" autocomplete="email">
+      <label class="inp-lbl">Password</label>
+      <input class="inp" type="password" id="gate-password" placeholder="At least 6 characters" autocomplete="current-password">
+    </div>
+
+    <div id="gate-auth-error" style="display:none;background:rgba(240,90,106,.08);border:1px solid rgba(240,90,106,.25);color:var(--r);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;text-align:left"></div>
+    <div id="gate-auth-info" style="display:none;background:rgba(62,201,154,.08);border:1px solid rgba(62,201,154,.25);color:var(--g);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;text-align:left"></div>
+
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button class="btn btn-p" style="flex:1;font-size:14px" onclick="gateSignIn()">Sign In</button>
+      <button class="btn btn-o" style="flex:1;font-size:14px" onclick="gateSignUp()">Create Account</button>
+    </div>
+    <button style="background:none;border:none;color:var(--t3);font-size:12px;text-decoration:underline;cursor:pointer;font-family:var(--ff)" onclick="gateForgotPassword()">Forgot password?</button>
+
+    <p style="font-size:12px;color:var(--t3);margin-top:24px;line-height:1.6">Free for 3 days, then £14.99/year to keep your access. No spam, ever.</p>
   </div>
 </div>
 
@@ -2686,7 +2708,8 @@ const BL_CONFIRM_TOKEN='g1_7r9jkU363PWxGyMzNUaRbBWs';
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
-    getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+    getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp
@@ -2720,6 +2743,66 @@ const BL_CONFIRM_TOKEN='g1_7r9jkU363PWxGyMzNUaRbBWs';
 
   window.signOutUser = function(){
     signOut(auth).catch(err=>console.error('Sign-out error:', err));
+  };
+
+  // ── Email/password auth for the gate screen ──
+  function gateShowError(msg){
+    const errEl=document.getElementById('gate-auth-error');
+    const infoEl=document.getElementById('gate-auth-info');
+    if(infoEl) infoEl.style.display='none';
+    if(errEl){ errEl.textContent=msg; errEl.style.display='block'; }
+  }
+  function gateShowInfo(msg){
+    const errEl=document.getElementById('gate-auth-error');
+    const infoEl=document.getElementById('gate-auth-info');
+    if(errEl) errEl.style.display='none';
+    if(infoEl){ infoEl.textContent=msg; infoEl.style.display='block'; }
+  }
+  function friendlyAuthError(err){
+    const code = err && err.code;
+    const map = {
+      'auth/invalid-email': 'That email address doesn\'t look right.',
+      'auth/missing-password': 'Please enter a password.',
+      'auth/weak-password': 'Password needs to be at least 6 characters.',
+      'auth/email-already-in-use': 'An account already exists with this email — try Sign In instead.',
+      'auth/user-not-found': 'No account found with this email — try Create Account instead.',
+      'auth/wrong-password': 'Incorrect password. Try again, or use Forgot password.',
+      'auth/invalid-credential': 'Incorrect email or password.',
+      'auth/too-many-requests': 'Too many attempts — please wait a moment and try again.',
+    };
+    return map[code] || 'Something went wrong. Please try again.';
+  }
+
+  window.gateSignIn = function(){
+    const email=(document.getElementById('gate-email').value||'').trim();
+    const pass=document.getElementById('gate-password').value||'';
+    if(!email||!pass){ gateShowError('Please enter both email and password.'); return; }
+    signInWithEmailAndPassword(auth, email, pass).catch(err=>{
+      console.error('Email sign-in error:', err);
+      gateShowError(friendlyAuthError(err));
+    });
+  };
+
+  window.gateSignUp = function(){
+    const email=(document.getElementById('gate-email').value||'').trim();
+    const pass=document.getElementById('gate-password').value||'';
+    if(!email||!pass){ gateShowError('Please enter both email and password.'); return; }
+    if(pass.length<6){ gateShowError('Password needs to be at least 6 characters.'); return; }
+    createUserWithEmailAndPassword(auth, email, pass).catch(err=>{
+      console.error('Email sign-up error:', err);
+      gateShowError(friendlyAuthError(err));
+    });
+  };
+
+  window.gateForgotPassword = function(){
+    const email=(document.getElementById('gate-email').value||'').trim();
+    if(!email){ gateShowError('Enter your email address above first, then click Forgot password.'); return; }
+    sendPasswordResetEmail(auth, email).then(()=>{
+      gateShowInfo('Password reset email sent — check your inbox.');
+    }).catch(err=>{
+      console.error('Password reset error:', err);
+      gateShowError(friendlyAuthError(err));
+    });
   };
 
   onAuthStateChanged(auth, (user) => {
