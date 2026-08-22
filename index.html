@@ -632,7 +632,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <h1 class="h-title">Learn <span>Braille</span><br>the fun way.</h1>
       <p class="h-desc">Interactive lessons, instant quizzes, and a real-time translator. For children, adults, families, and anyone curious about Braille.</p>
       <div class="h-btns">
-        <button class="btn btn-p" onclick="goApp('dashboard')">Start your 3-day free trial</button>
+        <button class="btn btn-p" id="hero-cta-btn" onclick="goApp('dashboard')">Start your 3-day free trial</button>
         <button class="btn btn-o" onclick="goApp('translator')">Try translator →</button>
       </div>
     </div>
@@ -657,7 +657,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
         <div class="try-info" id="try-info"></div>
       </div>
       <div class="try-cta">
-        <button class="btn btn-p" onclick="goApp('dashboard')">Like what you see? Start your free trial →</button>
+        <button class="btn btn-p" id="try-cta-btn" onclick="goApp('dashboard')">Like what you see? Start your free trial →</button>
       </div>
     </div>
   </div>
@@ -719,7 +719,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
             <div class="pcf">✅ Progress tracking & XP</div>
             <div class="pcf dim">❌ Locks after 3 days unless you upgrade</div>
           </div>
-          <button class="btn btn-o" style="width:100%;font-size:15px" onclick="goApp('dashboard')">Start free trial</button>
+          <button class="btn btn-o" style="width:100%;font-size:15px" id="pricing-trial-btn" onclick="goApp('dashboard')">Start free trial</button>
         </div>
         <div class="price-card featured">
           <div class="price-popular">⭐ Best value — billed yearly</div>
@@ -2055,6 +2055,20 @@ function updateAuthUI(user){
       el.innerHTML=`<button class="gsi-btn" onclick="signInWithGoogle()">🔵 Sign in with Google</button>`;
     }
   });
+  updateHomepageCTAs();
+}
+
+// Keeps the homepage's "Start free trial" wording honest — someone
+// who's already signed in (or already a paying member) shouldn't be
+// invited to "start" something they've already started.
+function updateHomepageCTAs(){
+  const alreadyIn = (typeof hasEnteredApp==='function') && hasEnteredApp();
+  const heroBtn=document.getElementById('hero-cta-btn');
+  if(heroBtn) heroBtn.textContent = alreadyIn ? 'Continue learning →' : 'Start your 3-day free trial';
+  const tryBtn=document.getElementById('try-cta-btn');
+  if(tryBtn) tryBtn.textContent = alreadyIn ? 'Continue learning →' : 'Like what you see? Start your free trial →';
+  const pricingBtn=document.getElementById('pricing-trial-btn');
+  if(pricingBtn) pricingBtn.textContent = alreadyIn ? 'Go to my dashboard →' : 'Start free trial';
 }
 
 // ═══════════════════════════════════════
@@ -3083,6 +3097,7 @@ function selectTryChar(k){
   }
 }
 renderTryGrid();
+updateHomepageCTAs();
 
 // ratings are fetched once the Firebase module script below has initialised
 // (see the type="module" script near the top of </body> — it calls
