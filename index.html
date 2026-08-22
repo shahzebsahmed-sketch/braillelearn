@@ -127,14 +127,15 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 .fc-d{font-size:13px;color:var(--t2);line-height:1.6}
 
 /* ── APP NAV ── */
-.app-nav{background:rgba(10,11,20,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 60px;display:flex;align-items:center;gap:0;position:sticky;top:0;z-index:50;height:54px}
+.app-nav{background:rgba(10,11,20,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 60px;display:flex;align-items:center;gap:0;position:sticky;top:0;z-index:50;height:54px;overflow:hidden}
 .nav-brand{font-size:17px;font-weight:800;cursor:pointer;margin-right:28px;flex-shrink:0}
 .nav-brand b{color:var(--p)}
-.nav-tabs{display:flex;height:100%}
-.ntab{background:none;border:none;color:var(--t3);padding:0 14px;font-size:13px;font-weight:500;font-family:var(--ff);cursor:pointer;height:100%;border-bottom:2px solid transparent;transition:all .2s}
+.nav-tabs{display:flex;height:100%;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{background:none;border:none;color:var(--t3);padding:0 14px;font-size:13px;font-weight:500;font-family:var(--ff);cursor:pointer;height:100%;border-bottom:2px solid transparent;transition:all .2s;flex-shrink:0;white-space:nowrap}
 .ntab:hover{color:var(--t1)}
 .ntab.on{color:var(--p);border-bottom-color:var(--p)}
-.nav-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .xp-chip{background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.22);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;color:var(--p2)}
 .voice-btn{background:var(--card);border:1px solid var(--border);color:var(--t2);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--ff);transition:all .2s}
 .voice-btn:hover{border-color:var(--p);color:var(--t1)}
@@ -630,7 +631,7 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
     <div>
       <div class="h-tag">Helping families support their blind children</div>
       <h1 class="h-title">Learn <span>Braille</span><br>the fun way.</h1>
-      <p class="h-desc">Interactive lessons, instant quizzes, and a real-time translator. For children, adults, families, and anyone curious about Braille.</p>
+      <p class="h-desc">Interactive lessons, instant quizzes, and a real-time translator, covering Grade 1 (uncontracted) Braille. For children, adults, families, and anyone curious about Braille.</p>
       <div class="h-btns">
         <button class="btn btn-p" id="hero-cta-btn" onclick="goApp('dashboard')">Start your 3-day free trial</button>
         <button class="btn btn-o" onclick="goApp('translator')">Try translator →</button>
@@ -1736,14 +1737,20 @@ function gmStartMemory(){
   cards=cards.sort(()=>Math.random()-.5).map((c,i)=>({...c,id:i,flipped:false,matched:false}));
   GM.data={cards,first:null,second:null,lock:false,matches:0};
   document.getElementById('game-container').innerHTML=gmHeader('🔎 Matches: 0/6')+
-    `<div class="memory-grid" id="memory-grid" style="grid-template-columns:repeat(4,1fr)"></div>`;
+    `<div style="text-align:center;font-size:13px;color:var(--t3);margin-bottom:14px">🔤 cards are letters, ⠿ cards are Braille patterns — find each matching pair</div>
+     <div class="memory-grid" id="memory-grid" style="grid-template-columns:repeat(4,1fr)"></div>`;
   gmRenderMemory();
 }
 function gmRenderMemory(){
   const grid=document.getElementById('memory-grid');
   if(!grid)return;
   grid.innerHTML=GM.data.cards.map(c=>{
-    let inner='<div class="mem-back">⠿</div>';
+    // Card backs show which TYPE they are (letter vs Braille) even face-down,
+    // so players know what they're looking for without it giving away which
+    // specific letter is underneath — fixes reported confusion where people
+    // tried to match Braille-to-Braille without realising pairs are always
+    // one letter card + one Braille card.
+    let inner=c.type==='letter'?'<div class="mem-back">🔤</div>':'<div class="mem-back">⠿</div>';
     if(c.flipped||c.matched){
       inner=c.type==='letter'?`<div class="mem-letter">${c.letter.toUpperCase()}</div>`:mkCell(BR[c.letter].dots);
     }
