@@ -91,6 +91,27 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
 
 .hero-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:44px 32px;text-align:center;cursor:pointer;position:relative;overflow:hidden}
 .hero-card::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(123,110,246,.12),transparent 70%);pointer-events:none}
+
+/* ── HOMEPAGE TRY-IT EXPLORER (no sign-in needed) ── */
+.try-section{max-width:1200px;margin:0 auto;padding:0 60px 80px}
+.try-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:36px}
+.try-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.try-title{font-size:15px;font-weight:800;color:var(--t1)}
+.try-hint{font-size:13px;color:var(--t3)}
+.try-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;margin-bottom:22px}
+.try-char{background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 4px;text-align:center;cursor:pointer;transition:all .15s;font-size:14px;font-weight:800;color:var(--p2)}
+.try-char:hover{background:var(--card2);transform:translateY(-2px)}
+.try-char.active{border-color:var(--p);background:rgba(123,110,246,.12)}
+.try-detail{display:flex;align-items:center;gap:24px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
+.try-letter{font-size:56px;font-weight:900;color:var(--p);letter-spacing:-2px;min-width:64px}
+.try-dots{display:inline-grid;grid-template-columns:1fr 1fr;row-gap:5px;column-gap:14px;background:var(--card);border:2px solid var(--border2);border-radius:14px;padding:12px 14px}
+.try-dot{width:18px;height:18px;border-radius:50%;background:var(--card2)}
+.try-dot.on{background:var(--p);box-shadow:0 0 10px rgba(123,110,246,.5)}
+.try-info{font-size:14px;color:var(--t2);flex:1;min-width:200px}
+.try-info b{color:var(--t1)}
+.try-cta{margin-top:22px;text-align:center}
+@media(max-width:800px){.try-grid{grid-template-columns:repeat(6,1fr)}}
+@media(max-width:500px){.try-grid{grid-template-columns:repeat(5,1fr)}.try-box{padding:24px 18px}}
 .hc-letter{font-size:96px;font-weight:900;letter-spacing:-4px;line-height:1;color:var(--p);margin-bottom:6px;transition:all .3s}
 .hc-sym{font-size:40px;color:var(--t2);margin-bottom:16px;font-family:var(--fm)}
 .hc-hint{font-size:11px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:600}
@@ -622,10 +643,37 @@ body{font-family:var(--ff);background:var(--bg);color:var(--t1);min-height:100vh
       <div class="hc-hint">Click to explore the alphabet</div>
     </div>
   </div>
+
+  <div class="try-section">
+    <div class="try-box">
+      <div class="try-hd">
+        <div class="try-title">🔤 Try it right now — no sign-in needed</div>
+        <div class="try-hint">Tap any letter to see and hear its Braille pattern</div>
+      </div>
+      <div class="try-grid" id="try-grid"></div>
+      <div class="try-detail" id="try-detail" style="display:none">
+        <div class="try-letter" id="try-letter">A</div>
+        <div class="try-dots" id="try-dots"></div>
+        <div class="try-info" id="try-info"></div>
+      </div>
+      <div class="try-cta">
+        <button class="btn btn-p" onclick="goApp('dashboard')">Like what you see? Start your free trial →</button>
+      </div>
+    </div>
+  </div>
+
   <div class="feats">
     <div class="sec-lbl">What's included</div>
     <div class="sec-title">Everything you need to learn Braille</div>
     <div class="feat-grid">
+      <div class="fc"><div class="fc-ico">📖</div><div class="fc-t">Interactive Lessons</div><div class="fc-d">6 structured lessons from A–Z plus numbers, each with a spoken memory tip.</div></div>
+      <div class="fc"><div class="fc-ico">🎯</div><div class="fc-t">Instant Quizzes</div><div class="fc-d">Check what's stuck after every lesson, with immediate feedback.</div></div>
+      <div class="fc"><div class="fc-ico">🔤</div><div class="fc-t">Live Translator</div><div class="fc-d">Type any text and see it converted to Braille instantly.</div></div>
+      <div class="fc"><div class="fc-ico">🎮</div><div class="fc-t">Learning Games</div><div class="fc-d">Four games that turn repetition into play — Bubble Pop, Memory Match and more.</div></div>
+      <div class="fc"><div class="fc-ico">📊</div><div class="fc-t">Progress & XP</div><div class="fc-d">Levels, streaks and achievements that make daily practice stick.</div></div>
+      <div class="fc"><div class="fc-ico">🔊</div><div class="fc-t">Full Voice Support</div><div class="fc-d">Every letter, dot pattern and tip read aloud as you learn.</div></div>
+      <div class="fc"><div class="fc-ico">⠿</div><div class="fc-t">Dot Tapper</div><div class="fc-d">Tap the dots you see or feel and instantly find out the letter.</div></div>
+      <div class="fc"><div class="fc-ico">♿</div><div class="fc-t">Screen Reader Ready</div><div class="fc-d">Built-in support for VoiceOver, TalkBack, JAWS and NVDA.</div></div>
     </div>
   </div>
 
@@ -3004,6 +3052,38 @@ function cycleHero(){
 }
 cycleHero();
 setInterval(cycleHero,2800);
+
+// ═══════════════════════════════════════
+// HOMEPAGE TRY-IT EXPLORER (public, no sign-in required)
+// ═══════════════════════════════════════
+let currentTryTab='letters';
+function renderTryGrid(){
+  const grid=document.getElementById('try-grid');
+  if(!grid)return;
+  const keys=currentTryTab==='letters'?hKeys:['1','2','3','4','5','6','7','8','9','0'];
+  grid.innerHTML=keys.map(k=>`<div class="try-char" id="tc-${k}" onclick="selectTryChar('${k}')">${k.toUpperCase()}</div>`).join('');
+}
+function selectTryChar(k){
+  document.querySelectorAll('.try-char').forEach(e=>e.classList.remove('active'));
+  const el=document.getElementById('tc-'+k);
+  if(el)el.classList.add('active');
+  const d=BR[k];
+  if(!d)return;
+  if(typeof trackEvent==='function')trackEvent('homepage_demo_used',{letter:k});
+  document.getElementById('try-letter').textContent=k.toUpperCase();
+  document.getElementById('try-dots').innerHTML=[1,2,3,4,5,6].map(n=>`<div class="try-dot${d.dots.includes(n)?' on':''}"></div>`).join('');
+  document.getElementById('try-info').innerHTML=`<b>Dots: ${d.dots.join(', ')}</b><br>${d.hint||''}`;
+  document.getElementById('try-detail').style.display='flex';
+  if(window.speechSynthesis){
+    window.speechSynthesis.cancel();
+    const name=isNaN(k)?'Letter '+k.toUpperCase():'Number '+k;
+    const u=new SpeechSynthesisUtterance(`${name}. ${d.dots.length} dot${d.dots.length!==1?'s':''}. Dot ${d.dots.join(', ')}.`);
+    u.rate=0.9;
+    window.speechSynthesis.speak(u);
+  }
+}
+renderTryGrid();
+
 // ratings are fetched once the Firebase module script below has initialised
 // (see the type="module" script near the top of </body> — it calls
 // fetchRatings() itself once ready, avoiding a race condition where this
@@ -3155,11 +3235,19 @@ const BL_CONFIRM_TOKEN='g1_7r9jkU363PWxGyMzNUaRbBWs';
     });
   };
 
+  let authInitialized = false; // tracks whether we've seen Firebase's first (session-restore) callback yet
+
   onAuthStateChanged(auth, (user) => {
+    // A "fresh" sign-in is only when this ISN'T the very first callback
+    // (which just restores whatever session already existed) AND we're
+    // moving from signed-out to signed-in. Without this check, the login
+    // event fired every single page load for anyone already signed in,
+    // massively inflating the count relative to real sign-ins.
+    const isFreshSignIn = authInitialized && user && !window.currentUser;
     window.currentUser = user;
     if(typeof updateAuthUI === 'function') updateAuthUI(user);
     if(user){
-      if(typeof trackEvent === 'function') trackEvent('login', {method:'google'});
+      if(isFreshSignIn && typeof trackEvent === 'function') trackEvent('login', {method:'google'});
       // signing in also starts their trial, unless they're already a paying member
       if(typeof startTrial === 'function' && typeof isMember === 'function' && !isMember()){
         startTrial();
@@ -3170,6 +3258,7 @@ const BL_CONFIRM_TOKEN='g1_7r9jkU363PWxGyMzNUaRbBWs';
         goApp(window.pendingView || 'dashboard');
       }
     }
+    authInitialized = true;
   });
 
   // Exposed for the classic script's fetchRatings()/saveRatingToCloud()
